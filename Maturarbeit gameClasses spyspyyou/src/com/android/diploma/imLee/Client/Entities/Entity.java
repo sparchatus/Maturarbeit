@@ -2,7 +2,7 @@ package com.android.diploma.imLee.Client.Entities;
 
 public abstract class Entity {
 
-	private float xCoordinate, yCoordinate;
+	protected float xCoordinate, yCoordinate;
 
 	public Entity(float xCoordinate, float yCoordinate) {
 		this.xCoordinate = xCoordinate;

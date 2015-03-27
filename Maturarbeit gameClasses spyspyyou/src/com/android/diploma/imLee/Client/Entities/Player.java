@@ -1,16 +1,20 @@
 package com.android.diploma.imLee.Client.Entities;
 
+import com.android.diploma.imLee.Client.GameLoop;
+
 public class Player extends Entity {
 
 	public final int MAX_HEALTH;
+	public final boolean IS_ENEMY;
+	protected final int PLAYER_ID;
 	public final int TEAM_NUMBER;
-	private final int PLAYER_ID;
 
 	public boolean isDead;
+	public boolean hasFlag;
 	/**
 	 * Number of seconds after the death of the player until he respawns.
 	 */
-	private int deathTimer;
+
 	public int currentHealth;
 
 	/**
@@ -23,8 +27,10 @@ public class Player extends Entity {
 	public Player(float xCoordinate, float yCoordinate, int playerID, int teamNumber, Equipment.EquipmentTypes playerEquipment) {
 		super(xCoordinate, yCoordinate);
 		isDead = false;
-		PLAYER_ID = playerID;
+		hasFlag = false;
 		TEAM_NUMBER = teamNumber;
+		PLAYER_ID = playerID;
+		IS_ENEMY = (teamNumber != GameLoop.playerList.get(0).TEAM_NUMBER);
 		MAX_HEALTH = Equipment.equipPlayer(this, playerEquipment);
 	}
 
@@ -37,11 +43,8 @@ public class Player extends Entity {
 
 	public void playerDeath() {
 		currentHealth = MAX_HEALTH;
-		deathTimer += 5;
-	}
-
-	public void update() {
-		heal(1);
+		xCoordinate = 0;
+		yCoordinate = 0;
 	}
 
 	public void heal(int healingAmount) {

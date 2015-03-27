@@ -11,9 +11,6 @@ public class Player extends Entity {
 
 	public boolean isDead;
 	public boolean hasFlag;
-	/**
-	 * Number of seconds after the death of the player until he respawns.
-	 */
 
 	public int currentHealth;
 

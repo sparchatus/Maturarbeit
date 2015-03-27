@@ -4,26 +4,17 @@ public class Projectile extends Entity {
 
 	private final int X_VELOCITY;
 	private final int Y_VELOCITY;
-	public final int DAMAGE;
+	private final int TEAM_NUMBER;
 
-	public Projectile(float xCoordinate, float yCoordinate, int xVelocity, int yVelocity, int projectileDamage) {
+	public Projectile(float xCoordinate, float yCoordinate, int xVelocity, int yVelocity, int projectileTeamNumber) {
 		super(xCoordinate, yCoordinate);
 		X_VELOCITY = xVelocity;
 		Y_VELOCITY = yVelocity;
-		DAMAGE = projectileDamage;
+		TEAM_NUMBER = projectileTeamNumber;
 	}
 
 	public void update() {
 		xCoordinate += X_VELOCITY;
 		yCoordinate += Y_VELOCITY;
-	}
-
-	public void render() {
-
-	}
-	
-	public Player checkHitbox(){
-		
-		return null;
 	}
 }

@@ -12,33 +12,21 @@ public class GameLoop {
 
 	public static List<Projectile> projectileList = new ArrayList<Projectile>();
 	private List<BombEntity> bombList = new ArrayList<BombEntity>();
+
 	public static List<Player> playerList = new ArrayList<Player>();
+	public static List<Player> allyPlayerList = new ArrayList<Player>();
+	public static List<Player> enemyPlayerList = new ArrayList<Player>();
 
 	private boolean isRunning;
-	
-	
 
 	private ServerThread server;
 	private Thread serverThread;
 
 	private int synchronizedTick;
 
-	public GameLoop(boolean isServer) {
+	//needs the information about the game mode how many players, on which Team, what equipment they have
+	public GameLoop() {
 		isRunning = true;
-		if (isServer) startServer();
-		else clientGameLoop();
-	}
-
-	private void startServer() {
-		serverThread = new Thread(server);
-		serverThread.start();
-	}
-
-	private void clientGameLoop() {
-		while (isRunning == true) {
-			update();
-			render();
-		}
 	}
 
 	private void update() {

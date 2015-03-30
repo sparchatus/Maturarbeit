@@ -1,4 +1,4 @@
-package com.ch.android.diploma.Management;
+package com.ch.android.diploma.Managment;
 
 public interface GameInitialisationInterface {
 

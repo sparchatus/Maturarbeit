@@ -1,9 +1,9 @@
 package com.ch.android.diploma.Managment;
 
-public class ClientSetupCaptureTheFlag implements GameInitialisationInterface, GameEndingInterface{
+public class ClientManageCaptureTheFlag implements GameInitialisationInterface, GameEndingInterface{
 	
 	
-	private ClientSetupCaptureTheFlag(){
+	private ClientManageCaptureTheFlag(){
 		
 	}
 

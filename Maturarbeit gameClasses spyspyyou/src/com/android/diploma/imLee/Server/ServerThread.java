@@ -18,7 +18,6 @@ public class ServerThread implements Runnable {
 	
 	private void checkProjectiles(){
 		for(Projectile projectile:GameLoop.projectileList){
-			projectile.checkHitbox().applyDamage(projectile.DAMAGE);;
 		}
 	}
 	

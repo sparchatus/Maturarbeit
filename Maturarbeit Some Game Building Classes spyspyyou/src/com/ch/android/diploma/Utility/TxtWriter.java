@@ -11,8 +11,8 @@ public class TxtWriter {
 	private FileWriter systemTxtWriter;
 	private BufferedWriter buffTxtWriter;
 
-	public TxtWriter(String FilePath, String fileName) {
-		fileToWrite = new File(FilePath + "/" + fileName);
+	public TxtWriter(String FilePath) {
+		fileToWrite = new File(FilePath);
 		if (!fileToWrite.exists()) {
 			try {
 				fileToWrite.createNewFile();

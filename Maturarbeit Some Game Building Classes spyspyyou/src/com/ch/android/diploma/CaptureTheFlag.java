@@ -1,4 +1,5 @@
-package com.ch.android.diploma.Clien.Entities;
+package com.ch.android.diploma;
+
 
 public class CaptureTheFlag extends GameLoop {
 

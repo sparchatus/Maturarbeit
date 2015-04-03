@@ -1,7 +1,6 @@
-package com.ch.android.diploma.Clien.Entities;
+package com.ch.android.diploma;
 
 public class GameLoop {
-
 	private final int TIME_PER_TICK;
 
 	private boolean running;

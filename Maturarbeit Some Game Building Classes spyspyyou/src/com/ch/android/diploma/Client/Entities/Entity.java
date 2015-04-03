@@ -1,4 +1,4 @@
-package com.ch.android.diploma.Clien.Entities;
+package com.ch.android.diploma.Client.Entities;
 
 public class Entity {
 	

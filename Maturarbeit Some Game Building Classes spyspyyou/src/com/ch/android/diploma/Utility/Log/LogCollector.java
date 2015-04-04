@@ -8,8 +8,8 @@ import java.util.Date;
 public class LogCollector {
 
 	public static PipedOutputStream logOutStream = new PipedOutputStream();
-	private static Date date = new Date();
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+	public static Date date = new Date();
+	public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 
 	private static enum LogStates {
 		STACKTRACE, ERROR, DEBUG, INFO

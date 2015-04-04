@@ -1,18 +1,22 @@
 package com.ch.android.diploma;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ch.android.diploma.Client.Event.Event;
+
 public class GameLoop {
-	private final int TIME_PER_TICK;
+	// ms
+	private final int TIME_PER_TICK = 50;
 
 	private boolean running;
 
-	public int synchronizedTick;
-	private long tickSpareTime;
+	public static int synchronizedTick;
 
+	private long tickSpareTime;
 	private long lastTickTime;
 
-	public GameLoop(int gameMiliSecPerTick) {
-		TIME_PER_TICK = gameMiliSecPerTick;
-	}
+	protected List<Event> eventList = new ArrayList<Event>();
 
 	public void loop() {
 		while (running) {
@@ -27,19 +31,36 @@ public class GameLoop {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
-			else{
-				//lag occurred! running behind? Check Server Tick!
+			} else {
+				// lag occurred! running behind? Check Server Tick!
 			}
 		}
 	}
 
-	public void update() {
+	protected void update() {
+		if (!eventList.isEmpty()) {
+			for (Event currentEvent : eventList) {
+
+			}
+		}
+	}
+
+	protected void render() {
+	}
+
+	public void processBombEvent() {
 
 	}
 
-	public void render() {
+	public void processParticleAddingEvent() {
 
 	}
 
+	public void processParticleRemovingEvent() {
+
+	}
+
+	public void processPlayerDamageEvent() {
+
+	}
 }

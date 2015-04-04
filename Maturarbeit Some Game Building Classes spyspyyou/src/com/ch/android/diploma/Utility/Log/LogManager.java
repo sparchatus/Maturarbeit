@@ -18,7 +18,7 @@ public class LogManager implements Runnable {
 
 	public LogManager() {
 		TIME_PER_TICK = 50;
-		logWriter = new LogWriter(logInStream, null);
+		logWriter = new LogWriter(logInStream, LogCollector.dateFormat.format(LogCollector.date));
 		try {
 			logInStream.connect(LogCollector.logOutStream);
 		} catch (IOException e) {
@@ -31,17 +31,18 @@ public class LogManager implements Runnable {
 		logging = true;
 		while (logging) {
 		
+			logWriter.update();
 			
-			
-			if ((tickSpareTime = System.currentTimeMillis() - (lastTickTime + TIME_PER_TICK)) > 0) {
-				try {
-					Thread.sleep(tickSpareTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			try {
+				if ((tickSpareTime = System.currentTimeMillis() - (lastTickTime + TIME_PER_TICK)) > 0 || logInStream.available() != 0) {
+					try {
+						Thread.sleep(tickSpareTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-			else{
-				//lag occurred! running behind? Check Server Tick!
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

@@ -13,9 +13,9 @@ public class LogWriter {
 	private String buildingLog;
 	private char nextChar;
 
-	public LogWriter(PipedInputStream logInStream, String logFilePath) {
+	public LogWriter(PipedInputStream logInStream, String logFileName) {
 		this.logInStream = logInStream;
-		logWriter = new TxtWriter(logFilePath);
+		logWriter = new TxtWriter("Log Files/" + logFileName);
 		buildingLog = "";
 		logWriter.append(GameVersion.VERSION);
 	}

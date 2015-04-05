@@ -6,7 +6,7 @@ import java.util.List;
 import com.ch.android.diploma.Client.Entities.Bomb;
 import com.ch.android.diploma.Client.Entities.Player;
 import com.ch.android.diploma.Client.Entities.ThisPlayer;
-import com.ch.android.diploma.DataExchange.PlayerData;
+import com.ch.android.diploma.Client.Event.PlayerData;
 
 public class CaptureTheFlag extends GameLoop {
 
@@ -36,5 +36,4 @@ public class CaptureTheFlag extends GameLoop {
 	protected void render() {
 
 	}
-
 }

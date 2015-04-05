@@ -1,6 +1,6 @@
-package com.ch.android.diploma.DataExchange;
+package com.ch.android.diploma.Client.Event;
 
-public class PlayerData {
+public class PlayerData extends Event {
 	public float xCoordinate, yCoordinate;
 	public int ID;
 	public int TeamNumber;

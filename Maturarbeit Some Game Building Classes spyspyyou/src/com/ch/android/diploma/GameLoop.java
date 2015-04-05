@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ch.android.diploma.Client.Event.Event;
 
-public class GameLoop {
+public class GameLoop implements Runnable {
 	// ms
 	private final int TIME_PER_TICK = 50;
 
@@ -18,7 +18,9 @@ public class GameLoop {
 
 	protected List<Event> eventList = new ArrayList<Event>();
 
-	public void loop() {
+	@Override
+	public void run() {
+		running = true;
 		while (running) {
 			lastTickTime = System.currentTimeMillis();
 
@@ -34,6 +36,7 @@ public class GameLoop {
 			} else {
 				// lag occurred! running behind? Check Server Tick!
 			}
+			synchronizedTick++;
 		}
 	}
 
@@ -60,7 +63,12 @@ public class GameLoop {
 
 	}
 
-	public void processPlayerDamageEvent() {
+	public void processPlayerEvent() {
 
 	}
+
+	private void destroyRecources() {
+
+	}
+
 }

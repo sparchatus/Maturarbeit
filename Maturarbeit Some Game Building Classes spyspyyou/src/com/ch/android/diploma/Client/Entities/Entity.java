@@ -2,7 +2,7 @@ package com.ch.android.diploma.Client.Entities;
 
 public class Entity {
 	
-	float xCoordinate, yCoordinate;
+	protected float xCoordinate, yCoordinate;
 
 	public Entity(float entityXCoordinate, float entityYCoordinate){
 		xCoordinate = entityXCoordinate;

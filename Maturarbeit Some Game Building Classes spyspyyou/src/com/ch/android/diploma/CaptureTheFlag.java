@@ -3,24 +3,26 @@ package com.ch.android.diploma;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ch.android.diploma.Client.Entities.Bomb;
 import com.ch.android.diploma.Client.Entities.Player;
 import com.ch.android.diploma.Client.Entities.ThisPlayer;
-import com.ch.android.diploma.Client.Event.PlayerData;
+import com.ch.android.diploma.Client.Entities.Bombs.Bomb;
+import com.ch.android.diploma.Client.Event.BombEventInterface;
+import com.ch.android.diploma.Client.Event.Event;
+import com.ch.android.diploma.Client.Event.PlayerStartData;
 
-public class CaptureTheFlag extends GameLoop {
+public class CaptureTheFlag extends GameLoop implements BombEventInterface{
 
 	private final Player[] playerArray;
 
 	private List<Bomb> bombList = new ArrayList<Bomb>();
 
-	public CaptureTheFlag(int numberOfPlayers, int thisPlayerID, PlayerData[] playerData) {
+	public CaptureTheFlag(int numberOfPlayers, int thisPlayerID, PlayerStartData[] playerDataPackage) {
 		playerArray = new Player[numberOfPlayers];
-		for (PlayerData player : playerData) {
-			if (player.ID == thisPlayerID) {
-				playerArray[player.ID] = new ThisPlayer(playerData[player.ID].xCoordinate, playerData[player.ID].yCoordinate, player.ID, playerData[player.ID].TeamNumber, playerData[player.ID].equipmentNumber, playerData[player.ID].maxHealth, playerData[player.ID].bombType, playerData[player.ID].particleType);
+		for (PlayerStartData playerData : playerDataPackage) {
+			if (playerData.ID == thisPlayerID) {
+				playerArray[playerData.ID] = new ThisPlayer(playerDataPackage[playerData.ID].xCoordinate, playerDataPackage[playerData.ID].yCoordinate, playerData.ID, playerDataPackage[playerData.ID].TeamNumber, playerDataPackage[playerData.ID].equipmentNumber, playerDataPackage[playerData.ID].maxHealth, playerDataPackage[playerData.ID].bombType, playerDataPackage[playerData.ID].particleType);
 			} else {
-				playerArray[player.ID] = new Player(playerData[player.ID].xCoordinate, playerData[player.ID].yCoordinate, player.ID, playerData[player.ID].TeamNumber, playerData[player.ID].equipmentNumber, playerData[player.ID].maxHealth, playerData[player.ID].bombType, playerData[player.ID].particleType);
+				playerArray[playerData.ID] = new Player(playerDataPackage[playerData.ID].xCoordinate, playerDataPackage[playerData.ID].yCoordinate, playerData.ID, playerDataPackage[playerData.ID].TeamNumber, playerDataPackage[playerData.ID].equipmentNumber, playerDataPackage[playerData.ID].maxHealth, playerDataPackage[playerData.ID].bombType, playerDataPackage[playerData.ID].particleType);
 			}
 		}
 	}
@@ -28,7 +30,11 @@ public class CaptureTheFlag extends GameLoop {
 	@Override
 	protected void update() {
 		if (!eventList.isEmpty()) {
-			// process the server stated events
+			if (!eventList.isEmpty()) {
+				for (Event currentEvent : eventList) {
+					if(currentEvent.evenType == Event.EventType.BOMB_EVENT) addBomb();
+				}
+			}
 		}
 	}
 
@@ -36,4 +42,11 @@ public class CaptureTheFlag extends GameLoop {
 	protected void render() {
 
 	}
+
+	@Override
+	public void addBomb() {
+		
+	}
+
+	
 }

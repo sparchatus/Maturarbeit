@@ -34,41 +34,20 @@ public class GameLoop implements Runnable {
 					e.printStackTrace();
 				}
 			} else {
-				// lag occurred! running behind? Check Server Tick!
+				
 			}
 			synchronizedTick++;
 		}
 	}
 
 	protected void update() {
-		if (!eventList.isEmpty()) {
-			for (Event currentEvent : eventList) {
-
-			}
-		}
 	}
 
 	protected void render() {
 	}
 
-	public void processBombEvent() {
-
-	}
-
-	public void processParticleAddingEvent() {
-
-	}
-
-	public void processParticleRemovingEvent() {
-
-	}
-
-	public void processPlayerEvent() {
-
-	}
-
 	private void destroyRecources() {
-
+		// end all threads...
 	}
 
 }

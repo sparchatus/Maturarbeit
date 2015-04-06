@@ -1,6 +1,6 @@
 package com.ch.android.diploma.Client.Event;
 
-public class PlayerData extends Event {
+public class PlayerStartData implements Event {
 	public float xCoordinate, yCoordinate;
 	public int ID;
 	public int TeamNumber;
@@ -9,8 +9,7 @@ public class PlayerData extends Event {
 	public int bombType;
 	public int particleType;
 
-	public PlayerData(float playerXCoordinate, int playerYCoordinate, int playerID, int playerTeamNumber, int playerEquipmentNumber, int playerMaxHealth, int playerBombType, int playerParticleType) {
-
+	public PlayerStartData(float playerXCoordinate, int playerYCoordinate, int playerID, int playerTeamNumber, int playerEquipmentNumber, int playerMaxHealth, int playerBombType, int playerParticleType) {
 		xCoordinate = playerXCoordinate;
 		yCoordinate = playerYCoordinate;
 		ID = playerID;

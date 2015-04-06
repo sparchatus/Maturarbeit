@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">Maturarbeit</string>
+
+
+
+    <string name="pref_title_display_name">Username</string>
+    <string name="pref_default_display_name">Player</string>
+
+    <string name="pref_title_gamemode">Gamemode</string>
+    <string-array name="pref_gamemode_list_entries">
+        <item>Capture the Flag</item>
+        <item>1v1</item>
+        <item>Teamfight</item>
+    </string-array>
+    <string-array name="pref_gamemode_list_values">
+        <item>ctf</item>
+        <item>1v1</item>
+        <item>tdm</item>
+    </string-array>
+
+
+    <string name="pref_header_start_game">Start game</string>
+
+</resources>

@@ -1,6 +1,6 @@
 package com.ch.android.diploma.Client.Event;
 
-public class PlayerStartData implements Event {
+public class PlayerStartData{
 	public float xCoordinate, yCoordinate;
 	public int ID;
 	public int TeamNumber;

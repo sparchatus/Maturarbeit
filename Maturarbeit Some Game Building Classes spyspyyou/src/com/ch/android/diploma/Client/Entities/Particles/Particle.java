@@ -3,6 +3,10 @@ package com.ch.android.diploma.Client.Entities.Particles;
 import com.ch.android.diploma.Client.Entities.Entity;
 
 public class Particle extends Entity {
+	
+	public static enum ParticleTypes{
+		
+	}
 
 	private final float X_VELOCITY, Y_VELOCITY;
 	private final int DAMAGE;

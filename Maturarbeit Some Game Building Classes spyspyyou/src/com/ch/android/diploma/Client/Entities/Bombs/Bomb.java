@@ -1,26 +1,23 @@
 package com.ch.android.diploma.Client.Entities.Bombs;
 
-import com.ch.android.diploma.GameLoop;
 import com.ch.android.diploma.Client.Entities.Entity;
 
 public class Bomb extends Entity {
 	
-	public static enum bombTypes{
-		
+	public static enum BombTypes{
+		TIME_BOMB
 	}
 
-	private final int EXPLOSION_TICK;
 
-	public Bomb(float bombXCoordinate, float bombYCoordinate, int bombExplosionTick, int type) {
+	public Bomb(float bombXCoordinate, float bombYCoordinate) {
 		super(bombXCoordinate, bombYCoordinate);
-		EXPLOSION_TICK = bombExplosionTick;
-		//use the type number to put the right damage and picture
 	}
 
 	public void update() {
-		if (GameLoop.synchronizedTick >= EXPLOSION_TICK) {
-			
-		}
+		
 	}
 
+	public void explode(){
+		
+	}
 }

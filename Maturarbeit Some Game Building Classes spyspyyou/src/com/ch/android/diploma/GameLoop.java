@@ -3,6 +3,7 @@ package com.ch.android.diploma;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ch.android.diploma.Client.Entities.ThisPlayer;
 import com.ch.android.diploma.Client.Event.Event;
 
 public class GameLoop implements Runnable {
@@ -17,6 +18,8 @@ public class GameLoop implements Runnable {
 	private long lastTickTime;
 
 	protected List<Event> eventList = new ArrayList<Event>();
+
+	public ThisPlayer referenceToThisPlayer;
 
 	@Override
 	public void run() {
@@ -34,7 +37,7 @@ public class GameLoop implements Runnable {
 					e.printStackTrace();
 				}
 			} else {
-				
+
 			}
 			synchronizedTick++;
 		}
@@ -46,6 +49,9 @@ public class GameLoop implements Runnable {
 	protected void render() {
 	}
 
+	public void pauseGame(){
+		
+	}
 	private void destroyRecources() {
 		// end all threads...
 	}

@@ -7,12 +7,14 @@ import com.ch.android.diploma.Client.Entities.ThisPlayer;
 import com.ch.android.diploma.Client.Event.Event;
 
 public class GameLoop implements Runnable {
-	// ms
+	// Ms
 	private final int TIME_PER_TICK = 50;
 
 	private boolean running;
+	protected boolean isMultiplayer;
 
 	public static int synchronizedTick;
+	public static int lagCount;
 
 	private long tickSpareTime;
 	private long lastTickTime;
@@ -20,6 +22,11 @@ public class GameLoop implements Runnable {
 	protected List<Event> eventList = new ArrayList<Event>();
 
 	public ThisPlayer referenceToThisPlayer;
+
+	GameLoop(boolean gameIsMultiplayer) {
+		isMultiplayer = gameIsMultiplayer;
+
+	}
 
 	@Override
 	public void run() {
@@ -37,7 +44,13 @@ public class GameLoop implements Runnable {
 					e.printStackTrace();
 				}
 			} else {
-
+				if (isMultiplayer) {
+					lagCount += tickSpareTime;
+					if(lagCount >= 200){
+						//add a tickRequest Event to the Server Event List
+						lagCount = 0;
+					}
+				}
 			}
 			synchronizedTick++;
 		}
@@ -49,9 +62,10 @@ public class GameLoop implements Runnable {
 	protected void render() {
 	}
 
-	public void pauseGame(){
-		
+	public void pauseGame() {
+
 	}
+
 	private void destroyRecources() {
 		// end all threads...
 	}

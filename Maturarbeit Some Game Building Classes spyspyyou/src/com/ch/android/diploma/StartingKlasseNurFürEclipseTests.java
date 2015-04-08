@@ -1,6 +1,6 @@
 package com.ch.android.diploma;
 
-import com.ch.android.diploma.Client.Event.PlayerStartData;
+import com.ch.android.diploma.Client.Loading.PlayerStartData;
 
 public class StartingKlasseNurFürEclipseTests {
 	
@@ -13,7 +13,7 @@ public class StartingKlasseNurFürEclipseTests {
 	static PlayerStartData[] playerData;
 
 	public static void main(String[] args) {
-		game = new CaptureTheFlag(numberOfPlayers, thisPlayerID, playerData);
+		game = new CaptureTheFlag(true, numberOfPlayers, thisPlayerID, playerData);
 		gameThread = new Thread(game);
 		gameThread.start();
 	}

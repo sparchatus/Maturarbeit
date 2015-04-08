@@ -7,9 +7,10 @@ import com.ch.android.diploma.Client.Entities.Player;
 import com.ch.android.diploma.Client.Entities.ThisPlayer;
 import com.ch.android.diploma.Client.Entities.Bombs.Bomb;
 import com.ch.android.diploma.Client.Entities.Bombs.TimeBomb;
+import com.ch.android.diploma.Client.Event.BombEvent;
 import com.ch.android.diploma.Client.Event.BombEventInterface;
 import com.ch.android.diploma.Client.Event.Event;
-import com.ch.android.diploma.Client.Event.PlayerStartData;
+import com.ch.android.diploma.Client.Loading.PlayerStartData;
 
 public class CaptureTheFlag extends GameLoop implements BombEventInterface {
 
@@ -17,7 +18,8 @@ public class CaptureTheFlag extends GameLoop implements BombEventInterface {
 
 	private List<Bomb> bombList = new ArrayList<Bomb>();
 
-	public CaptureTheFlag(int numberOfPlayers, int thisPlayerID, PlayerStartData[] playerDataPackage) {
+	public CaptureTheFlag(boolean gameIsMultiplayer, int numberOfPlayers, int thisPlayerID, PlayerStartData[] playerDataPackage) {
+		super(gameIsMultiplayer);
 		playerArray = new Player[numberOfPlayers];
 		for (PlayerStartData playerData : playerDataPackage) {
 			if (playerData.ID == thisPlayerID) {
@@ -32,10 +34,10 @@ public class CaptureTheFlag extends GameLoop implements BombEventInterface {
 	@Override
 	protected void update() {
 		if (!eventList.isEmpty()) {
-				for (Event currentEvent : eventList) {
-					if (currentEvent.eventType == Event.EventTypes.ADD_BOMB_EVENT)
-						addBomb();
-				}
+			for (Event currentEvent : eventList) {
+				if (currentEvent.eventType == Event.EventTypes.ADD_BOMB_EVENT)
+					addBomb((BombEvent) currentEvent, bombList);
+			}
 		}
 	}
 
@@ -45,7 +47,8 @@ public class CaptureTheFlag extends GameLoop implements BombEventInterface {
 	}
 
 	@Override
-	public void addBomb() {
-			
+	public void addBomb(BombEvent event, List<Bomb> bombList) {
+		if (event.type == Bomb.BombTypes.TIME_BOMB.ordinal())
+			bombList.add(new TimeBomb(event.xCoordinate, event.yCoordinate, event.explosionTick));
 	}
 }

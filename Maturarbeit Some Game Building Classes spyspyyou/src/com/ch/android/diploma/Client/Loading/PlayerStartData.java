@@ -1,4 +1,4 @@
-package com.ch.android.diploma.Client.Event;
+package com.ch.android.diploma.Client.Loading;
 
 public class PlayerStartData{
 	public float xCoordinate, yCoordinate;

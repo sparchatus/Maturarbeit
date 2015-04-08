@@ -1,10 +1,5 @@
 package com.ch.android.diploma.Client.Event;
 
-import java.util.List;
-
-import com.ch.android.diploma.Client.Entities.Bombs.Bomb;
-import com.ch.android.diploma.Client.Entities.Bombs.TimeBomb;
-
 public class BombEvent extends Event {
 
 	public int xCoordinate, yCoordinate;

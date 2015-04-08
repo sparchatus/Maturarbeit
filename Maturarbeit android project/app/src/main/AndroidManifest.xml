@@ -8,15 +8,19 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-
-        <activity android:name=".settings.MainActivity">
+        <activity
+            android:name=".bluetooth.BluetoothActivity"
+            android:label="@string/title_activity_bluetooth" >
+        </activity>
+        <activity
+            android:name=".settings.TestActivity"
+            android:label="@string/title_activity_test" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>

@@ -5,10 +5,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import ch.imlee.maturarbeit.R;
 
 public class TestActivity extends ActionBarActivity {
+    private static boolean buttonPressed = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,21 +39,67 @@ public class TestActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void hostGame(View view) {
-        System.err.println("host game");
-        System.err.println(view.toString());
+
+
+
+    public void onClick(View view) {
+        ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
+        ListView listView = (ListView) this.findViewById(R.id.listView);
+        TextView modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
+
+        Button hostButton = (Button) this.findViewById(R.id.hostButton);
+        Button joinButton = (Button) this.findViewById(R.id.joinButton);
+        TextView usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
+        EditText usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
+
+        buttonPressed = true;
+
+
+
+        modeDependantText.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        hostButton.setVisibility(View.INVISIBLE);
+        joinButton.setVisibility(View.INVISIBLE);
+        usernameTextView.setVisibility(View.INVISIBLE);
+        usernameEditText.setVisibility(View.INVISIBLE);
+
+        if(view.getId()==R.id.hostButton){
+            //host
+            modeDependantText.setText("waiting for Players");
+
+        }
+        else {
+            //client
+            modeDependantText.setText("searching for hosts");
+        }
     }
 
-    public void joinGame(View view) {
-        System.err.println("join game");
-        System.err.println(view.toString());
+    public void onBackPressed(){
+        ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
+        ListView listView = (ListView) this.findViewById(R.id.listView);
+        TextView modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
+
+        Button hostButton = (Button) this.findViewById(R.id.hostButton);
+        Button joinButton = (Button) this.findViewById(R.id.joinButton);
+        TextView usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
+        EditText usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
+
+        if(buttonPressed){
+            hostButton.setVisibility(View.VISIBLE);
+            joinButton.setVisibility(View.VISIBLE);
+            usernameTextView.setVisibility(View.VISIBLE);
+            usernameEditText.setVisibility(View.VISIBLE);
+
+            modeDependantText.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 }

@@ -10,32 +10,31 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="hostGame"
+        android:onClick="onClick"
         android:text="Host Game"
-        android:layout_marginTop="73dp"
-        android:id="@+id/button"
-        android:layout_below="@+id/textView"
+        android:id="@+id/hostButton"
+        android:layout_below="@+id/usernameEditText"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginTop="10dp" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="joinGame"
+        android:onClick="onClick"
         android:text="Join Game"
-        android:layout_below="@+id/button"
+        android:layout_below="@+id/hostButton"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:id="@+id/joinButton" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Username"
-        android:id="@+id/textView"
+        android:id="@+id/usernameTextView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -45,13 +44,45 @@
         android:inputType="textPersonName"
         android:text="Name"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_below="@+id/textView"
+        android:id="@+id/usernameEditText"
+        android:layout_below="@+id/usernameTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:selectAllOnFocus="true" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/modeDependantText"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="This text should display the state"
+        android:id="@+id/modeDependantText"
+        android:layout_below="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>

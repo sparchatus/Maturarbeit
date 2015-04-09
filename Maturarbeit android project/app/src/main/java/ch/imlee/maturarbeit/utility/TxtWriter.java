@@ -1,4 +1,4 @@
-package com.ch.android.diploma.Utility;
+package ch.imlee.maturarbeit.utility;
 
 import java.io.BufferedWriter;
 import java.io.File;

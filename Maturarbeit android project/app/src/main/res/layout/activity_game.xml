@@ -1,0 +1,29 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#0099cc"
+    tools:context="ch.imlee.maturarbeit.game.GameActivity"
+    android:id="@+id/">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+
+    <Button
+        android:layout_width="105dp"
+        android:layout_height="76dp"
+        android:text="particle"
+        android:id="@+id/button_particle"
+        android:layout_gravity="left|bottom"
+	android:background="@drawable/button_states" />
+
+    <Button
+        android:layout_width="105dp"
+        android:layout_height="76dp"
+        android:text="bomb"
+        android:id="@+id/button_bomb"
+        android:layout_gravity="center_horizontal|bottom"
+	android:background="@drawable/button_states" />
+</FrameLayout>

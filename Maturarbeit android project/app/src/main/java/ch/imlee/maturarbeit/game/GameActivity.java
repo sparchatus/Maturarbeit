@@ -1,15 +1,9 @@
 package ch.imlee.maturarbeit.game;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
-import ch.imlee.maturarbeit.R;
 
 public class GameActivity extends Activity {
-
+/*
     Button particleButton;
     Button bombButton;
 
@@ -30,5 +24,5 @@ public class GameActivity extends Activity {
             //save that b-button was clicked
             }
         });
-    }
+    }*/
 }

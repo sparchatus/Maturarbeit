@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="#0099cc"
     tools:context="ch.imlee.maturarbeit.game.GameActivity"
-    android:id="@+id/">
-
-    <!-- The primary full-screen view. This can be replaced with whatever view
+    android:id="@+id/test">
+<!--
+    <! - - The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
+         TextureView, etc. - - >
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
+    <! - - This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. - - >
 
     <Button
         android:layout_width="105dp"
@@ -25,5 +25,5 @@
         android:text="bomb"
         android:id="@+id/button_bomb"
         android:layout_gravity="center_horizontal|bottom"
-	android:background="@drawable/button_states" />
+	android:background="@drawable/button_states" /> -->
 </FrameLayout>

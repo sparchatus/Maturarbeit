@@ -12,9 +12,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.bluetooth.Client;
+import ch.imlee.maturarbeit.bluetooth.Host;
 
 public class TestActivity extends ActionBarActivity {
     private static boolean buttonPressed = false;
+
+    ProgressBar progressBar;
+    ListView listView;
+    TextView modeDependantText;
+
+    Button hostButton;
+    Button joinButton;
+    TextView usernameTextView;
+    EditText usernameEditText;
 
 
 
@@ -48,14 +59,14 @@ public class TestActivity extends ActionBarActivity {
 
 
     public void onClick(View view) {
-        ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
-        ListView listView = (ListView) this.findViewById(R.id.listView);
-        TextView modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
+        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
+        listView = (ListView) this.findViewById(R.id.listView);
+        modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
 
-        Button hostButton = (Button) this.findViewById(R.id.hostButton);
-        Button joinButton = (Button) this.findViewById(R.id.joinButton);
-        TextView usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
-        EditText usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
+        hostButton = (Button) this.findViewById(R.id.hostButton);
+        joinButton = (Button) this.findViewById(R.id.joinButton);
+        usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
+        usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
 
         buttonPressed = true;
 
@@ -73,23 +84,17 @@ public class TestActivity extends ActionBarActivity {
         if(view.getId()==R.id.hostButton){
             //host
             modeDependantText.setText("waiting for Players");
+            new Host();
 
         }
         else {
             //client
             modeDependantText.setText("searching for hosts");
+            new Client();
         }
     }
 
     public void onBackPressed(){
-        ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
-        ListView listView = (ListView) this.findViewById(R.id.listView);
-        TextView modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
-
-        Button hostButton = (Button) this.findViewById(R.id.hostButton);
-        Button joinButton = (Button) this.findViewById(R.id.joinButton);
-        TextView usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
-        EditText usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
 
         if(buttonPressed){
             hostButton.setVisibility(View.VISIBLE);
@@ -101,5 +106,6 @@ public class TestActivity extends ActionBarActivity {
             listView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
         }
+        buttonPressed = false;
     }
 }

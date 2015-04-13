@@ -7,6 +7,11 @@ public class Client {
     Util util = new Util();
     public Client(){
         util.initBluetooth();
+        util.discoverDevices();
+        findDevices();
+    }
 
+    private void findDevices(){
+        
     }
 }

@@ -1,42 +1,59 @@
 package ch.imlee.maturarbeit.bluetooth;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.app.Activity;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
+
 
 /**
  * Created by Lukas on 09.04.2015.
  */
-public class Util {
-    public BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-    public Activity ta = new Activity();
+public class Util extends Activity{
+    public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+    public TestActivity testActivity = new TestActivity();
+
+
+
     public void initBluetooth() {
 
+
+
         if (ba == null) {
-            new AlertDialog.Builder(new TestActivity())
+            System.exit(1);
+            new AlertDialog.Builder(new Activity())
                     .setTitle("Error")
                     .setMessage("Your Device seems to not have Bluetooth")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                             return;
+                            return;
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
-        enableBluetooth();
 
+
+        enableBluetooth();
+        ba.setName(TestActivity.usernameEditText.getText().toString());
     }
 
-    public void enableBluetooth(){
-        if(!ba.isEnabled()){
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            ta.startActivity(enableBtIntent);
+
+    public void enableBluetooth() {
+
+        if (!ba.isEnabled()) {
+            ba.enable();
         }
+    }
+
+    public void discoverDevices(){
+        ba.startDiscovery();
+    }
+    // TODO when game starts, disable discovery
+    public void disableDiscovery(){
+        ba.cancelDiscovery();
     }
 
 }

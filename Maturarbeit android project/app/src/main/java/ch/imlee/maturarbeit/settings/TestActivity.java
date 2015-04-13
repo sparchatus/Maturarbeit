@@ -18,14 +18,16 @@ import ch.imlee.maturarbeit.bluetooth.Host;
 public class TestActivity extends ActionBarActivity {
     private static boolean buttonPressed = false;
 
+
+
     ProgressBar progressBar;
     ListView listView;
-    TextView modeDependantText;
+    public TextView modeDependantText;
 
     Button hostButton;
     Button joinButton;
     TextView usernameTextView;
-    EditText usernameEditText;
+    public static EditText usernameEditText;
 
 
 
@@ -73,7 +75,6 @@ public class TestActivity extends ActionBarActivity {
 
 
         modeDependantText.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
         hostButton.setVisibility(View.INVISIBLE);
@@ -83,6 +84,7 @@ public class TestActivity extends ActionBarActivity {
 
         if(view.getId()==R.id.hostButton){
             //host
+            listView.setVisibility(View.VISIBLE);
             modeDependantText.setText("waiting for Players");
             new Host();
 

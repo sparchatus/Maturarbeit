@@ -37,7 +37,6 @@ public class Util extends Activity{
 
 
         enableBluetooth();
-        ba.setName(TestActivity.usernameEditText.getText().toString());
     }
 
 

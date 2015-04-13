@@ -21,8 +21,8 @@ public class TestActivity extends ActionBarActivity {
 
 
     ProgressBar progressBar;
-    ListView listView;
-    public TextView modeDependantText;
+    public static ListView listView;
+    TextView modeDependantText;
 
     Button hostButton;
     Button joinButton;
@@ -81,6 +81,8 @@ public class TestActivity extends ActionBarActivity {
         joinButton.setVisibility(View.INVISIBLE);
         usernameTextView.setVisibility(View.INVISIBLE);
         usernameEditText.setVisibility(View.INVISIBLE);
+
+
 
         if(view.getId()==R.id.hostButton){
             //host

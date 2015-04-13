@@ -22,14 +22,12 @@ public class Host{
     Util util = new Util();
     public Host(){
         util.initBluetooth();
-        alterName();
+        util.ba.setName(TestActivity.usernameEditText.getText().toString()+"_HOST");
+
         util.discoverDevices();
+
         // wait until discovered
         // TODO when game starts, disable discovery
 
-    }
-
-    private void alterName(){
-        util.ba.setName(util.ba.getName()+"_HOST");
     }
 }

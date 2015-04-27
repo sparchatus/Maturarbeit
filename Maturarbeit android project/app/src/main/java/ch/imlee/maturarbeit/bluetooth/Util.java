@@ -22,20 +22,18 @@ public class Util extends Activity{
 
 
         if (ba == null) {
-            System.exit(1);
+
             new AlertDialog.Builder(new Activity())
                     .setTitle("Error")
                     .setMessage("Your Device seems to not have Bluetooth")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            return;
+                            System.exit(1);
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
-
-
         enableBluetooth();
     }
 
@@ -51,7 +49,7 @@ public class Util extends Activity{
         ba.startDiscovery();
     }
     // TODO when game starts, disable discovery
-    public void disableDiscovery(){
+    public void cancelDiscovery(){
         ba.cancelDiscovery();
     }
 

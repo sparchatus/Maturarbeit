@@ -15,11 +15,14 @@ import java.util.ArrayList;
  */
 public class Client extends BroadcastReceiver{
     ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
-
+    TestActivity ta = new TestActivity();
     Util util = new Util();
     public Client(){
         util.initBluetooth();
-
+        if(TestActivity.usernameEditText.getText().toString().endsWith("_HOST")){
+            Toast.makeText(ta, "Invalid Username", Toast.LENGTH_LONG);
+            ta.onBackPressed();
+        }
         util.ba.setName(TestActivity.usernameEditText.getText().toString());
         util.discoverDevices();
         findDevices();
@@ -45,7 +48,7 @@ public class Client extends BroadcastReceiver{
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name and address to an array adapter to show in a Toast
+                // Add the name to an array adapter to show in a Toast
                 if(device.getName().endsWith("_HOST")){
                     devices.add(device);
                     Toast.makeText(context, "found Device: " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_LONG).show();

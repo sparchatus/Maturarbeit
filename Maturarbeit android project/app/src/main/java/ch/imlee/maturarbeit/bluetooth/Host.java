@@ -22,7 +22,7 @@ public class Host{
     Util util = new Util();
     public Host(){
         util.initBluetooth();
-        util.ba.setName(TestActivity.usernameEditText.getText().toString()+"_HOST");
+        Util.ba.setName(TestActivity.usernameEditText.getText().toString() + "_HOST");
 
         util.discoverDevices();
 

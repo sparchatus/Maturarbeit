@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.bluetooth.BluetoothSocket;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
 
@@ -13,10 +15,6 @@ import ch.imlee.maturarbeit.settings.TestActivity;
  */
 public class Util extends Activity{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-    public TestActivity testActivity = new TestActivity();
-
-
-
     public void initBluetooth() {
 
 
@@ -35,6 +33,7 @@ public class Util extends Activity{
                     .show();
         }
         enableBluetooth();
+
     }
 
 

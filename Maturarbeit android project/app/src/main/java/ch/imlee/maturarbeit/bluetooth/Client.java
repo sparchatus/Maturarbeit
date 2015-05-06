@@ -1,79 +1,65 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
+import ch.imlee.maturarbeit.R;
 
-import android.content.Context;
-import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.bluetooth.BluetoothDevice;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.IntentFilter;
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Intent;
 
-import java.util.ArrayList;
 
 /**
  * Created by Lukas on 08.04.2015.
  */
-public class Client extends BroadcastReceiver{
-    ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
+public class Client{
+   // ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
     TestActivity ta = new TestActivity();
     Util util = new Util();
+    ArrayAdapter<BluetoothDevice> devices;
 
 
     public Client(){
+
         util.initBluetooth();
         if(TestActivity.usernameEditText.getText().toString().endsWith("_HOST")){
 
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                public void run() {
-                    Toast.makeText(ta.getBaseContext().getApplicationContext(), "Invalid Username", Toast.LENGTH_LONG).show();
-                }
-            });
-            //onDestroy();
+
+                    Toast.makeText(ta.getApplicationContext(), "Invalid Username", Toast.LENGTH_LONG).show();
+
         }
-        util.ba.setName(TestActivity.usernameEditText.getText().toString());
+        Util.ba.setName(TestActivity.usernameEditText.getText().toString());
+
         util.discoverDevices();
         findDevices();
     }
 
+
     private void findDevices(){
-        BroadcastReceiver receiver = new SingBroadcastReceiver();
+        devices = new ArrayAdapter<BluetoothDevice>(ta, R.layout.activity_test/*R.layout.adapter_list*/);
+        Util.ba.startDiscovery();
+
+
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-       // ta.registerReceiver(receiver, filter);
-//TODO fix dat shit
+        ta.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
 
-    }
-
-    private class SingBroadcastReceiver extends BroadcastReceiver {
-
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver(){
 
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-
+                // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name to an array adapter to show in a Toast
-                if(device.getName().endsWith("_HOST")){
-                    foundDevices.add(device);
-                    Toast.makeText(context, "found Device: " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_LONG).show();
-                    refreshListView();
-                }
-
+                // Add the name and address to an array adapter to show in a ListView
+                devices.add(device);
             }
         }
-        public void refreshListView(){
+    };
 
-        }
-    }
-    public void onDestroy(){
-        ta.onBackPressed();
-
-    }
 }

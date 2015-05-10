@@ -22,7 +22,7 @@ public class TestActivity extends ActionBarActivity {
 
     ProgressBar progressBar;
     public static ListView listView;
-    TextView modeDependantText;
+    public static TextView modeDependantText;
 
     Button hostButton;
     Button joinButton;

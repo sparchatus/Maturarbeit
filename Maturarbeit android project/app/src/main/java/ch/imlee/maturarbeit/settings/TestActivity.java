@@ -28,9 +28,7 @@ public class TestActivity extends ActionBarActivity {
     Button joinButton;
     TextView usernameTextView;
     public static EditText usernameEditText;
-
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +92,7 @@ public class TestActivity extends ActionBarActivity {
         else {
             //client
             modeDependantText.setText("searching for hosts");
-            new Client();
+            new Client(getApplicationContext());
         }
     }
 

@@ -21,21 +21,14 @@ import java.util.ArrayList;
 /**
  * Created by Lukas on 08.04.2015.
  */
-public class Client extends Activity{
+public class Client{
    // ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
-    TestActivity ta = new TestActivity();
+   Context ta;
     Util util = new Util();
     ArrayList<BluetoothDevice> devices;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-    }
-
-
-    public Client(){
-
+    public Client(Context c){
+        ta = c;
         util.initBluetooth();
         if(TestActivity.usernameEditText.getText().toString().endsWith("_HOST")){
 
@@ -63,8 +56,13 @@ public class Client extends Activity{
         System.out.println(3);
      //   System.exit(0);
 
-        ta.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-    }
+        try {
+            ta.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        }
 
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {

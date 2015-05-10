@@ -28,7 +28,7 @@ public class TestActivity extends ActionBarActivity {
     Button joinButton;
     TextView usernameTextView;
     public static EditText usernameEditText;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

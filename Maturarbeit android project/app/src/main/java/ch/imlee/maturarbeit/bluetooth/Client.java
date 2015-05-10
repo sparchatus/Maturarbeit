@@ -1,20 +1,12 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
-import ch.imlee.maturarbeit.R;
-
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCallback;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.Intent;
-import android.os.Bundle;
-
 import java.util.ArrayList;
 
 
@@ -23,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Client{
    // ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
-   Context ta;
+    Context ta;
     Util util = new Util();
     ArrayList<BluetoothDevice> devices;
 
@@ -55,13 +47,7 @@ public class Client{
         if (filter == null) System.out.println(2);
         System.out.println(3);
      //   System.exit(0);
-
-        try {
-            ta.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        ta.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
         }
 
 

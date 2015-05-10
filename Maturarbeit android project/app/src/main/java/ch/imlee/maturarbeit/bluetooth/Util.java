@@ -13,7 +13,7 @@ import ch.imlee.maturarbeit.settings.TestActivity;
 /**
  * Created by Lukas on 09.04.2015.
  */
-public class Util extends Activity{
+public class Util{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
     public void initBluetooth() {
 

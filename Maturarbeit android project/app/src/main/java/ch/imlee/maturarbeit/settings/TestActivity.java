@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.settings;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -14,25 +15,32 @@ import android.widget.TextView;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 
-public class TestActivity extends ActionBarActivity {
+public class TestActivity extends AppCompatActivity {
     private static boolean buttonPressed = false;
 
 
 
-    ProgressBar progressBar;
+
+    public static ProgressBar progressBar;
     public static ListView listView;
     public static TextView modeDependantText;
 
-    Button hostButton;
-    Button joinButton;
-    TextView usernameTextView;
+    public static Button hostButton;
+    public static Button joinButton;
+    public static TextView usernameTextView;
     public static EditText usernameEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
     }
 
 
@@ -60,7 +68,7 @@ public class TestActivity extends ActionBarActivity {
 
     public void onClick(View view) {
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
-        listView = (ListView) this.findViewById(R.id.listView);
+        listView = (ListView) this.findViewById(R.id.list);
         modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
 
         hostButton = (Button) this.findViewById(R.id.hostButton);
@@ -80,13 +88,14 @@ public class TestActivity extends ActionBarActivity {
         usernameTextView.setVisibility(View.INVISIBLE);
         usernameEditText.setVisibility(View.INVISIBLE);
 
-
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(usernameEditText.getWindowToken(), 0);
 
         if(view.getId()==R.id.hostButton){
             //host
             listView.setVisibility(View.VISIBLE);
             modeDependantText.setText("waiting for Players");
-            new Host();
+            new Host(getApplicationContext());
 
         }
         else {
@@ -96,9 +105,12 @@ public class TestActivity extends ActionBarActivity {
         }
     }
 
+
     public void onBackPressed(){
 
         if(buttonPressed){
+            Util.ba.cancelDiscovery();
+
             hostButton.setVisibility(View.VISIBLE);
             joinButton.setVisibility(View.VISIBLE);
             usernameTextView.setVisibility(View.VISIBLE);

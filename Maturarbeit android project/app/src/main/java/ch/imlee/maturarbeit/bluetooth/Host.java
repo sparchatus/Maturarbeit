@@ -18,16 +18,14 @@ import ch.imlee.maturarbeit.settings.TestActivity;
  * Created by Lukas on 08.04.2015.
  */
 public class Host{
-    TestActivity testActivity = new TestActivity();
     Util util = new Util();
-    public Host(){
-        util.initBluetooth();
+    public Host(Context c){
+        util.initBluetooth(c);
         Util.ba.setName(TestActivity.usernameEditText.getText().toString() + "_HOST");
-
-        util.discoverDevices();
-
-        // wait until discovered
-        // TODO when game starts, disable discovery
-
+        Intent discoverableIntent = new
+                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        c.startActivity(discoverableIntent);
     }
 }

@@ -1,13 +1,8 @@
 package ch.imlee.maturarbeit.bluetooth;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.bluetooth.BluetoothSocket;
-
-import ch.imlee.maturarbeit.settings.TestActivity;
+import android.content.Context;
 
 
 /**
@@ -15,11 +10,18 @@ import ch.imlee.maturarbeit.settings.TestActivity;
  */
 public class Util{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-    public void initBluetooth() {
-
+    Context c;
+    public void initBluetooth(Context context) {
+    c = context;
 
 
         if (ba == null) {
+<<<<<<< HEAD
+            //TODO: Make it work
+        }
+            /*
+=======
+>>>>>>> origin/master
             new AlertDialog.Builder(new Activity())
                     .setTitle("Error")
                     .setMessage("Your Device seems to not have Bluetooth")
@@ -30,6 +32,13 @@ public class Util{
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
+<<<<<<< HEAD
+
+        }*/
+        else {
+            enableBluetooth();
+=======
+>>>>>>> origin/master
         }
         enableBluetooth();
 
@@ -40,12 +49,11 @@ public class Util{
 
         if (!ba.isEnabled()) {
             ba.enable();
+
         }
     }
 
-    public void discoverDevices(){
-        ba.startDiscovery();
-    }
+
     // TODO when game starts, disable discovery
     public void cancelDiscovery(){
         ba.cancelDiscovery();

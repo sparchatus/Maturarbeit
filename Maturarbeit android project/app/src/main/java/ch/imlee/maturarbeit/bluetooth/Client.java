@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.bluetooth;
 import ch.imlee.maturarbeit.settings.TestActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +17,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 import java.util.ArrayList;
-import java.lang.reflect.Method;
+import java.util.UUID;
 
 
 public class Client{
@@ -25,6 +26,7 @@ public class Client{
     ArrayList<BluetoothDevice> devices;
     ArrayList<String> deviceNames;
     ArrayAdapter<String> adapter;
+    BluetoothSocket socket;
 
     public Client(Context context){
         c = context;
@@ -44,8 +46,7 @@ public class Client{
 
         }
         Util.ba.setName(TestActivity.usernameEditText.getText().toString());
-        devices.clear();
-        deviceNames.clear();
+
 
 
 
@@ -64,8 +65,9 @@ public class Client{
         TestActivity.listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                c.unregisterReceiver(mReceiver);
                 if(Util.ba.isDiscovering()){
-                    c.unregisterReceiver(mReceiver);
+
                     Util.ba.cancelDiscovery();
                 }
                 TestActivity.progressBar.setVisibility(View.VISIBLE);
@@ -115,22 +117,24 @@ public class Client{
     };
     private void connectToDevice(BluetoothDevice btDevice){
         if(btDevice.getBondState()!=BluetoothDevice.BOND_BONDED){
-            try {
-                Method method = btDevice.getClass().getMethod("createBond", (Class[]) null);
-                method.invoke(btDevice, (Object[]) null);
-            } catch (Exception e) {
-               e.printStackTrace();
+            //socket = null;
+            try{
+                socket = btDevice.createRfcommSocketToServiceRecord(UUID.fromString(Util.generateUUID()));
+                // the generated UUID contains the version name and code, so only players with the same game version can play together.
+            } catch (Exception e){
+                e.printStackTrace();
             }
-        Toast.makeText(c, "connecting to " + btDevice.getName(), Toast.LENGTH_SHORT).show();
-        }
-        while(btDevice.getBondState()==BluetoothDevice.BOND_BONDING){
-            try {
-                Thread.sleep(50);
-            } catch(Exception e){
-                // Doesn't matter, continue
+            while(true){
+               try {
+                   socket.connect();
+                   break;
+               } catch (Exception e){
+                   Toast.makeText(c, "connection failed, trying again...", Toast.LENGTH_SHORT).show();
+                   //try again
+               }
             }
         }
-        Toast.makeText(c, "connected to " + btDevice.getName(), Toast.LENGTH_SHORT);
+        Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
     }
 
 }

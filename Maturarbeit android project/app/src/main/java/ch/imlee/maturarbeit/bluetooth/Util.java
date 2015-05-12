@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 
 
 /**
@@ -9,7 +10,7 @@ import android.content.Context;
  */
 public class Util{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
-    Context c;
+    static Context c;
     public void initBluetooth(Context context) {
     c = context;
 
@@ -35,6 +36,15 @@ public class Util{
         }
     }
 
+    public static String generateUUID(){
+        try {
+            return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode + ' ' +
+                    c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionName + ' ' + c.getPackageName();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void enableBluetooth() {
 

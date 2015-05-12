@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.content.Context;
 
 

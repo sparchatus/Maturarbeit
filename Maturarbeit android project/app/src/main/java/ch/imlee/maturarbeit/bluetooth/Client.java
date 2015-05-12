@@ -1,12 +1,8 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
-import ch.imlee.maturarbeit.R;
-
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGattCallback;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -14,9 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.Intent;
-import android.os.Bundle;
-
-import junit.framework.Test;
 
 import java.util.ArrayList;
 
@@ -69,7 +62,7 @@ public class Client{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
-        c.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
 
         TestActivity.modeDependantText.setText("hi");
 
@@ -81,7 +74,6 @@ public class Client{
         @Override
         public void onReceive(Context context, Intent intent){
             String action = intent.getAction();
-            Toast.makeText(c, "onReceive", Toast.LENGTH_SHORT).show();
 
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
@@ -89,7 +81,7 @@ public class Client{
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(device.getName().endsWith("_HOST")){
                         devices.add(device);
-                        deviceNames.add(device.getName().substring(0,device.getName().length()-6));
+                        deviceNames.add(device.getName().substring(0,device.getName().length()-5));
                         adapter.notifyDataSetChanged();
                         Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size()-1), Toast.LENGTH_SHORT).show();
                 }

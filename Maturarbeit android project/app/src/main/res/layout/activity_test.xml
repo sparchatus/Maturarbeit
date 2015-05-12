@@ -62,13 +62,17 @@
         android:visibility="invisible"
         android:layout_marginTop="10dp"
         android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false" />
+        android:layout_alignParentRight="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="false" />
+
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/modeDependantText"
         android:layout_marginTop="10dp"
         android:visibility="invisible" />
@@ -77,7 +81,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="This text should display the state"
         android:id="@+id/modeDependantText"
         android:layout_below="@+id/progressBar"
         android:layout_centerHorizontal="true"

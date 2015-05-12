@@ -69,6 +69,7 @@ public class TestActivity extends AppCompatActivity {
     public void onClick(View view) {
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         listView = (ListView) this.findViewById(R.id.listView);
+
         modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
 
         hostButton = (Button) this.findViewById(R.id.hostButton);
@@ -82,6 +83,7 @@ public class TestActivity extends AppCompatActivity {
 
         modeDependantText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.VISIBLE);
 
         hostButton.setVisibility(View.INVISIBLE);
         joinButton.setVisibility(View.INVISIBLE);

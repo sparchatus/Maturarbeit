@@ -3,23 +3,23 @@ package ch.imlee.maturarbeit.bluetooth;
 import ch.imlee.maturarbeit.settings.TestActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Color;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.Intent;
+import android.widget.AdapterView.OnItemClickListener;
+
 
 import java.util.ArrayList;
+import java.lang.reflect.Method;
 
 
-/**
- * Created by Lukas on 08.04.2015.
- */
 public class Client{
-   // ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
-    Context ta;
     Context c;
     Util util = new Util();
     ArrayList<BluetoothDevice> devices;
@@ -44,6 +44,9 @@ public class Client{
 
         }
         Util.ba.setName(TestActivity.usernameEditText.getText().toString());
+        devices.clear();
+        deviceNames.clear();
+
 
 
         findDevices();
@@ -51,10 +54,25 @@ public class Client{
 
 
     private void findDevices() {
-        devices = new ArrayList<BluetoothDevice>();
-        deviceNames = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(c, android.R.layout.simple_list_item_1, deviceNames);
+        devices = new ArrayList<>();
+        deviceNames = new ArrayList<>();
+        adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         TestActivity.listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+
+        TestActivity.listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(Util.ba.isDiscovering()){
+                    c.unregisterReceiver(mReceiver);
+                    Util.ba.cancelDiscovery();
+                }
+                TestActivity.progressBar.setVisibility(View.VISIBLE);
+                TestActivity.modeDependantText.setText("connecting to " + deviceNames.get(position));
+                connectToDevice(devices.get(position));
+            }
+        });
 
 
         IntentFilter filter = new IntentFilter();
@@ -64,7 +82,7 @@ public class Client{
 
         c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
 
-        TestActivity.modeDependantText.setText("hi");
+        TestActivity.listView.setBackgroundColor(Color.DKGRAY);
 
         Util.ba.startDiscovery();
         }
@@ -80,17 +98,39 @@ public class Client{
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(device.getName().endsWith("_HOST")){
+                    if(!devices.contains(device)) {
                         devices.add(device);
-                        deviceNames.add(device.getName().substring(0,device.getName().length()-5));
+                        deviceNames.add(device.getName().substring(0, device.getName().length() - 5));
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size()-1), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size() - 1), Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
-                TestActivity.modeDependantText.setText("discovery started.");
+                TestActivity.modeDependantText.setText("discovering devices...");
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
-                TestActivity.modeDependantText.setText("discovery finished.");
+                TestActivity.modeDependantText.setText("discovery finished. " + devices.size() + " devices found.");
+                TestActivity.progressBar.setVisibility(View.GONE);
             }
         }
     };
+    private void connectToDevice(BluetoothDevice btDevice){
+        if(btDevice.getBondState()!=BluetoothDevice.BOND_BONDED){
+            try {
+                Method method = btDevice.getClass().getMethod("createBond", (Class[]) null);
+                method.invoke(btDevice, (Object[]) null);
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+        Toast.makeText(c, "connecting to " + btDevice.getName(), Toast.LENGTH_SHORT).show();
+        }
+        while(btDevice.getBondState()==BluetoothDevice.BOND_BONDING){
+            try {
+                Thread.sleep(50);
+            } catch(Exception e){
+                // Doesn't matter, continue
+            }
+        }
+        Toast.makeText(c, "connected to " + btDevice.getName(), Toast.LENGTH_SHORT);
+    }
 
 }

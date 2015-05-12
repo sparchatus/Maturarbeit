@@ -16,12 +16,9 @@ public class Util{
 
 
         if (ba == null) {
-<<<<<<< HEAD
             //TODO: Make it work
         }
             /*
-=======
->>>>>>> origin/master
             new AlertDialog.Builder(new Activity())
                     .setTitle("Error")
                     .setMessage("Your Device seems to not have Bluetooth")
@@ -32,16 +29,11 @@ public class Util{
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-<<<<<<< HEAD
 
         }*/
         else {
             enableBluetooth();
-=======
->>>>>>> origin/master
         }
-        enableBluetooth();
-
     }
 
 

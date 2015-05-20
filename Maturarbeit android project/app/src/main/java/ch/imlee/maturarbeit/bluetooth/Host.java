@@ -71,6 +71,7 @@ public class Host implements Runnable{
                 break;
             }
             if(socket != null){
+                Toast.makeText(c, "connected to: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
                 cancelAccept(); //TODO: for multiple connections, change this
             }
 

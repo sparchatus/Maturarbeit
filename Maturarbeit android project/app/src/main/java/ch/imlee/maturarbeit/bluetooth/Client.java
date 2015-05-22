@@ -65,7 +65,11 @@ public class Client{
         TestActivity.listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                c.unregisterReceiver(mReceiver);
+                try {
+                    c.unregisterReceiver(mReceiver);
+                } catch(Exception e){
+                    //ignore, probably already unregistered
+                }
                 if(Util.ba.isDiscovering()){
 
                     Util.ba.cancelDiscovery();

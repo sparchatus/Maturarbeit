@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 import java.util.ArrayList;
+import java.lang.reflect.Method;
 
 
 public class Client{
@@ -122,8 +123,10 @@ public class Client{
     private void connectToDevice(BluetoothDevice btDevice){
         //socket = null;
         try{
-            Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
+            Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+            socket = (BluetoothSocket) m.invoke(btDevice, 1);
+            //socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
+
             // the generated UUID contains the version name and code, so only players with the same game version can play together.
             // Todo: doesn't work anymore, workaround needed.
         } catch (Exception e){

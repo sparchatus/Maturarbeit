@@ -133,11 +133,12 @@ public class Client{
             e.printStackTrace();
             System.exit(1);
         }
-        while(true) {
+        //while(true) {
             System.out.print("\n\nattempting to connect...\n\n");
             try {
                 socket.connect();
-                break;
+                System.out.println(socket.getRemoteDevice().getBondState() + ' ' + Util.ba.getState());
+                //break;
                 //    Toast.makeText(c, "connection successful", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -145,13 +146,13 @@ public class Client{
                 //try again
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             } catch(Exception e){
                 e.printStackTrace();
                 System.exit(1);
             }
             //if(Util.ba.getState() == BluetoothAdapter.STATE_CONNECTED) break;
-        }
+        //}
         try {
             Util.inputStream = socket.getInputStream();
             Util.outputStream = socket.getOutputStream();

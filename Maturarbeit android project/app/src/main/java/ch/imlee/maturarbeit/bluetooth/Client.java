@@ -17,7 +17,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class Client{
@@ -116,29 +115,50 @@ public class Client{
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
                 TestActivity.modeDependantText.setText("discovery finished. " + devices.size() + " devices found.");
                 TestActivity.progressBar.setVisibility(View.GONE);
+
             }
         }
     };
     private void connectToDevice(BluetoothDevice btDevice){
-        if(btDevice.getBondState()!=BluetoothDevice.BOND_BONDED){
-            //socket = null;
-            try{
-                socket = btDevice.createRfcommSocketToServiceRecord(UUID.fromString(Util.generateUUID()));
-                // the generated UUID contains the version name and code, so only players with the same game version can play together.
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            while(true){
-               try {
-                   socket.connect();
-                   break;
-               } catch (Exception e){
-                   Toast.makeText(c, "connection failed, trying again...", Toast.LENGTH_SHORT).show();
-                   //try again
-               }
-            }
+        //socket = null;
+        try{
+            Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+            socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
+            // the generated UUID contains the version name and code, so only players with the same game version can play together.
+            // Todo: doesn't work anymore, workaround needed.
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
         }
-        Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
+        while(true) {
+            System.out.print("\n\nattempting to connect...\n\n");
+            try {
+                socket.connect();
+                break;
+                //    Toast.makeText(c, "connection successful", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
+                //try again
+            }
+            try {
+                Thread.sleep(10000);
+            } catch(Exception e){
+                e.printStackTrace();
+                System.exit(1);
+            }
+            //if(Util.ba.getState() == BluetoothAdapter.STATE_CONNECTED) break;
+        }
+        try {
+            Util.inputStream = socket.getInputStream();
+            Util.outputStream = socket.getOutputStream();
+        }catch(Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        Util.sendString("hallo welt");
+
+    //    Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
     }
 
 }

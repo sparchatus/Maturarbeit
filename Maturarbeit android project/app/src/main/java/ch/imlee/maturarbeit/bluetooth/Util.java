@@ -1,8 +1,14 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.pm.PackageInfo;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 
 /**
@@ -11,6 +17,8 @@ import android.content.pm.PackageInfo;
 public class Util{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
     static Context c;
+    public static InputStream inputStream;
+    public static OutputStream outputStream;
     public void initBluetooth(Context context) {
     c = context;
 
@@ -36,7 +44,8 @@ public class Util{
         }
     }
 
-    public static String generateUUID(){
+    public static UUID generateUUID(){
+        /*
         try {
             return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode + ' ' +
                     c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionName + ' ' + c.getPackageName();
@@ -44,6 +53,8 @@ public class Util{
             e.printStackTrace();
         }
         return null;
+        */
+        return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
     public void enableBluetooth() {
@@ -55,9 +66,29 @@ public class Util{
     }
 
 
-    // TODO when game starts, disable discovery
-    public void cancelDiscovery(){
-        ba.cancelDiscovery();
+
+
+    public static void sendString(String text){
+        try {
+            outputStream.write(text.getBytes());
+            outputStream.flush();
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+
+    }
+    public static String receiveString(){
+        String text = "";
+        try {
+            for(int i = inputStream.available(); i > 0; --i) {
+                text = text + inputStream.read();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return text;
     }
 
 }

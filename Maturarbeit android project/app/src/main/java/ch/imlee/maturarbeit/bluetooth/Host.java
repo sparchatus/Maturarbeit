@@ -6,13 +6,11 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.view.KeyEvent;
+import android.os.Looper;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-import android.app.Activity;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import ch.imlee.maturarbeit.settings.TestActivity;
 
@@ -23,6 +21,7 @@ public class Host implements Runnable{
     ArrayList<BluetoothDevice> devices = new ArrayList<>();
     ArrayAdapter<BluetoothDevice> adapter;
     BluetoothServerSocket serverSocket;
+    BluetoothServerSocket tempServerSocket;
     BluetoothSocket socket;
     Thread acceptThread = new Thread(this, "acceptThread");
 
@@ -36,43 +35,66 @@ public class Host implements Runnable{
         discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
         c.startActivity(discoverableIntent);
-        try{
-            Thread.sleep(3000);
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-        if(Util.ba.getState() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Toast.makeText(c, "Device must be discoverable", Toast.LENGTH_SHORT).show();
-            try{
-                Thread.sleep(1500);
-            } catch(Exception e){
-                e.printStackTrace();
-            }
 
-        }
 
         TestActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         try{
-            serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(TestActivity.usernameEditText.getText().toString(), UUID.fromString(Util.generateUUID()));
+            tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(TestActivity.usernameEditText.getText().toString(), Util.generateUUID());
         } catch(Exception e){
             e.printStackTrace();
+            System.exit(1);
         }
+        serverSocket = tempServerSocket;
         acceptThread.start();
 
 
     }
     public void run(){
+        Looper.prepare();
+        Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
         while(true){
             try {
                 socket = serverSocket.accept();
             } catch (Exception e){
-                break;
+                e.printStackTrace();
+                System.exit(1);
             }
-            if(socket != null){
-                Toast.makeText(c, "connected to: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
-                cancelAccept(); //TODO: for multiple connections, change this
+            if(socket != null) {
+                synchronized (Host.this) {
+
+
+                    Toast.makeText(c, "connected to: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
+                    //TestActivity.modeDependantText.setText("incoming connection: " + socket.getRemoteDevice().getName());
+                    cancelAccept(); //TODO: for multiple connections, change this
+                    while (socket.getRemoteDevice().getBondState() != BluetoothDevice.BOND_BONDED) {
+                        Toast.makeText(c, "not yet connected", Toast.LENGTH_SHORT).show();
+                        try {
+                            Thread.sleep(1500);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.exit(1);
+                        }
+                    }
+                    try {
+                        Util.inputStream = socket.getInputStream();
+                        Util.outputStream = socket.getOutputStream();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                    try {
+                        while (Util.inputStream.available() <= 0) {
+                        }
+                    } catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                    Toast.makeText(c, Util.receiveString(), Toast.LENGTH_SHORT).show();
+
+                    break;
+                }
             }
 
         }
@@ -81,7 +103,8 @@ public class Host implements Runnable{
         try{
             serverSocket.close();
         } catch (Exception e){
-
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 }

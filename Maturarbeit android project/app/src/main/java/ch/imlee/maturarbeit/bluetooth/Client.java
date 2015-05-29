@@ -20,14 +20,17 @@ import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 
-public class Client{
+public class Client implements Runnable{
     Context c;
     Util util = new Util();
     ArrayList<BluetoothDevice> devices;
     ArrayList<String> deviceNames;
     ArrayAdapter<String> adapter;
     BluetoothSocket socket;
+    BluetoothDevice device;
     String deviceName;
+    Thread connectThread = new Thread(this, "connectThread");
+    boolean discoveryCancelled = false;
 
     public Client(Context context){
         c = context;
@@ -53,7 +56,44 @@ public class Client{
 
         findDevices();
     }
+    public void run(){
+        try{
+            //Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+            //socket = (BluetoothSocket) m.invoke(btDevice, 1);
+            socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
 
+            // the generated UUID contains the version name and code, so only players with the same game version can play together.
+            // Todo: doesn't work anymore, workaround needed.
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("...");
+        System.out.println("attempting to connect...");
+        System.out.println("...");
+        boolean connected = false;
+        while(!connected)
+        try {
+            socket.connect();
+            connected = true;
+            //break;
+            //    Toast.makeText(c, "connection successful", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            return;
+            //try again
+        }
+
+        deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
+
+        System.out.println("...");
+        System.out.println("connection successful");
+        System.out.println("...");
+
+        c.sendBroadcast(new Intent("connectionFinished"));
+    }
 
     private void findDevices() {
         devices = new ArrayList<>();
@@ -66,11 +106,7 @@ public class Client{
         TestActivity.listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    c.unregisterReceiver(mReceiver);
-                } catch (Exception e) {
-                    //ignore, probably already unregistered
-                }
+
                 if (Util.ba.isDiscovering()) {
 
                     Util.ba.cancelDiscovery();
@@ -86,6 +122,7 @@ public class Client{
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction("connectionFinished");
 
         c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
 
@@ -114,47 +151,33 @@ public class Client{
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
                 TestActivity.modeDependantText.setText("discovering devices...");
-            } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
-                TestActivity.modeDependantText.setText("discovery finished. " + devices.size() + " devices found.");
-                TestActivity.progressBar.setVisibility(View.GONE);
-
+            } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                if(!discoveryCancelled) {
+                    TestActivity.modeDependantText.setText("discovery finished. " + devices.size() + " devices found.");
+                    TestActivity.progressBar.setVisibility(View.GONE);
+                }
+            } else if("connectionFinished".equals(action)){
+                manageConnection();
             }
         }
     };
     private void connectToDevice(BluetoothDevice btDevice){
-
+        device = btDevice;
+        discoveryCancelled = true;
         Util.ba.cancelDiscovery();
+        TestActivity.modeDependantText.setText("connecting...");
 
         socket = null;
-        try{
-            //Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            //socket = (BluetoothSocket) m.invoke(btDevice, 1);
-            socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
+        connectThread.start();
 
-            // the generated UUID contains the version name and code, so only players with the same game version can play together.
-            // Todo: doesn't work anymore, workaround needed.
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
+
+    }
+    private void manageConnection(){
+        try {
+            c.unregisterReceiver(mReceiver);
+        } catch (Exception e) {
+            //ignore, probably already unregistered
         }
-
-            System.out.println("");
-            System.out.println("attempting to connect...");
-            System.out.println("");
-            try {
-                socket.connect();
-                System.out.println(socket.getRemoteDevice().getBondState());
-                System.out.println(Util.ba.getState());
-                //break;
-                //    Toast.makeText(c, "connection successful", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-                return;
-                //try again
-            }
-
-            deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
         try {
             Util.inputStream = socket.getInputStream();
             Util.outputStream = socket.getOutputStream();
@@ -164,7 +187,7 @@ public class Client{
         }
         Util.sendString("hello " + deviceName + ", I'm " + Util.ba.getName());
 
-        Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
+        Toast.makeText(c, "connected to " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_SHORT).show();
     }
 
 }

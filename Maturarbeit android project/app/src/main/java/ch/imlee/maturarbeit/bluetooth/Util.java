@@ -83,7 +83,7 @@ public class Util{
         String text = "";
         try {
             for(int i = inputStream.available(); i > 0; --i) {
-                text = text + inputStream.read();
+                text = text + (char)inputStream.read();
             }
         } catch (Exception e){
             e.printStackTrace();

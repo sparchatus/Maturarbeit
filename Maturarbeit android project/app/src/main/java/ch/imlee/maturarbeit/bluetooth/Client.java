@@ -121,11 +121,13 @@ public class Client{
         }
     };
     private void connectToDevice(BluetoothDevice btDevice){
+
+        Util.ba.cancelDiscovery();
         //socket = null;
         try{
-            Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            socket = (BluetoothSocket) m.invoke(btDevice, 1);
-            //socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
+            //Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+            //socket = (BluetoothSocket) m.invoke(btDevice, 1);
+            socket = btDevice.createRfcommSocketToServiceRecord(Util.generateUUID());
 
             // the generated UUID contains the version name and code, so only players with the same game version can play together.
             // Todo: doesn't work anymore, workaround needed.
@@ -134,15 +136,19 @@ public class Client{
             System.exit(1);
         }
         //while(true) {
-            System.out.print("\n\nattempting to connect...\n\n");
+            System.out.println("");
+            System.out.println("attempting to connect...");
+            System.out.println("");
             try {
                 socket.connect();
-                System.out.println(socket.getRemoteDevice().getBondState() + ' ' + Util.ba.getState());
+                System.out.println(socket.getRemoteDevice().getBondState());
+                System.out.println(Util.ba.getState());
                 //break;
                 //    Toast.makeText(c, "connection successful", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                e.printStackTrace();
                 Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                return;
                 //try again
             }
             try {

@@ -87,7 +87,7 @@ public class Host implements Runnable {
         c.registerReceiver(this.threadFinishedReceiver, filter);
 
         acceptThread.start();
-        
+
     }
 
     public void manageConnection() {

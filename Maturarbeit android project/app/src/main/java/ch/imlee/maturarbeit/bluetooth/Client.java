@@ -27,6 +27,7 @@ public class Client{
     ArrayList<String> deviceNames;
     ArrayAdapter<String> adapter;
     BluetoothSocket socket;
+    String deviceName;
 
     public Client(Context context){
         c = context;
@@ -67,10 +68,10 @@ public class Client{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     c.unregisterReceiver(mReceiver);
-                } catch(Exception e){
+                } catch (Exception e) {
                     //ignore, probably already unregistered
                 }
-                if(Util.ba.isDiscovering()){
+                if (Util.ba.isDiscovering()) {
 
                     Util.ba.cancelDiscovery();
                 }
@@ -123,7 +124,8 @@ public class Client{
     private void connectToDevice(BluetoothDevice btDevice){
 
         Util.ba.cancelDiscovery();
-        //socket = null;
+
+        socket = null;
         try{
             //Method m = btDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
             //socket = (BluetoothSocket) m.invoke(btDevice, 1);
@@ -135,7 +137,7 @@ public class Client{
             e.printStackTrace();
             System.exit(1);
         }
-        //while(true) {
+
             System.out.println("");
             System.out.println("attempting to connect...");
             System.out.println("");
@@ -151,14 +153,8 @@ public class Client{
                 return;
                 //try again
             }
-            try {
-                Thread.sleep(5000);
-            } catch(Exception e){
-                e.printStackTrace();
-                System.exit(1);
-            }
-            //if(Util.ba.getState() == BluetoothAdapter.STATE_CONNECTED) break;
-        //}
+
+            deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
         try {
             Util.inputStream = socket.getInputStream();
             Util.outputStream = socket.getOutputStream();
@@ -166,9 +162,9 @@ public class Client{
             e.printStackTrace();
             System.exit(1);
         }
-        Util.sendString("hello " + socket.getRemoteDevice().getName() + ", I'm " + Util.ba.getName());
+        Util.sendString("hello " + deviceName + ", I'm " + Util.ba.getName());
 
-    //    Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
+        Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
     }
 
 }

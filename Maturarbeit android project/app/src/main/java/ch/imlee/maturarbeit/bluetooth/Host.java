@@ -87,14 +87,7 @@ public class Host implements Runnable {
         c.registerReceiver(this.threadFinishedReceiver, filter);
 
         acceptThread.start();
-        try{
-            acceptThread.join();
-        } catch(Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        Toast.makeText(c, "connected to: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
-        manageConnection();
+        
     }
 
     public void manageConnection() {

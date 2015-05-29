@@ -166,7 +166,7 @@ public class Client{
             e.printStackTrace();
             System.exit(1);
         }
-        Util.sendString("hallo welt");
+        Util.sendString("hello " + socket.getRemoteDevice().getName() + ", I'm " + Util.ba.getName());
 
     //    Toast.makeText(c, "connected to " + btDevice.getName().substring(0,btDevice.getName().length()-5), Toast.LENGTH_SHORT).show();
     }

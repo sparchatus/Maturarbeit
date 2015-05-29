@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.settings;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -19,11 +20,12 @@ import ch.imlee.maturarbeit.bluetooth.Util;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 public class TestActivity extends AppCompatActivity {
     private static boolean buttonPressed = false;
 
-
+    Host host;
 
 
     public static ProgressBar progressBar;
@@ -32,6 +34,7 @@ public class TestActivity extends AppCompatActivity {
 
     public static Button hostButton;
     public static Button joinButton;
+    public static Button startButton;
     public static TextView usernameTextView;
     public static EditText usernameEditText;
 
@@ -69,11 +72,14 @@ public class TestActivity extends AppCompatActivity {
     public void onClick(View view) {
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         listView = (ListView) this.findViewById(R.id.listView);
+        listView.setBackgroundColor(Color.DKGRAY);
+
 
         modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
 
         hostButton = (Button) this.findViewById(R.id.hostButton);
         joinButton = (Button) this.findViewById(R.id.joinButton);
+        startButton = (Button) this.findViewById(R.id.startButton);
         usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
         usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
 
@@ -95,15 +101,23 @@ public class TestActivity extends AppCompatActivity {
 
         if(view.getId()==R.id.hostButton){
             //host
+            startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             modeDependantText.setText("waiting for Players");
-            new Host(getApplicationContext());
+            host = new Host(getApplicationContext());
 
         }
-        else {
+        else if(view.getId()==R.id.joinButton){
             //client
             modeDependantText.setText("searching for hosts");
             new Client(getApplicationContext());
+        } else{
+            if(host.sockets.size() == 0){
+                Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
+            } else{
+                host.cancelAccept();
+                //TODO: start game
+            }
         }
     }
 
@@ -115,6 +129,7 @@ public class TestActivity extends AppCompatActivity {
 
             hostButton.setVisibility(View.VISIBLE);
             joinButton.setVisibility(View.VISIBLE);
+            startButton.setVisibility(View.GONE);
             usernameTextView.setVisibility(View.VISIBLE);
             usernameEditText.setVisibility(View.VISIBLE);
 

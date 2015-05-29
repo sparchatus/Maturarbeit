@@ -126,7 +126,6 @@ public class Client implements Runnable{
 
         c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
 
-        TestActivity.listView.setBackgroundColor(Color.DKGRAY);
 
         Util.ba.startDiscovery();
         }

@@ -19,6 +19,7 @@ public class Util{
     static Context c;
     public static InputStream inputStream;
     public static OutputStream outputStream;
+
     public void initBluetooth(Context context) {
     c = context;
 

@@ -15,7 +15,9 @@
         android:id="@+id/hostButton"
         android:layout_below="@+id/usernameEditText"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp" />
     <Button
         android:layout_width="wrap_content"
@@ -23,9 +25,11 @@
         android:onClick="onClick"
         android:text="Start Game"
         android:id="@+id/startButton"
-        android:layout_below="@+id/modeDependantText"
+        android:layout_below="@+id/statusText"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
         android:layout_marginTop="10dp"
         android:visibility="gone" />
     <Button
@@ -92,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/modeDependantText"
+        android:id="@+id/statusText"
         android:layout_below="@+id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"

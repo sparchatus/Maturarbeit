@@ -1,9 +1,13 @@
 package ch.imlee.maturarbeit.settings;
 
+import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.bluetooth.Client;
+import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
+
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,25 +16,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.bluetooth.Client;
-import ch.imlee.maturarbeit.bluetooth.Host;
-import ch.imlee.maturarbeit.bluetooth.Util;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 public class TestActivity extends AppCompatActivity {
-    private static boolean buttonPressed = false;
 
     Host host;
 
-
     public static ProgressBar progressBar;
     public static ListView listView;
-    public static TextView modeDependantText;
+    public static TextView statusText;
 
     public static Button hostButton;
     public static Button joinButton;
@@ -42,8 +39,29 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        // for design reasons, don't allow landscape mode in the menu
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        initialize();
+    }
+    private void initialize(){
+        // making objects of the Views from activity_test.xml to manipulate them
+        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
+        listView = (ListView) this.findViewById(R.id.listView);
+        listView.setBackgroundColor(Color.DKGRAY);
+
+
+        statusText = (TextView) this.findViewById(R.id.statusText); // statusText is a TextView that displays the current status during the connection phase
+
+        hostButton = (Button) this.findViewById(R.id.hostButton);
+        joinButton = (Button) this.findViewById(R.id.joinButton);
+        startButton = (Button) this.findViewById(R.id.startButton);
+        usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
+        usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
+        usernameEditText.setText(Util.ba.getName());
+
+        // used in the onBackPressed() method
+        //buttonPressed = true;
     }
 
 
@@ -60,34 +78,17 @@ public class TestActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-
-
         return super.onOptionsItemSelected(item);
     }
 
 
 
 
+    // this method is called when a button is clicked
     public void onClick(View view) {
-        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
-        listView = (ListView) this.findViewById(R.id.listView);
-        listView.setBackgroundColor(Color.DKGRAY);
 
-
-        modeDependantText = (TextView) this.findViewById(R.id.modeDependantText);
-
-        hostButton = (Button) this.findViewById(R.id.hostButton);
-        joinButton = (Button) this.findViewById(R.id.joinButton);
-        startButton = (Button) this.findViewById(R.id.startButton);
-        usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
-        usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
-
-        buttonPressed = true;
-
-
-
-        modeDependantText.setVisibility(View.VISIBLE);
+        // adjust the views
+        statusText.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         listView.setVisibility(View.VISIBLE);
 
@@ -96,22 +97,24 @@ public class TestActivity extends AppCompatActivity {
         usernameTextView.setVisibility(View.INVISIBLE);
         usernameEditText.setVisibility(View.INVISIBLE);
 
+        // hide the keyboard
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(usernameEditText.getWindowToken(), 0);
 
         if(view.getId()==R.id.hostButton){
-            //host
+            // host game
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
-            modeDependantText.setText("waiting for Players");
+            statusText.setText("waiting for Players");
             host = new Host(getApplicationContext());
 
         }
         else if(view.getId()==R.id.joinButton){
-            //client
-            modeDependantText.setText("searching for hosts");
+            // join game as client
+            statusText.setText("searching for hosts");
             new Client(getApplicationContext());
         } else{
+            // _HOST ending no longer needed, this keeps the BloetoothAdapter the name which the user entered
             if(host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
@@ -124,8 +127,11 @@ public class TestActivity extends AppCompatActivity {
 
     public void onBackPressed(){
 
-        if(buttonPressed){
+
+        //if(buttonPressed){
+        if(Util.ba.isDiscovering()) {
             Util.ba.cancelDiscovery();
+        }
 
             hostButton.setVisibility(View.VISIBLE);
             joinButton.setVisibility(View.VISIBLE);
@@ -133,11 +139,11 @@ public class TestActivity extends AppCompatActivity {
             usernameTextView.setVisibility(View.VISIBLE);
             usernameEditText.setVisibility(View.VISIBLE);
 
-            modeDependantText.setVisibility(View.INVISIBLE);
-            listView.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-        buttonPressed = false;
+            statusText.setVisibility(View.GONE);
+            listView.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        //}
+        //buttonPressed = false;
     }
 
 }

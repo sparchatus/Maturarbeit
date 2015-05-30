@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "ch.imlee.maturarbeit"
-        minSdkVersion 8
+        minSdkVersion 7
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"

@@ -21,30 +21,38 @@ public class Host implements Runnable {
 
     Util util = new Util();
     Context c;
+
     ArrayList<BluetoothDevice> devices = new ArrayList<>();
     ArrayList<String> deviceNames = new ArrayList<>();
+
     ArrayAdapter<String> adapter;
+
     BluetoothServerSocket serverSocket;
     BluetoothServerSocket tempServerSocket;
     public ArrayList<BluetoothSocket> sockets = new ArrayList<>();
     ArrayList<InputStream> inputStreams = new ArrayList<>();
     ArrayList<OutputStream> outputStreams = new ArrayList<>();
+
     Thread acceptThread = new Thread(this, "acceptThread");
+
     IntentFilter filter;
 
 
     public Host(Context context) {
         c = context;
         util.initBluetooth(c);
+        // to make the host identifiable
         Util.ba.setName(TestActivity.usernameEditText.getText().toString() + "_HOST");
-        adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
 
+        // TODO: put this in a thread which often checks whether the device is still discoverable, no need to put it here
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 
         c.startActivity(discoverableIntent);
+        // endTODO:
 
+        adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         TestActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -60,8 +68,23 @@ public class Host implements Runnable {
         c.registerReceiver(this.threadFinishedReceiver, filter);
 
         acceptConnections();
+    }
 
+    private final BroadcastReceiver threadFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            manageConnection();
+        }
+    };
 
+    public void acceptConnections() {
+        System.out.println("...");
+        System.out.println("accepting connections...");
+        System.out.println("...");
+
+        Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
+
+        acceptThread.start();
     }
 
     public void run() {
@@ -78,26 +101,9 @@ public class Host implements Runnable {
             c.sendBroadcast(new Intent("finished"));
         }
     }
-    private final BroadcastReceiver threadFinishedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            manageConnection();
-        }
-    };
 
-    public void acceptConnections() {
-        System.out.println("...");
-        System.out.println("accepting connections...");
-        System.out.println("...");
-        Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
-
-
-        acceptThread.start();
-
-    }
-
-    public void manageConnection() {
-        //acceptConnections();
+    // it's synchronized so connections won't interfere
+    public synchronized void manageConnection() {
 
         System.out.println("...");
         System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());

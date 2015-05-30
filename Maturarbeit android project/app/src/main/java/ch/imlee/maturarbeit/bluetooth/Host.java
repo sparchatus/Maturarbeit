@@ -77,7 +77,7 @@ public class Host implements Runnable {
         }
     };
 
-    public void acceptConnections() {
+    private void acceptConnections() {
         System.out.println("...");
         System.out.println("accepting connections...");
         System.out.println("...");
@@ -103,7 +103,7 @@ public class Host implements Runnable {
     }
 
     // it's synchronized so connections won't interfere
-    public synchronized void manageConnection() {
+    private synchronized void manageConnection() {
 
         System.out.println("...");
         System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());

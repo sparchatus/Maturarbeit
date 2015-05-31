@@ -1,27 +1,18 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.content.pm.PackageInfo;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-
-/**
- * Created by Lukas on 09.04.2015.
- */
 public class Util{
     public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
     static Context c;
-    public static InputStream inputStream;
-    public static OutputStream outputStream;
 
     public void initBluetooth(Context context) {
-    c = context;
+        c = context;
 
 
         if (ba == null) {
@@ -40,12 +31,13 @@ public class Util{
                     .show();
 
         }*/
-        else {
-            enableBluetooth();
+        else if (!ba.isEnabled()) {
+            ba.enable();
         }
     }
 
     public static UUID generateUUID(){
+        //TODO: somehow make the UUID unique to the version number
         /*
         try {
             return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode + ' ' +
@@ -58,18 +50,7 @@ public class Util{
         return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
-    public void enableBluetooth() {
-
-        if (!ba.isEnabled()) {
-            ba.enable();
-
-        }
-    }
-
-
-
-
-    public static void sendString(String text){
+    public static void sendString(OutputStream outputStream, String text){
         try {
             outputStream.write(text.getBytes());
             outputStream.flush();
@@ -77,10 +58,9 @@ public class Util{
             e.printStackTrace();
             System.exit(1);
         }
-
-
     }
-    public static String receiveString(){
+
+    public static String receiveString(InputStream inputStream){
         String text = "";
         try {
             for(int i = inputStream.available(); i > 0; --i) {
@@ -91,5 +71,4 @@ public class Util{
         }
         return text;
     }
-
 }

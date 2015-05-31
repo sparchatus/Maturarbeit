@@ -64,7 +64,6 @@ public class TestActivity extends AppCompatActivity {
         //buttonPressed = true;
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -80,9 +79,6 @@ public class TestActivity extends AppCompatActivity {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
     // this method is called when a button is clicked
     public void onClick(View view) {
@@ -124,9 +120,7 @@ public class TestActivity extends AppCompatActivity {
         }
     }
 
-
     public void onBackPressed(){
-
 
         //if(buttonPressed){
         if(Util.ba.isDiscovering()) {
@@ -145,5 +139,4 @@ public class TestActivity extends AppCompatActivity {
         //}
         //buttonPressed = false;
     }
-
 }

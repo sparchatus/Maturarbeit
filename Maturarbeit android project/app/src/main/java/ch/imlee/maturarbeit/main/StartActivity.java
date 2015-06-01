@@ -45,6 +45,7 @@ public class StartActivity extends AppCompatActivity {
         initialize();
     }
     private void initialize(){
+        Util.initBluetooth(StartActivity.this);
         // making objects of the Views from activity_test.xml to manipulate them
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         listView = (ListView) this.findViewById(R.id.listView);
@@ -58,19 +59,24 @@ public class StartActivity extends AppCompatActivity {
         startButton = (Button) this.findViewById(R.id.startButton);
         usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
         usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
-        usernameEditText.setText(Util.ba.getName());
+        // this is needed because the AlertDialog from the Util.initBluetooth() method is shown in a new thread, so it's possible that Util.ba is null
+        try {
+            usernameEditText.setText(Util.ba.getName());
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
         // used in the onBackPressed() method
         //buttonPressed = true;
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_test, menu);
         return true;
     }
-
+*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

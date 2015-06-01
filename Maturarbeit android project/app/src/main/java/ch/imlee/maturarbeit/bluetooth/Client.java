@@ -43,8 +43,6 @@ public class Client implements Runnable{
     public Client(Context context){
         c = context;
 
-        util.initBluetooth(c);
-
         // name isn't allowed to end with "_HOST", because that's how a host is identified
         if(StartActivity.usernameEditText.getText().toString().endsWith("_HOST")){
                 Toast.makeText(c, "Invalid Username", Toast.LENGTH_LONG).show();

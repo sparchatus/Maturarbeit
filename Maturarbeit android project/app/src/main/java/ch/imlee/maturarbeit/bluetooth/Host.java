@@ -40,7 +40,6 @@ public class Host implements Runnable {
 
     public Host(Context context) {
         c = context;
-        util.initBluetooth(c);
         // to make the host identifiable
         Util.ba.setName(StartActivity.usernameEditText.getText().toString() + "_HOST");
 

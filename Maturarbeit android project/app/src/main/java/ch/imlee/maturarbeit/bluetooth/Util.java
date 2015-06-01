@@ -2,35 +2,40 @@ package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import ch.imlee.maturarbeit.main.StartActivity;
+
 public class Util{
-    public static BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+    public static BluetoothAdapter ba;
     static Context c;
 
-    public void initBluetooth(Context context) {
+    public static void initBluetooth(Context context) {
         c = context;
-
+        ba = BluetoothAdapter.getDefaultAdapter();
 
         if (ba == null) {
             //TODO: Make it work
-        }
-            /*
-            new AlertDialog.Builder(new Activity())
+
+            new AlertDialog.Builder(c)
                     .setTitle("Error")
-                    .setMessage("Your Device seems to not have Bluetooth")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                    .setMessage("Your Device doesn't support bluetooth, which is needed for this game. Sorry about that.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
                             System.exit(1);
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setCancelable(false)
+                    .create()
                     .show();
 
-        }*/
+        }
         else if (!ba.isEnabled()) {
             ba.enable();
         }

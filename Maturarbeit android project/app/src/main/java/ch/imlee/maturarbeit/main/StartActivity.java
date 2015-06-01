@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.settings;
+package ch.imlee.maturarbeit.main;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Client;
@@ -21,7 +21,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-public class TestActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity {
 
     Host host;
 
@@ -38,8 +38,8 @@ public class TestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-        // for design reasons, don't allow landscape mode in the menu
+        setContentView(R.layout.activity_start);
+        // don't allow landscape mode in the menu for design reasons
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         initialize();
@@ -110,10 +110,11 @@ public class TestActivity extends AppCompatActivity {
             statusText.setText("searching for hosts");
             new Client(getApplicationContext());
         } else{
-            // _HOST ending no longer needed, this keeps the BloetoothAdapter the name which the user entered
             if(host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
+                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
+                Util.ba.setName(Util.ba.getName().substring(0, Util.ba.getName().length()-5));
                 host.cancelAccept();
                 //TODO: start game
             }
@@ -138,5 +139,13 @@ public class TestActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         //}
         //buttonPressed = false;
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        // remove the "_HOST" ending of the BluetoothAdapter
+        if(Util.ba.getName().endsWith("_HOST")){
+            Util.ba.setName(Util.ba.getName().substring(0,Util.ba.getName().length()-5));
+        }
     }
 }

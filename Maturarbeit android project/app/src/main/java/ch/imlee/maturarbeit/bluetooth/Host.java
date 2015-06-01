@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import ch.imlee.maturarbeit.settings.TestActivity;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 public class Host implements Runnable {
 
@@ -42,7 +42,7 @@ public class Host implements Runnable {
         c = context;
         util.initBluetooth(c);
         // to make the host identifiable
-        Util.ba.setName(TestActivity.usernameEditText.getText().toString() + "_HOST");
+        Util.ba.setName(StartActivity.usernameEditText.getText().toString() + "_HOST");
 
         // TODO: put this in a thread which often checks whether the device is still discoverable, no need to put it here
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -53,11 +53,11 @@ public class Host implements Runnable {
         // endTODO:
 
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
-        TestActivity.listView.setAdapter(adapter);
+        StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         try {
-            tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(TestActivity.usernameEditText.getText().toString(), Util.generateUUID());
+            tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

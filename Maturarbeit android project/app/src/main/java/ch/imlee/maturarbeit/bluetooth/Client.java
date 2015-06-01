@@ -1,6 +1,6 @@
 package ch.imlee.maturarbeit.bluetooth;
 
-import ch.imlee.maturarbeit.settings.TestActivity;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -46,19 +46,19 @@ public class Client implements Runnable{
         util.initBluetooth(c);
 
         // name isn't allowed to end with "_HOST", because that's how a host is identified
-        if(TestActivity.usernameEditText.getText().toString().endsWith("_HOST")){
+        if(StartActivity.usernameEditText.getText().toString().endsWith("_HOST")){
                 Toast.makeText(c, "Invalid Username", Toast.LENGTH_LONG).show();
-                TestActivity.hostButton.setVisibility(View.VISIBLE);
-                TestActivity.joinButton.setVisibility(View.VISIBLE);
-                TestActivity.usernameTextView.setVisibility(View.VISIBLE);
-                TestActivity.usernameEditText.setVisibility(View.VISIBLE);
+                StartActivity.hostButton.setVisibility(View.VISIBLE);
+                StartActivity.joinButton.setVisibility(View.VISIBLE);
+                StartActivity.usernameTextView.setVisibility(View.VISIBLE);
+                StartActivity.usernameEditText.setVisibility(View.VISIBLE);
 
-                TestActivity.statusText.setVisibility(View.INVISIBLE);
-                TestActivity.listView.setVisibility(View.INVISIBLE);
-                TestActivity.progressBar.setVisibility(View.INVISIBLE);
+                StartActivity.statusText.setVisibility(View.INVISIBLE);
+                StartActivity.listView.setVisibility(View.INVISIBLE);
+                StartActivity.progressBar.setVisibility(View.INVISIBLE);
 
         }
-        Util.ba.setName(TestActivity.usernameEditText.getText().toString());
+        Util.ba.setName(StartActivity.usernameEditText.getText().toString());
         findDevices();
     }
 
@@ -67,10 +67,10 @@ public class Client implements Runnable{
         deviceNames = new ArrayList<>();
         // the adapter puts the found devices into the ListView using the deviceNames ArrayList
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
-        TestActivity.listView.setAdapter(adapter);
+        StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        TestActivity.listView.setOnItemClickListener(new OnItemClickListener() {
+        StartActivity.listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -78,8 +78,8 @@ public class Client implements Runnable{
                     discoveryCancelled = true;
                     Util.ba.cancelDiscovery();
                 }
-                TestActivity.progressBar.setVisibility(View.VISIBLE);
-                TestActivity.statusText.setText("connecting to " + deviceNames.get(position));
+                StartActivity.progressBar.setVisibility(View.VISIBLE);
+                StartActivity.statusText.setText("connecting to " + deviceNames.get(position));
                 connectToDevice(devices.get(position));
             }
         });
@@ -100,7 +100,7 @@ public class Client implements Runnable{
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
-        TestActivity.statusText.setText("connecting...");
+        StartActivity.statusText.setText("connecting...");
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
@@ -162,11 +162,11 @@ public class Client implements Runnable{
                     }
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
-                TestActivity.statusText.setText("discovering devices...");
+                StartActivity.statusText.setText("discovering devices...");
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 if(!discoveryCancelled) {
-                    TestActivity.statusText.setText("discovery finished. " + devices.size() + " devices found.");
-                    TestActivity.progressBar.setVisibility(View.GONE);
+                    StartActivity.statusText.setText("discovery finished. " + devices.size() + " devices found.");
+                    StartActivity.progressBar.setVisibility(View.GONE);
                 }
             } else if("connectionFinished".equals(action)){
                 manageConnection();

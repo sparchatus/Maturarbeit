@@ -19,23 +19,21 @@ import ch.imlee.maturarbeit.main.StartActivity;
 
 public class Host implements Runnable {
 
-    Util util = new Util();
-    Context c;
+    private static Context c;
 
-    ArrayList<BluetoothDevice> devices = new ArrayList<>();
-    ArrayList<String> deviceNames = new ArrayList<>();
+    private static ArrayList<BluetoothDevice> devices = new ArrayList<>();
+    private static ArrayList<String> deviceNames = new ArrayList<>();
 
-    ArrayAdapter<String> adapter;
+    private static ArrayAdapter<String> adapter;
 
-    BluetoothServerSocket serverSocket;
-    BluetoothServerSocket tempServerSocket;
-    public ArrayList<BluetoothSocket> sockets = new ArrayList<>();
-    ArrayList<InputStream> inputStreams = new ArrayList<>();
-    ArrayList<OutputStream> outputStreams = new ArrayList<>();
+    private static BluetoothServerSocket serverSocket;
+    private static BluetoothServerSocket tempServerSocket;
+    public static ArrayList<BluetoothSocket> sockets = new ArrayList<>();
+    private static ArrayList<InputStream> inputStreams = new ArrayList<>();
+    private static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    Thread acceptThread = new Thread(this, "acceptThread");
+    private Thread acceptThread = new Thread(this, "acceptThread");
 
-    IntentFilter filter;
 
 
     public Host(Context context) {
@@ -63,7 +61,8 @@ public class Host implements Runnable {
         }
         serverSocket = tempServerSocket;
 
-        filter = new IntentFilter("finished");
+
+        IntentFilter filter = new IntentFilter("finished");
         c.registerReceiver(this.threadFinishedReceiver, filter);
 
         acceptConnections();

@@ -9,20 +9,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import ch.imlee.maturarbeit.main.StartActivity;
-
 public class Util{
     public static BluetoothAdapter ba;
-    static Context c;
 
     public static void initBluetooth(Context context) {
-        c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
 
         if (ba == null) {
             //TODO: Make it work
 
-            new AlertDialog.Builder(c)
+            new AlertDialog.Builder(context)
                     .setTitle("Error")
                     .setMessage("Your Device doesn't support bluetooth, which is needed for this game. Sorry about that.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -64,6 +60,20 @@ public class Util{
             System.exit(1);
         }
     }
+    // TODO: the following method is used later to send Events
+    /*
+    public static void sendEvent(OutputStream outputStream, Event event){
+        String text = event.toString();
+        text = text + '|';
+        try {
+            outputStream.write(text.getBytes());
+            outputStream.flush();
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+    */
 
     public static String receiveString(InputStream inputStream){
         String text = "";
@@ -76,4 +86,47 @@ public class Util{
         }
         return text;
     }
+
+    // TODO: the following method is used later to receive an Event
+    // (method must be called multiple times for multiple Events, should be done in a thread,
+    // because InputStream.read() is a blocking call and returns only when a byte is available or an Exception is thrown.
+    /*
+    public static Event receiveNextEvent(InputStream inputStream){
+        String text = "";
+        char c;
+        try {
+            while(true) {
+                c = (char) inputStream.read();
+                if(c == '|'){
+                    break;
+                }
+                else{
+                    text = text + c;
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new Event(text);
+    }
+    */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

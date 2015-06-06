@@ -22,23 +22,22 @@ import java.util.ArrayList;
 
 public class Client implements Runnable{
     Context c;
-    Util util = new Util();
 
-    ArrayList<BluetoothDevice> devices;
-    ArrayList<String> deviceNames;
-    ArrayAdapter<String> adapter;
+    private static ArrayList<BluetoothDevice> devices;
+    private static ArrayList<String> deviceNames;
+    private static ArrayAdapter<String> adapter;
 
-    BluetoothSocket socket;
-    BluetoothDevice device;
-    String deviceName;
+    private static BluetoothSocket socket;
+    private static BluetoothDevice device;
+    private static String deviceName;
 
-    InputStream inputStream;
-    OutputStream outputStream;
+    private static InputStream inputStream;
+    private static OutputStream outputStream;
 
-    Thread connectThread = new Thread(this, "connectThread");
+    private Thread connectThread = new Thread(this, "connectThread");
 
-    // used to check whether device descovery finished automatically or was cancelled
-    boolean discoveryCancelled = false;
+    // used to check whether device discovery finished automatically or was cancelled
+    private static boolean discoveryCancelled = false;
 
     public Client(Context context){
         c = context;
@@ -188,5 +187,20 @@ public class Client implements Runnable{
         Util.sendString(outputStream, "hello " + deviceName + ", I'm " + Util.ba.getName());
 
         Toast.makeText(c, "connected to " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_SHORT).show();
+    }
+    public static void disconnect(){
+        try{
+            inputStream.close();
+            inputStream = null;
+
+            outputStream.close();
+            outputStream = null;
+
+            socket.close();
+            socket = null;
+        } catch(Exception e){
+            e.printStackTrace();
+            //probably not yet connected
+        }
     }
 }

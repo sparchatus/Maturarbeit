@@ -25,6 +25,7 @@ public class StartActivity extends AppCompatActivity {
 
     Host host;
 
+    // those Views should be accessible from outside this class
     public static ProgressBar progressBar;
     public static ListView listView;
     public static TextView statusText;
@@ -128,6 +129,9 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void onBackPressed(){
+        //if connected to a host, disconnect
+        Client.disconnect();
+
 
         //if(buttonPressed){
         if(Util.ba.isDiscovering()) {

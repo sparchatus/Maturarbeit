@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.bluetooth;
 
+import ch.imlee.maturarbeit.main.ChooseActivity;
 import ch.imlee.maturarbeit.main.StartActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -21,7 +22,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class Client implements Runnable{
-    Context c;
+    private static Context c;
 
     private static ArrayList<BluetoothDevice> devices;
     private static ArrayList<String> deviceNames;
@@ -187,7 +188,26 @@ public class Client implements Runnable{
         Util.sendString(outputStream, "hello " + deviceName + ", I'm " + Util.ba.getName());
 
         Toast.makeText(c, "connected to " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_SHORT).show();
+
+        listen();
     }
+
+    public static void listen(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    if(Util.receiveString(inputStream).length() > 0){
+                        StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        c.startActivity(StartActivity.startChooseActivity);
+                        break;
+                    }
+
+                }
+            }
+        }).start();
+    }
+
     public static void disconnect(){
         try{
             inputStream.close();

@@ -8,4 +8,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_game_client">GameClient</string>
+    <string name="title_activity_choose">chooseActivity</string>
+
 </resources>

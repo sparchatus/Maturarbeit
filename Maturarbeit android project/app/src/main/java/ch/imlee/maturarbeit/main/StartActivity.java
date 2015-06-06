@@ -5,6 +5,7 @@ import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class StartActivity extends AppCompatActivity {
     public static Button startButton;
     public static TextView usernameTextView;
     public static EditText usernameEditText;
+    public static Intent startChooseActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class StartActivity extends AppCompatActivity {
         initialize();
     }
     private void initialize(){
+        startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
         Util.initBluetooth(StartActivity.this);
         // making objects of the Views from activity_test.xml to manipulate them
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
@@ -117,13 +120,24 @@ public class StartActivity extends AppCompatActivity {
             statusText.setText("searching for hosts");
             new Client(getApplicationContext());
         } else{
-            if(host.sockets.size() == 0){
+            if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
                 // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
-                Util.ba.setName(Util.ba.getName().substring(0, Util.ba.getName().length()-5));
+                Util.ba.setName(Util.ba.getName().substring(0, Util.ba.getName().length() - 5));
                 host.cancelAccept();
                 //TODO: start game
+                // notify others that they should start the ChooseActivity, this is done by simply sending a character
+                for(int i = 0; i < Host.outputStreams.size(); ++i){
+                    try {
+                        Host.outputStreams.get(i).write(0);
+                    } catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                // starts the ChooseActivity
+                startActivity(startChooseActivity);
             }
         }
     }

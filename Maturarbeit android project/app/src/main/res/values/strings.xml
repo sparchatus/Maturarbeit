@@ -3,9 +3,7 @@
 
     <string name="title_activity_test">TestActivity</string>
 
-    <string name="title_activity_game">GameActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-    <string name="title_activity_game_client">GameClient</string>
+    <string name="title_activity_game">GameClient</string>
+    <string name="button_particle">Particle</string>
+    <string name="button_skill">Skill</string>
 </resources>

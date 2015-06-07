@@ -6,4 +6,8 @@
     <string name="title_activity_game">GameClient</string>
     <string name="button_particle">Particle</string>
     <string name="button_skill">Skill</string>
+
+    <string name="title_activity_choose">chooseActivity</string>
+
+>>>>>>> origin/master
 </resources>

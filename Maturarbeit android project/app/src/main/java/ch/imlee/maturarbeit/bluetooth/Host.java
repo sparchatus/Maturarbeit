@@ -30,7 +30,7 @@ public class Host implements Runnable {
     private static BluetoothServerSocket tempServerSocket;
     public static ArrayList<BluetoothSocket> sockets = new ArrayList<>();
     private static ArrayList<InputStream> inputStreams = new ArrayList<>();
-    private static ArrayList<OutputStream> outputStreams = new ArrayList<>();
+    public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
     private Thread acceptThread = new Thread(this, "acceptThread");
 
@@ -91,7 +91,7 @@ public class Host implements Runnable {
                 sockets.add(serverSocket.accept());
             } catch (Exception e) {
                 e.printStackTrace();
-                System.exit(1);
+                //System.exit(1);
             }
             System.out.println("...");
             System.out.println("connected");

@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public class Util{
     public static BluetoothAdapter ba;
+    public static boolean gameStarted = false;
 
     public static void initBluetooth(Context context) {
         ba = BluetoothAdapter.getDefaultAdapter();

@@ -200,6 +200,7 @@ public class Client implements Runnable{
                     if(Util.receiveString(inputStream).length() > 0){
                         StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         c.startActivity(StartActivity.startChooseActivity);
+                        c.sendBroadcast(new Intent("finish"));
                         break;
                     }
 

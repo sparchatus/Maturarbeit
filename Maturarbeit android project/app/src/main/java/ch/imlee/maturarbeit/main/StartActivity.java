@@ -5,7 +5,9 @@ import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -48,6 +50,8 @@ public class StartActivity extends AppCompatActivity {
         initialize();
     }
     private void initialize(){
+        registerReceiver(this.finishReceiver, new IntentFilter("finish"));
+
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
         Util.initBluetooth(StartActivity.this);
         // making objects of the Views from activity_test.xml to manipulate them
@@ -124,8 +128,8 @@ public class StartActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
                 // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
-                Util.ba.setName(Util.ba.getName().substring(0, Util.ba.getName().length() - 5));
-                host.cancelAccept();
+                Util.ba.setName(usernameEditText.getText().toString());
+                sendBroadcast(new Intent("cancelAccept"));
                 //TODO: start game
                 // notify others that they should start the ChooseActivity, this is done by simply sending a character
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
@@ -138,6 +142,7 @@ public class StartActivity extends AppCompatActivity {
                 }
                 // starts the ChooseActivity
                 startActivity(startChooseActivity);
+                finish();
             }
         }
     }
@@ -165,6 +170,27 @@ public class StartActivity extends AppCompatActivity {
         //buttonPressed = false;
     }
 
+    // BroadcastReceiver to finish this Activity as soon as ChooseActivity launches, this is only needed if the Client starts the new Activity
+    BroadcastReceiver finishReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals("finish")){
+                System.out.println("...");
+                System.out.println("finishing");
+                System.out.println("...");
+                finish();
+            }
+        }
+    };
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        unregisterReceiver(finishReceiver);
+    }
+
+    @Override
     public void onDestroy(){
         super.onDestroy();
         // remove the "_HOST" ending of the BluetoothAdapter

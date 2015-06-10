@@ -32,7 +32,7 @@ public class Host implements Runnable {
     private static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    private Thread acceptThread = new Thread(this, "acceptThread");
+    public Thread acceptThread = new Thread(this, "acceptThread");
 
 
 
@@ -76,6 +76,8 @@ public class Host implements Runnable {
     };
 
     private void acceptConnections() {
+        c.registerReceiver(this.cancelAcceptReceiver, new IntentFilter("cancelAccept"));
+
         System.out.println("...");
         System.out.println("accepting connections...");
         System.out.println("...");
@@ -91,11 +93,11 @@ public class Host implements Runnable {
                 sockets.add(serverSocket.accept());
             } catch (Exception e) {
                 e.printStackTrace();
+                if(e.getMessage().equals("socket closed")){
+                    break;
+                }
                 //System.exit(1);
             }
-            System.out.println("...");
-            System.out.println("connected");
-            System.out.println("...");
             c.sendBroadcast(new Intent("finished"));
         }
     }
@@ -121,16 +123,25 @@ public class Host implements Runnable {
 
     }
 
-    public void cancelAccept() {
-        try {
-            acceptThread.interrupt();
-            serverSocket.close();
-            c.unregisterReceiver(threadFinishedReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+    public BroadcastReceiver cancelAcceptReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals("cancelAccept")) {
+                c.unregisterReceiver(cancelAcceptReceiver);
+                try {
+                    acceptThread.interrupt();
+                    serverSocket.close();
+                    c.unregisterReceiver(threadFinishedReceiver);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
         }
-    }
+    };
+
+
 }
 
 

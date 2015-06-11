@@ -32,7 +32,7 @@ public class Host implements Runnable {
     private static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    public Thread acceptThread = new Thread(this, "acceptThread");
+    private Thread acceptThread = new Thread(this, "acceptThread");
 
 
 

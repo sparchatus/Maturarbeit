@@ -2,6 +2,9 @@ package ch.imlee.maturarbeit.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,10 +18,14 @@ import ch.imlee.maturarbeit.R;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
+    //TODO: DEBUG
+    String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // don't allow landscape mode in the menu for design reasons
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_choose);
         fluffImage = (ImageView) findViewById(R.id.fluffImage);
         createFluffRadioButtons();
@@ -56,9 +63,9 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     private void createFluffRadioButtons(){
         RadioGroup fluffGroup = (RadioGroup) findViewById(R.id.fluffGroup);
         RadioButton fluffRadioButton;
-        for(int i = 0; i < 3; ++i){
+        for(int i = 0; i < fluffButtons.length; ++i){
             fluffRadioButton = new RadioButton(this);
-            fluffRadioButton.setText("TestFluff Number " + (i+1));
+            fluffRadioButton.setText(fluffButtons[i]);
             fluffGroup.addView(fluffRadioButton);
             fluffRadioButton.setOnClickListener(this);
         }
@@ -69,6 +76,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         // check whether clicked button is in the teamGroup or fluffGroup
         if(!((RadioButton)v).getText().toString().startsWith("Team ")){
             fluffImage.setImageResource(R.mipmap.ic_launcher);
+            fluffImage.setImageBitmap(BitmapFactory.decodeFile("R.drawable.fluffy"));
         }
     }
 

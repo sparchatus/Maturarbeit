@@ -4,7 +4,9 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
+import ch.imlee.maturarbeit.game.GameClient;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,10 +16,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
@@ -50,6 +55,31 @@ public class StartActivity extends AppCompatActivity {
         initialize();
     }
     private void initialize(){
+        //TODO: DEBUG
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.startLayout);
+        Button chooseButton = new Button(this);
+        chooseButton.setText("choose");
+        chooseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(startChooseActivity);
+            }
+        });
+        layout.addView(chooseButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        /*Button gameButton = new Button(this);
+        gameButton.setText("game");
+        final Intent startGameActivity = new Intent(getBaseContext(), GameClient.class);
+        gameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(startGameActivity);
+            }
+        });
+        layout.addView(gameButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        */
+        //TODO: end debug
+
         registerReceiver(this.finishReceiver, new IntentFilter("finish"));
 
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);

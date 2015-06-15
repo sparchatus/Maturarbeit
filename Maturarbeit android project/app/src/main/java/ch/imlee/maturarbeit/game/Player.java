@@ -14,6 +14,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Player extends Entity implements Tick{
 
+    protected final byte ID;
     protected final int TEAM;
     protected final int PLAYER_SIDE;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
@@ -32,7 +33,7 @@ public class Player extends Entity implements Tick{
     protected final Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
 
-    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int Team, User theUser) {
+    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int Team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         if (type == PlayerType.FLUFFY){
             PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.fluffy), map.TILE_SIDE, map.TILE_SIDE, false);
@@ -60,6 +61,7 @@ public class Player extends Entity implements Tick{
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
         stunned = false;
+        this.ID = playerId;
     }
 
     public Canvas render(Canvas canvas){
@@ -92,12 +94,16 @@ public class Player extends Entity implements Tick{
         yCoordinate = playerYCoordinate;
     }
 
-    public void stun(){
+    public void stun(double stunTick){
         stunned = true;
-        stunTick = gameThread.getSynchronizedTick() + STUN_TIME;
+        this.stunTick = stunTick;
     }
 
     public double getAngle() {
         return angle;
+    }
+
+    public byte getID(){
+        return ID;
     }
 }

@@ -28,8 +28,8 @@ public class User extends Player{
 
      protected Map map;
 
-    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team, User theUser) {
-        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, theUser);
+    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team, byte playerId, User theUser) {
+        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
         SKILL_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
             SKILL_BAR_COLOR.setColor(0xff0000ff);

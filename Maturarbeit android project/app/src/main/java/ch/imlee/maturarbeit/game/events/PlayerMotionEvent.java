@@ -14,7 +14,10 @@ public class PlayerMotionEvent extends Event{
 
     public PlayerMotionEvent(String eventString){
         char[]eventChar = eventString.toCharArray();
-        eventChar[1]
+        X_COORDINATE = 0;
+        Y_COORDINATE = 0;
+        ANGLE = 0;
+        ID = 0;
     }
 
     public PlayerMotionEvent(float xCoordinate, float yCoordinate, double angle, byte playerId){

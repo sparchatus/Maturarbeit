@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 
 import ch.imlee.maturarbeit.R;
 
@@ -41,5 +42,18 @@ public class Map {
                 }
             }
         }
+    }
+
+    public Canvas render(Canvas canvas, User user){
+        for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
+            for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
+                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalveScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.PLAYER_SIDE, GameClient.getHalveScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.PLAYER_SIDE, null);
+            }
+        }
+        return canvas;
+    }
+
+    public boolean getSolid(int xTileCoordinate, int yTileCoordinate){
+        return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }
 }

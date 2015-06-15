@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Display;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.views.ParticleButton;
+import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
 
@@ -15,6 +17,8 @@ public class GameClient extends Activity {
     private static int halveScreenWidth;
     private static int halveScreenHeight;
     private static Resources rec;
+    public static ParticleButton particleButton;
+    public static SkillButton skillButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,8 @@ public class GameClient extends Activity {
         halveScreenWidth = screenWidth / 2;
         halveScreenHeight = screenHeight / 2;
         rec = getResources();
+        particleButton = (ParticleButton) findViewById(R.id.button_particle);
+        skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
 
     public static int getScreenWidth(){

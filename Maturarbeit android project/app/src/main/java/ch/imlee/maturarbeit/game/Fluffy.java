@@ -14,19 +14,26 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Fluffy extends User{
 
     private Player focusedPlayer = null;
+    private int MAX_RANGE = 5;
+    private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team) {
-        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team);
+    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team, User theUser) {
+        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, theUser);
         FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
     }
 
     @Override
     public void update() {
-        //do movement and if update the speed
+        super.update();
         mana += speed / MAX_SPEED;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
+        }
+        if (focusedPlayer != null){
+            if (Math.sqrt(Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) + Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2)) > MAX_RANGE){
+                focusedPlayer = null;
+            }
         }
     }
 
@@ -54,14 +61,12 @@ public class Fluffy extends User{
         return super.onTouch(event);
     }
 
-    @Override
-    public boolean skillActivation() {
-        if (super.skillActivation() && focusedPlayer != null){
+    public void skillActivation() {
+        if (mana == MAX_MANA && focusedPlayer != null){
             focusedPlayer.stun();
             focusedPlayer = null;
+            mana -= MANA_CONSUMPTION;
             //send the stun event
-            return true;
         }
-        return false;
     }
 }

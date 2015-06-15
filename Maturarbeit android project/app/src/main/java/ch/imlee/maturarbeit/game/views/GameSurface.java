@@ -1,14 +1,23 @@
 package ch.imlee.maturarbeit.game.views;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+
+import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.Fluffy;
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.Particle;
 import ch.imlee.maturarbeit.game.Player;
+import ch.imlee.maturarbeit.game.PlayerType;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.User;
 
@@ -30,6 +39,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             gameThread = new GameThread();
+            gameThread.setRunning(true);
             gameThread.start();
         }
 
@@ -52,6 +62,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             }
         }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gameThread.user.onTouch(event);
+    }
+
     public class GameThread extends Thread implements Tick{
 
         /**
@@ -60,26 +75,41 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          */
         private boolean running;
 
+        /**
+         *
+         */
         private long lastTime;
         private long timeLeft;
 
         private double synchronizedTick;
         private double predictedDelay;
 
+        private ParticleButton particleButton;
+        private SkillButton skillButton;
         private Map map;
         private User user;
         private Player[] playerArray;
+        private ArrayList<Particle> particleList = new ArrayList();
 
         /**
          * The method called when the gameThread is started. It contains the main game loop.
          */
         @Override
         public void run() {
-            //display loading screen and wait untill all information is gathered
+            //display loading screen and wait until all information is gathered
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+            map = new Map(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.test_map_2, options));
+            user = new Fluffy(8.5f, 5.5f, PlayerType.FLUFFY, map, this, 1, user);
+            playerArray = new Player[1];
+            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, 2, user);
+            particleButton = GameClient.particleButton;
+            particleButton.setUser(user);
+            skillButton = GameClient.skillButton;
+            skillButton.setUser(user);
             while(running){
                 update();
                 render();
-
                 if((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
                     try {
                         sleep(timeLeft);
@@ -103,8 +133,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          * This method calls all the update methods of particles, players, etc...
          */
         private void update(){
+            user.update();
             for (Player player:playerArray){
                 player.update();
+            }
+            for (Particle particle:particleList) {
+                particle.update();
             }
         }
 
@@ -118,9 +152,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 synchronized (holder) {
                     if(c!=null) {
                         c.drawColor(Color.BLACK);
-                        for (Player player:playerArray){
-                            player.render(c);
+                        map.render(c, user);
+                        for (Particle particle:particleList){
+                            c = particle.render(c);
                         }
+                        for (Player player:playerArray){
+                            c = player.render(c);
+                        }
+                        c = user.render(c);
                     }
                 }
             } finally {
@@ -144,6 +183,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         public Player[] getPlayerArray() {
             return playerArray;
+        }
+        public void addParticle(Particle newParticle){
+            particleList.add(newParticle);
         }
     }
 }

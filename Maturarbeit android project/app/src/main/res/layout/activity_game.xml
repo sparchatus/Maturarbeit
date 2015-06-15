@@ -3,12 +3,12 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <com.android.diploma.imlee.ma_application_workspace.CaptureTheFlagSurface
+    <ch.imlee.maturarbeit.game.views.GameSurface
         android:id="@+id/game_surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.android.diploma.imlee.ma_application_workspace.ParticleButton
+    <ch.imlee.maturarbeit.game.views.ParticleButton
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_vertical|end"
@@ -16,11 +16,11 @@
         android:text="@string/button_particle"
         android:background="@drawable/button_particle_states"/>
 
-    <com.android.diploma.imlee.ma_application_workspace.SkillButton
+    <ch.imlee.maturarbeit.game.views.SkillButton
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="bottom|end"
         android:id="@+id/button_skill"
         android:text="@string/button_skill"
-        android:background="@drawable/button_skill_states"/>
+        android:background="@drawable/button_particle_states"/>
 </FrameLayout>

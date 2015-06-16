@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
+    //TODO: change halve to half :D
 
     private static int screenWidth;
     private static int screenHeight;

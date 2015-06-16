@@ -65,7 +65,7 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(startChooseActivity);
             }
         });
-        layout.addView(chooseButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        layout.addView(chooseButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         /*Button gameButton = new Button(this);
         gameButton.setText("game");

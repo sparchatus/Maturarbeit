@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.io.File;
+
 import ch.imlee.maturarbeit.R;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
@@ -76,7 +78,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         // check whether clicked button is in the teamGroup or fluffGroup
         if(!((RadioButton)v).getText().toString().startsWith("Team ")){
             fluffImage.setImageResource(R.mipmap.ic_launcher);
-            fluffImage.setImageBitmap(BitmapFactory.decodeFile("R.drawable.fluffy"));
+            fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
+
         }
     }
 
@@ -87,6 +90,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
 
     //TODO: onBackPressed: send cancelling Event. If you were the host, cancel the game, otherwise show a Toast that a player left. If only the host remains, cancel the game
+    //TODO: if only two players, automatically assign teams
+    //TODO: actually start the game
 
 
 

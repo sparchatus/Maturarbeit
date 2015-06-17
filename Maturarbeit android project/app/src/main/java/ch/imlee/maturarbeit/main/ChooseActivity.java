@@ -17,6 +17,8 @@ import android.widget.RadioGroup;
 import java.io.File;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.events.GameStartEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
@@ -81,6 +83,10 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
             fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
 
         }
+    }
+    public void onStartGameClick(View v){
+        new GameStartEvent().send();
+        startActivity(new Intent(this, GameClient.class));
     }
 
     @Override

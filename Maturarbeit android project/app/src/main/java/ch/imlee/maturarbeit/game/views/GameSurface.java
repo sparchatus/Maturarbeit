@@ -100,9 +100,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
             map = new Map(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.test_map_2, options));
-            user = new Fluffy(8.5f, 5.5f, PlayerType.FLUFFY, map, this, 1, user);
+            user = new Fluffy(8.5f, 5.5f, PlayerType.FLUFFY, map, this, 1, (byte)0, user);
             playerArray = new Player[1];
-            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, 2, user);
+            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, 2, (byte)1, user);
             particleButton = GameClient.particleButton;
             particleButton.setUser(user);
             skillButton = GameClient.skillButton;

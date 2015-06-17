@@ -60,14 +60,31 @@
         android:layout_below="@+id/teamGroup"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/chooseTeam"
-        android:layout_alignEnd="@+id/chooseTeam" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fluffImage"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/fluffGroup"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startGameButton"
+        android:text="Start Game"
+        android:layout_below="@+id/fluffImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:onClick="onStartGameClick" />
 
 </RelativeLayout>

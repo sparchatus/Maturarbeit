@@ -4,22 +4,18 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
-import ch.imlee.maturarbeit.game.GameClient;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -32,6 +28,7 @@ import android.widget.Toast;
 public class StartActivity extends AppCompatActivity {
 
     Host host;
+    public static DeviceType deviceType;
 
     // those Views should be accessible from outside this class
     public static ProgressBar progressBar;
@@ -143,6 +140,7 @@ public class StartActivity extends AppCompatActivity {
 
         if(view.getId()==R.id.hostButton){
             // host game
+            deviceType = DeviceType.HOST;
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
@@ -151,6 +149,7 @@ public class StartActivity extends AppCompatActivity {
         }
         else if(view.getId()==R.id.joinButton){
             // join game as client
+            deviceType = DeviceType.CLIENT;
             statusText.setText("searching for hosts");
             new Client(getApplicationContext());
         } else{

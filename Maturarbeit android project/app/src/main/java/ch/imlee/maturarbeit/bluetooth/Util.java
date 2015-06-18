@@ -14,14 +14,16 @@ import ch.imlee.maturarbeit.game.events.Event;
 
 public class Util{
     public static BluetoothAdapter ba;
+    public static Context c;
 
     public static void initBluetooth(Context context) {
+        c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
 
         if (ba == null) {
             //TODO: Make it work
 
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(c)
                     .setTitle("Error")
                     .setMessage("Your Device doesn't support bluetooth, which is needed for this game. Sorry about that.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

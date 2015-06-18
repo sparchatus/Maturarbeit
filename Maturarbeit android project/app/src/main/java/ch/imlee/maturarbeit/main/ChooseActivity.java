@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
@@ -22,6 +23,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     Button startGameButton;
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
+    Thread eventReceiver = new EventReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
             startGameButton.setVisibility(View.VISIBLE);
         }
         createFluffRadioButtons();
+        eventReceiver.start();
     }
 
     @Override

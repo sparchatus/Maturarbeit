@@ -25,6 +25,8 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class StartActivity extends AppCompatActivity {
 
     Host host;
@@ -156,9 +158,7 @@ public class StartActivity extends AppCompatActivity {
             if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
-                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
-                Util.ba.setName(usernameEditText.getText().toString());
-                sendBroadcast(new Intent("cancelAccept"));
+
                 //TODO: start game
                 // notify others that they should start the ChooseActivity, this is done by simply sending a character
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
@@ -166,12 +166,25 @@ public class StartActivity extends AppCompatActivity {
                         Host.outputStreams.get(i).write(0);
                     } catch(Exception e){
                         e.printStackTrace();
-                        System.exit(1);
+                        if(e instanceof IOException){
+                            Toast.makeText(Util.c, "lost connection to " + Host.sockets.get(i).getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
+                            Host.sockets.remove(i);
+                            Host.inputStreams.remove(i);
+                            Host.outputStreams.remove(i);
+                            Host.deviceNames.remove(i);
+                            Host.adapter.notifyDataSetChanged();
+                            --i;
+                        }
                     }
                 }
+                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
+                Util.ba.setName(usernameEditText.getText().toString());
+                sendBroadcast(new Intent("cancelAccept"));
                 // starts the ChooseActivity
-                startActivity(startChooseActivity);
-                finish();
+                if(Host.sockets.size()>0) {
+                    startActivity(startChooseActivity);
+                    finish();
+                }
             }
         }
     }

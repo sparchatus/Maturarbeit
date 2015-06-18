@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -21,10 +22,9 @@ public class Host implements Runnable {
 
     private static Context c;
 
-    private static ArrayList<BluetoothDevice> devices = new ArrayList<>();
-    private static ArrayList<String> deviceNames = new ArrayList<>();
+    public static ArrayList<String> deviceNames = new ArrayList<>();
 
-    private static ArrayAdapter<String> adapter;
+    public static ArrayAdapter<String> adapter;
 
     private static BluetoothServerSocket serverSocket;
     private static BluetoothServerSocket tempServerSocket;
@@ -91,15 +91,15 @@ public class Host implements Runnable {
         while(true) {
             try {
                 sockets.add(serverSocket.accept());
+                c.sendBroadcast(new Intent("finished"));
             } catch (Exception e) {
                 e.printStackTrace();
-                if(e.getMessage().equals("socket closed")){
-                    break;
-                }
+                if(e instanceof IOException) break;
+
                 //System.exit(1);
             }
-            c.sendBroadcast(new Intent("finished"));
         }
+
     }
 
     // it's synchronized so connections won't interfere
@@ -109,8 +109,7 @@ public class Host implements Runnable {
         System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());
         System.out.println("...");
 
-        devices.add(sockets.get(sockets.size() - 1).getRemoteDevice());
-        deviceNames.add(devices.get(devices.size() - 1).getName());
+        deviceNames.add(sockets.get(sockets.size() - 1).getRemoteDevice().getName());
         adapter.notifyDataSetChanged();
 
         try {

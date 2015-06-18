@@ -65,15 +65,17 @@ public class Player extends Entity implements Tick {
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
         stunned = false;
-        invisible = false;
+        invisible = true;
         this.ID = playerId;
     }
 
     public Canvas render(Canvas canvas){
-        Matrix matrix = new Matrix();
-        matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-        Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
-        canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * PLAYER_SIDE + GameClient.getHalveScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * PLAYER_SIDE + GameClient.getHalveScreenHeight() - rotated.getHeight() / 2, null);
+        if (!invisible) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
+            Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
+            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * PLAYER_SIDE + GameClient.getHalveScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * PLAYER_SIDE + GameClient.getHalveScreenHeight() - rotated.getHeight() / 2, null);
+        }
         if (stunned){
             canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalveScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalveScreenHeight(), null);
         }
@@ -110,6 +112,10 @@ public class Player extends Entity implements Tick {
 
     public double getAngle() {
         return angle;
+    }
+
+    public void setAngle(double angle){
+        this.angle = angle;
     }
 
     public byte getID(){

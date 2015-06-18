@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game.events;
+package ch.imlee.maturarbeit.game.events.skillEvents;
 
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -6,7 +6,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 /**
  * Created by Sandro on 15.06.2015.
  */
-public class StunEvent extends Event{
+public class StunEvent extends SkillEvent {
 
     public int playerID;
 
@@ -24,7 +24,7 @@ public class StunEvent extends Event{
     }
 
     @Override
-    public String toEventString() {
+    public String toString() {
         return "S" + playerID + stunTick;
     }
 

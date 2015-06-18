@@ -1,9 +1,7 @@
 package ch.imlee.maturarbeit.main;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -15,6 +13,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
@@ -76,8 +76,13 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         // check whether clicked button is in the teamGroup or fluffGroup
         if(!((RadioButton)v).getText().toString().startsWith("Team ")){
             fluffImage.setImageResource(R.mipmap.ic_launcher);
-            fluffImage.setImageBitmap(BitmapFactory.decodeFile("R.drawable.fluffy"));
+            fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
+
         }
+    }
+    public void onStartGameClick(View v){
+        new GameStartEvent().send();
+        startActivity(new Intent(this, GameClient.class));
     }
 
     @Override
@@ -87,6 +92,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
 
     //TODO: onBackPressed: send cancelling Event. If you were the host, cancel the game, otherwise show a Toast that a player left. If only the host remains, cancel the game
+    //TODO: if only two players, automatically assign teams
+    //TODO: actually start the game
 
 
 

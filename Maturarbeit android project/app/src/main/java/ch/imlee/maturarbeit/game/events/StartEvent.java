@@ -28,7 +28,7 @@ public class StartEvent extends Event{
     }
 
     @Override
-    public String toEventString() {
+    public String toString() {
         String playerInfo = "";
         for (int i = 0; i < TYPE.length; i++){
             playerInfo += "p" + TYPE[i].ordinal() + "t" + TEAM[i];

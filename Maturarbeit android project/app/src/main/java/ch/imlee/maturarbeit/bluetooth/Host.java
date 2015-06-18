@@ -29,7 +29,7 @@ public class Host implements Runnable {
     private static BluetoothServerSocket serverSocket;
     private static BluetoothServerSocket tempServerSocket;
     public static ArrayList<BluetoothSocket> sockets = new ArrayList<>();
-    private static ArrayList<InputStream> inputStreams = new ArrayList<>();
+    public static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
     private Thread acceptThread = new Thread(this, "acceptThread");

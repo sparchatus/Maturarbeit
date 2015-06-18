@@ -32,8 +32,8 @@ public class Client implements Runnable{
     private static BluetoothDevice device;
     private static String deviceName;
 
-    private static InputStream inputStream;
-    private static OutputStream outputStream;
+    public static InputStream inputStream;
+    public static OutputStream outputStream;
 
     private Thread connectThread = new Thread(this, "connectThread");
 

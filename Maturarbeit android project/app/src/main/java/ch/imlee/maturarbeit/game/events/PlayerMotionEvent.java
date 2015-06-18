@@ -27,7 +27,7 @@ public class PlayerMotionEvent extends Event{
     }
 
     @Override
-    public String toEventString() {
+    public String toString() {
         return "P" + "x" + X_COORDINATE + "y" + Y_COORDINATE + "a" + ANGLE + "i" + ID;
     }
 

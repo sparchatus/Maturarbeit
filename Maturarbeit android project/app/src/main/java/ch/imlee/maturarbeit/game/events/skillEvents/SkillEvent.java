@@ -7,4 +7,5 @@ import ch.imlee.maturarbeit.game.events.Event;
  */
 public class SkillEvent extends Event {
 
+    
 }

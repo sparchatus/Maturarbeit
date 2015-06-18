@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.entity;
 
 import ch.imlee.maturarbeit.game.views.GameSurface;
 

@@ -1,3 +1,4 @@
 Starting characters:
-    P - Player String
-    S - Stun String
+    L - StartEvent
+    P - PlayerMotionEvent
+    S - StunEvent

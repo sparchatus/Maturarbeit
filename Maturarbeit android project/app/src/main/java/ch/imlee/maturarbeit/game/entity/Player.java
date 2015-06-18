@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,21 +7,25 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 05.06.2015.
  */
-public class Player extends Entity implements Tick{
+public class Player extends Entity implements Tick {
 
     protected final byte ID;
-    protected final int TEAM;
-    protected final int PLAYER_SIDE;
+    protected final byte TEAM;
+    public final int PLAYER_SIDE;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
     protected final float PLAYER_RADIUS = 0.5f;
 
     protected boolean stunned;
+    protected boolean invisible;
 
     protected double stunTick;
 
@@ -29,11 +33,11 @@ public class Player extends Entity implements Tick{
 
     protected User user;
     protected final Paint BAR_BACKGROUND_COLOR;
-    private final Paint STRENGTH_BAR_COLOR;
+    protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
 
-    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int Team, byte playerId, User theUser) {
+    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte Team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         if (type == PlayerType.FLUFFY){
             PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.fluffy), map.TILE_SIDE, map.TILE_SIDE, false);
@@ -61,6 +65,7 @@ public class Player extends Entity implements Tick{
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
         stunned = false;
+        invisible = false;
         this.ID = playerId;
     }
 
@@ -97,6 +102,10 @@ public class Player extends Entity implements Tick{
     public void stun(double stunTick){
         stunned = true;
         this.stunTick = stunTick;
+    }
+
+    public void setInvisible(boolean invisible){
+        this.invisible = invisible;
     }
 
     public double getAngle() {

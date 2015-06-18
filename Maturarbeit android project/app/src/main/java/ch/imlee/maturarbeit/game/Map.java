@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.entity.User;
 
 /**
  * Created by Sandro on 04.06.2015.

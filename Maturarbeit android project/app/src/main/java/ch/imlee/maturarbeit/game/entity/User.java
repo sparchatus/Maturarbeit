@@ -1,20 +1,19 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.entity;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 
+import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.Map;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
  /**
  * Created by Sandro on 06.06.2015.
  */
-public class User extends Player{
+public class User extends Player {
 
-    private final Paint SKILL_BAR_COLOR;
+    protected final Paint SKILL_BAR_COLOR;
     protected final int MAX_MANA = 1000;
     protected final float MAX_SPEED = 0.2f;
     protected final int PARTICLE_COOL_DOWN = 300 / TIME_PER_TICK;
@@ -25,10 +24,11 @@ public class User extends Player{
 
     protected float mana;
     protected float speed;
+     protected float realSpeed;
 
      protected Map map;
 
-    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team, byte playerId, User theUser) {
+    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
         SKILL_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
@@ -53,11 +53,7 @@ public class User extends Player{
 
     @Override
     public Canvas render(Canvas canvas){
-        //draw player at right angle
-        Matrix matrix = new Matrix();
-        matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-        Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
-        canvas.drawBitmap(rotated, GameClient.getHalveScreenWidth() - rotated.getWidth() / 2, GameClient.getHalveScreenHeight() - rotated.getHeight() / 2, null);
+        canvas = super.render(canvas);
         //draw mana bar
         canvas.drawRect(0, GameClient.getHalveScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalveScreenWidth() * 2, GameClient.getHalveScreenHeight() * 2, BAR_BACKGROUND_COLOR);
         canvas.drawRect(0, GameClient.getHalveScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalveScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalveScreenHeight() * 2, SKILL_BAR_COLOR);
@@ -65,15 +61,21 @@ public class User extends Player{
     }
 
     private void move() {
-        if (stunned || speed == 0)return;
-        xCoordinate = (float) (xCoordinate + Math.cos(angle) * speed * MAX_SPEED);
-        yCoordinate = (float) (yCoordinate + Math.sin(angle) * speed * MAX_SPEED);
-        if(map.getSolid((int)(xCoordinate - 0.5), (int)yCoordinate) || map.getSolid((int)(xCoordinate + 0.5), (int)yCoordinate)){
-            xCoordinate = (int)xCoordinate + 0.5f;
+        if (stunned || speed == 0) {
+            realSpeed = 0;
+            return;
         }
-        if(map.getSolid((int)xCoordinate, (int)(yCoordinate - 0.5)) || map.getSolid((int)xCoordinate, (int)(yCoordinate + 0.5))){
-            yCoordinate = (int)yCoordinate + 0.5f;
+        float newXCoordinate = (float) (xCoordinate + Math.cos(angle) * speed * MAX_SPEED);
+        float newYCoordinate = (float) (yCoordinate + Math.sin(angle) * speed * MAX_SPEED);
+        if(map.getSolid((int)(newXCoordinate - 0.5), (int)newYCoordinate) || map.getSolid((int)(newXCoordinate + 0.5), (int)newYCoordinate)){
+            newXCoordinate = (int)newXCoordinate + 0.5f;
         }
+        if(map.getSolid((int)newXCoordinate, (int)(newYCoordinate - 0.5)) || map.getSolid((int)newXCoordinate, (int)(newYCoordinate + 0.5))){
+            newYCoordinate = (int)newYCoordinate + 0.5f;
+        }
+        realSpeed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
+        xCoordinate = newXCoordinate;
+        yCoordinate = newYCoordinate;
     }
     public boolean onTouch(MotionEvent event){
         float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalveScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalveScreenHeight(), 2));

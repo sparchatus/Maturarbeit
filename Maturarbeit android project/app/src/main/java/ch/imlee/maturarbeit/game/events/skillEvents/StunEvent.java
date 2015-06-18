@@ -19,8 +19,8 @@ public class StunEvent extends SkillEvent {
 
     public StunEvent(String eventString){
         char[] eventChar = eventString.toCharArray();
-        playerID = eventChar[1];
-        stunTick = Double.valueOf(eventString.substring(2));
+        playerID = eventChar[2];
+        stunTick = Double.valueOf(eventString.substring(3));
     }
 
     @Override

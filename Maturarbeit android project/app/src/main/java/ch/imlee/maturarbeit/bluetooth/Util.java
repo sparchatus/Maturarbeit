@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.UUID;
+
+import ch.imlee.maturarbeit.game.events.Event;
 
 public class Util{
     public static BluetoothAdapter ba;
@@ -87,29 +90,30 @@ public class Util{
         return text;
     }
 
-    // TODO: the following method is used later to receive an Event
-    // (method must be called multiple times for multiple Events, should be done in a thread,
-    // because InputStream.read() is a blocking call and returns only when a byte is available or an Exception is thrown.
-    /*
-    public static Event receiveNextEvent(InputStream inputStream){
-        String text = "";
+    // if an EventString was not yet completely received by the time this method returns, store the unfinished String here
+    private static String temp = "";
+    public static ArrayList<Event> receiveEvents(InputStream inputStream){
+        String string = temp;
+        ArrayList<Event> events = new ArrayList<>();
         char c;
         try {
-            while(true) {
+            while(inputStream.available()>0) {
                 c = (char) inputStream.read();
                 if(c == '|'){
-                    break;
+                    events.add(Event.fromString(string));
+                    string = "";
                 }
                 else{
-                    text = text + c;
+                    string = string + c;
                 }
             }
         } catch (Exception e){
             e.printStackTrace();
         }
-        return new Event(text);
+        temp = string;
+        return events;
     }
-    */
+
 }
 
 

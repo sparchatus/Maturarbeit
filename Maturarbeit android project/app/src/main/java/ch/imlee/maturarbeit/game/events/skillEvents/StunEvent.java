@@ -30,7 +30,7 @@ public class StunEvent extends SkillEvent {
 
     @Override
     public String toString() {
-        return "S" + playerID + stunTick;
+        return super.toString() + "S" + playerID + stunTick;
     }
 
     @Override

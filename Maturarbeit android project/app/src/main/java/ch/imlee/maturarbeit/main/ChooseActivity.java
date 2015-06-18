@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -18,6 +19,7 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
+    Button startGameButton;
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
 
@@ -28,6 +30,10 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_choose);
         fluffImage = (ImageView) findViewById(R.id.fluffImage);
+        startGameButton = (Button) findViewById(R.id.startGameButton);
+        if(StartActivity.deviceType == DeviceType.HOST){
+            startGameButton.setVisibility(View.VISIBLE);
+        }
         createFluffRadioButtons();
     }
 

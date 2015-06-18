@@ -28,7 +28,7 @@ public class PlayerMotionEvent extends Event{
     }
 
     @Override
-    public String toEventString() {
+    public String toString() {
         return "P";
     }
 

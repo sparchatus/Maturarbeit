@@ -9,16 +9,16 @@
         android:layout_height="match_parent" />
 
     <ch.imlee.maturarbeit.game.views.ParticleButton
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="center_vertical|end"
         android:id="@+id/button_particle"
         android:text="@string/button_particle"
         android:background="@drawable/button_particle_states"/>
 
     <ch.imlee.maturarbeit.game.views.SkillButton
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="bottom|end"
         android:id="@+id/button_skill"
         android:text="@string/button_skill"

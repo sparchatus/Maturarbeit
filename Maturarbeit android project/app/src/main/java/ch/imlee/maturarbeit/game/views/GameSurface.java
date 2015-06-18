@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -12,14 +13,14 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.game.Fluffy;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.Map;
-import ch.imlee.maturarbeit.game.Particle;
-import ch.imlee.maturarbeit.game.Player;
-import ch.imlee.maturarbeit.game.PlayerType;
+import ch.imlee.maturarbeit.game.entity.Particle;
+import ch.imlee.maturarbeit.game.entity.Player;
+import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.Tick;
-import ch.imlee.maturarbeit.game.User;
+import ch.imlee.maturarbeit.game.entity.User;
 
 /**
  * Created by Sandro on 04.06.2015.
@@ -100,9 +101,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;
             map = new Map(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.test_map_2, options));
-            user = new Fluffy(8.5f, 5.5f, PlayerType.FLUFFY, map, this, 1, (byte)0, user);
+            user = new Ghost(8.5f, 5.5f, PlayerType.GHOST, map, this, (byte) 1, (byte) 0,user);
             playerArray = new Player[1];
-            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, 2, (byte)1, user);
+            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, (byte) 2, (byte) 1, user);
             particleButton = GameClient.particleButton;
             particleButton.setUser(user);
             skillButton = GameClient.skillButton;

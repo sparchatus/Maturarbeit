@@ -1,14 +1,15 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 09.06.2015.
  */
-public class Particle extends Entity{
+public class Particle extends Entity {
 
     public final int RENDER_RADIUS = GameClient.getHalveScreenHeight() / 45;
     public final float PARTICLE_RADIUS = (float) (1.0 / 5.0);

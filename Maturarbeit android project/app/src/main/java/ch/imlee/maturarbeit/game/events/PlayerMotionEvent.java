@@ -13,11 +13,10 @@ public class PlayerMotionEvent extends Event{
     private final byte ID;
 
     public PlayerMotionEvent(String eventString){
-        char[]eventChar = eventString.toCharArray();
-        X_COORDINATE = 0;
-        Y_COORDINATE = 0;
-        ANGLE = 0;
-        ID = 0;
+        X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
+        Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("a")));
+        ANGLE = Double.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf("i")));
+        ID = Byte.valueOf(eventString.substring(eventString.length() - 1));
     }
 
     public PlayerMotionEvent(float xCoordinate, float yCoordinate, double angle, byte playerId){
@@ -29,7 +28,7 @@ public class PlayerMotionEvent extends Event{
 
     @Override
     public String toString() {
-        return "P";
+        return "P" + "x" + X_COORDINATE + "y" + Y_COORDINATE + "a" + ANGLE + "i" + ID;
     }
 
     @Override

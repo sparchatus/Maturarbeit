@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.game.events.skillEvents;
 
-import ch.imlee.maturarbeit.game.Player;
-import ch.imlee.maturarbeit.game.events.Event;
+import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
@@ -21,11 +20,7 @@ public class StunEvent extends SkillEvent {
     public StunEvent(String eventString){
         char[] eventChar = eventString.toCharArray();
         playerID = eventChar[1];
-        String stunTickString = "";
-        for (int i = 2; i < eventChar.length; i ++){
-            stunTick += eventChar[i];
-        }
-        stunTick = Integer.getInteger(stunTickString);
+        stunTick = Double.valueOf(eventString.substring(2));
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Button;
 
-import ch.imlee.maturarbeit.game.User;
+import ch.imlee.maturarbeit.game.entity.User;
 
 /**
  * Created by Sandro on 08.06.2015.

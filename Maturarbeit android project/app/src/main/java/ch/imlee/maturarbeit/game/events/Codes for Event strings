@@ -1,7 +1,7 @@
 Starting characters:
     P - Player
     S - Skill
-        S - Stun
+    S - Stun
     G - Game state changed
         C - Game cancelled
         L - Game Left

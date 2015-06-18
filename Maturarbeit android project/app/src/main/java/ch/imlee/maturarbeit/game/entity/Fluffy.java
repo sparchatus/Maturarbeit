@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,19 +6,21 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.Map;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 07.06.2015.
  */
-public class Fluffy extends User{
+public class Fluffy extends User {
 
     private Player focusedPlayer = null;
     private int MAX_RANGE = 5;
     private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, int team, byte playerId, User theUser) {
+    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
         FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
     }
@@ -26,7 +28,7 @@ public class Fluffy extends User{
     @Override
     public void update() {
         super.update();
-        mana += speed / MAX_SPEED;
+        mana += realSpeed / MAX_SPEED;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }

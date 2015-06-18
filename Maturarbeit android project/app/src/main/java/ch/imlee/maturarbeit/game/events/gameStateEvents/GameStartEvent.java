@@ -4,9 +4,6 @@ import android.content.Intent;
 
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.events.Event;
-import ch.imlee.maturarbeit.main.ChooseActivity;
-import ch.imlee.maturarbeit.main.StartActivity;
 
 /**
  * Created by Lukas on 17.06.2015.

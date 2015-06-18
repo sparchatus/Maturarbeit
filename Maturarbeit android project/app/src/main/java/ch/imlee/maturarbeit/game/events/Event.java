@@ -7,8 +7,6 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStateEvent;
-import ch.imlee.maturarbeit.game.events.skillEvents.SkillEvent;
 import ch.imlee.maturarbeit.game.events.skillEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;

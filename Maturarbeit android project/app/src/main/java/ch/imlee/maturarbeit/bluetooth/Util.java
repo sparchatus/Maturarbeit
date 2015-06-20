@@ -56,7 +56,7 @@ public class Util{
         return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
-    public static void sendString(OutputStream outputStream, String text){
+    public static synchronized void sendString(OutputStream outputStream, String text){
         try {
             outputStream.write(text.getBytes());
             //outputStream.flush();

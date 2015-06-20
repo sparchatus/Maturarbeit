@@ -30,7 +30,6 @@ public class Client implements Runnable{
 
     private static BluetoothSocket socket;
     private static BluetoothDevice device;
-    private static String deviceName;
 
     public static InputStream inputStream;
     public static OutputStream outputStream;
@@ -89,7 +88,7 @@ public class Client implements Runnable{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction("connectionFinished");
 
-        c.registerReceiver(new Client().mReceiver, filter); // Don't forget to unregister during onDestroy
+        c.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 
         Util.ba.startDiscovery();
     }
@@ -133,8 +132,6 @@ public class Client implements Runnable{
             //try again
         }
 
-        deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
-
         System.out.println("...");
         System.out.println("connection successful");
         System.out.println("...");
@@ -142,10 +139,13 @@ public class Client implements Runnable{
         c.sendBroadcast(new Intent("connectionFinished"));
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver(){
+    private static final BroadcastReceiver mReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context context, Intent intent){
             String action = intent.getAction();
+            System.out.println("...");
+            System.out.println(action);
+            System.out.println("...");
 
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
@@ -172,7 +172,7 @@ public class Client implements Runnable{
         }
     };
 
-    private void manageConnection(){
+    private static void manageConnection(){
         try {
             c.unregisterReceiver(mReceiver);
         } catch (Exception e) {

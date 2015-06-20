@@ -141,8 +141,6 @@ public class StartActivity extends AppCompatActivity {
 
         if(view.getId()==R.id.hostButton){
             // host game
-            // clear previous sockets
-            Host.disconnectAll();
             deviceType = DeviceType.HOST;
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
@@ -196,6 +194,7 @@ public class StartActivity extends AppCompatActivity {
     public void onBackPressed(){
         //if connected to a host, disconnect
         Client.disconnect();
+        Host.disconnectAll();
 
 
         //if(buttonPressed){

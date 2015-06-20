@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.InvisibilityEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
@@ -15,9 +16,9 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Ghost extends User {
 
-    private final Bitmap INVISIBLE_GHOST;
-    private int MANA_CONSUMPTION = MAX_MANA / 100;
+    private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
+    private final Bitmap INVISIBLE_GHOST;
 
     public Ghost(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
@@ -62,5 +63,6 @@ public class Ghost extends User {
         }else {
             invisible = true;
         }
+        new InvisibilityEvent(ID, invisible);
     }
 }

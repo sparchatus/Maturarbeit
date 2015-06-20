@@ -26,6 +26,7 @@ public class Player extends Entity implements Tick {
 
     protected boolean stunned;
     protected boolean invisible;
+    protected boolean slimy;
 
     protected double stunTick;
 
@@ -120,5 +121,9 @@ public class Player extends Entity implements Tick {
 
     public byte getID(){
         return ID;
+    }
+
+    public void setSlimy(boolean slimy){
+        this.slimy = slimy;
     }
 }

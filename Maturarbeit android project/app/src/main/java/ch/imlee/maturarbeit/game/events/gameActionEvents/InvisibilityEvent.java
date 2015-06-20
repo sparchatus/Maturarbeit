@@ -11,7 +11,7 @@ public class InvisibilityEvent extends GameActionEvent{
 
     public InvisibilityEvent(String eventString){
         PLAYER_ID = Byte.valueOf(eventString.substring(2, 3));
-        if (Byte.valueOf(eventString.substring(2)) == 0) {
+        if (eventString.substring(3).equals("0")) {
             INVISIBLE = false;
         }else {
             INVISIBLE = true;

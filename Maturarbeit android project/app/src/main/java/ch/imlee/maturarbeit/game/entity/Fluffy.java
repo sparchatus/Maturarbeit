@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
@@ -66,9 +67,9 @@ public class Fluffy extends User {
     public void skillActivation() {
         if (mana == MAX_MANA && focusedPlayer != null){
             focusedPlayer.stun(gameThread.getSynchronizedTick() + STUN_TIME);
+            new StunEvent(focusedPlayer.ID, focusedPlayer.stunTick).send();
             focusedPlayer = null;
             mana -= MANA_CONSUMPTION;
-            //send the stun event
         }
     }
 }

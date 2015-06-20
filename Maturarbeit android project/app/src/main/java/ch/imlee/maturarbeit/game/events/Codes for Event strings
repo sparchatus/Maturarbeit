@@ -2,7 +2,7 @@ Starting characters:
     A - Game action
         S - Stun
         I - Invisibility
-        S - Slime
+        L - Slime
         M - Player Motion
     G - Game state changed
         C - Game cancelled

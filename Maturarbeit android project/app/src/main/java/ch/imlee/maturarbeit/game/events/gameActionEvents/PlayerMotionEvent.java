@@ -1,11 +1,12 @@
-package ch.imlee.maturarbeit.game.events;
+package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.game.events.Event;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 15.06.2015.
  */
-public class PlayerMotionEvent extends Event{
+public class PlayerMotionEvent extends Event {
 
     private final float X_COORDINATE, Y_COORDINATE;
     private final double ANGLE;
@@ -28,7 +29,7 @@ public class PlayerMotionEvent extends Event{
 
     @Override
     public String toString() {
-        return "P" + "x" + X_COORDINATE + "y" + Y_COORDINATE + "a" + ANGLE + "i" + PLAYER_ID;
+        return super.toString() + "M" + "x" + X_COORDINATE + "y" + Y_COORDINATE + "a" + ANGLE + "i" + PLAYER_ID;
     }
 
     @Override

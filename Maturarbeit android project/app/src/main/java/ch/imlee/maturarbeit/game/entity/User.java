@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
  /**
@@ -76,6 +77,7 @@ public class User extends Player {
         realSpeed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
         xCoordinate = newXCoordinate;
         yCoordinate = newYCoordinate;
+        new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
     }
     public boolean onTouch(MotionEvent event){
         float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalveScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalveScreenHeight(), 2));

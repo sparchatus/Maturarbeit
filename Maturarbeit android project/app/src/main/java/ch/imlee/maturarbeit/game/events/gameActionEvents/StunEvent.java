@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game.events.skillEvents;
+package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -6,7 +6,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 /**
  * Created by Sandro on 15.06.2015.
  */
-public class StunEvent extends SkillEvent {
+public class StunEvent extends GameActionEvent {
 
     public int playerID;
 

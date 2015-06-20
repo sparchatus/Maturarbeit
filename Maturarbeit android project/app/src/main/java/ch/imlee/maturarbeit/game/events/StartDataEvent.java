@@ -6,21 +6,21 @@ import ch.imlee.maturarbeit.game.entity.PlayerType;
 /**
  * Created by Sandro on 17.06.2015.
  */
-public class StartEvent extends Event{
+public class StartDataEvent extends Event{
 
     private final PlayerType[]TYPE;
     private final byte USER_ID;
     private final byte[]TEAM;
     private final MapEnum MAP;
 
-    public StartEvent(String eventString){
+    public StartDataEvent(String eventString){
         TYPE = new PlayerType[1];
         USER_ID = 0;
         TEAM = new byte[1];
         MAP = MapEnum.TEST_MAP_2;
     }
 
-    public StartEvent(PlayerType[] type, byte[] team, byte userID, MapEnum map) {
+    public StartDataEvent(PlayerType[] type, byte[] team, byte userID, MapEnum map) {
         TYPE = type;
         USER_ID = userID;
         TEAM = team;

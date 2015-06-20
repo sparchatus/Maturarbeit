@@ -1,7 +1,9 @@
 Starting characters:
-    P - Player
-    S - Stun
-    S - Invisibility
+    A - Game action
+        S - Stun
+        I - Invisibility
+        S - Slime
+        M - Player Motion
     G - Game state changed
         C - Game cancelled
         L - Game Left

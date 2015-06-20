@@ -3,11 +3,12 @@ package ch.imlee.maturarbeit.game.events;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
-import ch.imlee.maturarbeit.game.events.skillEvents.StunEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -54,7 +55,6 @@ public class Event {
     }
 
     public void send(){
-
         if(StartActivity.deviceType == DeviceType.HOST){
             this.sendAsHost();
         } else{

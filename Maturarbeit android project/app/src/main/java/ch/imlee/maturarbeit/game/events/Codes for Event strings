@@ -5,5 +5,8 @@ Starting characters:
     G - Game state changed
         C - Game cancelled
         L - Game Left
+        l - Game Loaded
         S - Game Started
         P - Game Paused
+        T - Team Changed
+        t - PlayerType Chosen

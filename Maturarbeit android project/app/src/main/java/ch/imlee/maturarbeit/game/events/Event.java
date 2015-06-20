@@ -45,7 +45,7 @@ public class Event {
             case 'G': switch (string.toCharArray()[1]){
                 case 'C': return new GameCancelledEvent();
                 case 'L': return new GameLeftEvent();
-                case 'S': return new GameStartEvent();
+                //case 'S': return new GameStartEvent();
                 case 'P': return new GamePausedEvent();
             }
         }

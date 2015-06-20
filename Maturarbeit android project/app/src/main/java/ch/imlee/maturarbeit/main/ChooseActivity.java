@@ -12,15 +12,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerTypeChosenEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.TeamChangedEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
     Button startGameButton;
+
+    private int selectedTeam;
+    private int selectedPlayerType;
+
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
     Thread eventReceiver = new EventReceiver();
@@ -31,10 +39,14 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         // don't allow landscape mode in the menu for design reasons
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_choose);
+
         fluffImage = (ImageView) findViewById(R.id.fluffImage);
         startGameButton = (Button) findViewById(R.id.startGameButton);
+
         if(StartActivity.deviceType == DeviceType.HOST){
-            startGameButton.setVisibility(View.VISIBLE);
+            startGameButton.setText("Start Game");
+        } else{
+            startGameButton.setText("Ready?");
         }
         createFluffRadioButtons();
         eventReceiver.start();
@@ -68,13 +80,14 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     }
     */
 
-    // for testing, lets just use some examples:
     private void createFluffRadioButtons(){
         RadioGroup fluffGroup = (RadioGroup) findViewById(R.id.fluffGroup);
         RadioButton fluffRadioButton;
         for(int i = 0; i < fluffButtons.length; ++i){
             fluffRadioButton = new RadioButton(this);
             fluffRadioButton.setText(fluffButtons[i]);
+            // to identify the button later
+            fluffRadioButton.setId(i);
             fluffGroup.addView(fluffRadioButton);
             fluffRadioButton.setOnClickListener(this);
         }
@@ -82,16 +95,39 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
     public void onClick(View v){
         v.setSelected(true);
+
         // check whether clicked button is in the teamGroup or fluffGroup
-        if(!((RadioButton)v).getText().toString().startsWith("Team ")){
+        if(((RadioButton)v).getText().toString().startsWith("Team ")){
+            selectedTeam = ((RadioButton) v).getText().charAt(5)-65;
+
+            System.out.println("...");
+            Toast.makeText(this, "selected team " + selectedTeam, Toast.LENGTH_SHORT).show();
+            System.out.println("...");
+        }
+        else{
+            selectedPlayerType = v.getId();
+
             fluffImage.setImageResource(R.mipmap.ic_launcher);
             fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
-
         }
     }
     public void onStartGameClick(View v){
-        new GameStartEvent().send();
-        startActivity(new Intent(this, GameClient.class));
+        if(StartActivity.deviceType == DeviceType.HOST) {
+            // check whether all Clients pressed "Ready?" Button:
+
+
+
+
+
+
+
+
+            //new GameStartEvent().send();
+            startActivity(new Intent(this, GameClient.class));
+        } else{
+            new TeamChangedEvent(selectedTeam).send();
+            new PlayerTypeChosenEvent(PlayerType.values()[selectedPlayerType]).send();
+        }
     }
 
     @Override

@@ -15,19 +15,23 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.MapEnum;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerTypeChosenEvent;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.TeamChangedEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
-    Button startGameButton;
+    public static int playersReady = 0;
+    public static Button startGameButton;
 
-    private int selectedTeam;
+    private byte selectedTeam;
     private int selectedPlayerType;
+
+    public static GameStartEvent gameStartEvent;
 
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
@@ -44,11 +48,14 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         startGameButton = (Button) findViewById(R.id.startGameButton);
 
         if(StartActivity.deviceType == DeviceType.HOST){
-            startGameButton.setText("Start Game");
+            startGameButton.setText("Clients Ready: " + playersReady + '/' + Host.sockets.size());
+            startGameButton.setClickable(false);
         } else{
             startGameButton.setText("Ready?");
         }
         createFluffRadioButtons();
+
+        gameStartEvent = new GameStartEvent(MapEnum.TEST_MAP_2);
         eventReceiver.start();
     }
 
@@ -98,11 +105,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
         // check whether clicked button is in the teamGroup or fluffGroup
         if(((RadioButton)v).getText().toString().startsWith("Team ")){
-            selectedTeam = ((RadioButton) v).getText().charAt(5)-65;
-
-            System.out.println("...");
-            Toast.makeText(this, "selected team " + selectedTeam, Toast.LENGTH_SHORT).show();
-            System.out.println("...");
+            // to get 0 for 'A' and 1 for 'B', we have to do the following. This is because we cast a char to an int, so it takes the ASCII value, which is 65 for 'A' and 66 for 'B'
+            selectedTeam = (byte)(((RadioButton) v).getText().charAt(5)-65);
         }
         else{
             selectedPlayerType = v.getId();
@@ -111,22 +115,14 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
             fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
         }
     }
+
     public void onStartGameClick(View v){
         if(StartActivity.deviceType == DeviceType.HOST) {
             // check whether all Clients pressed "Ready?" Button:
-
-
-
-
-
-
-
-
-            //new GameStartEvent().send();
+            gameStartEvent.send();
             startActivity(new Intent(this, GameClient.class));
         } else{
-            new TeamChangedEvent(selectedTeam).send();
-            new PlayerTypeChosenEvent(PlayerType.values()[selectedPlayerType]).send();
+            new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
         }
     }
 

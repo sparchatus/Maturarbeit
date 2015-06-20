@@ -72,14 +72,9 @@ public class Event {
         Util.sendString(Client.outputStream, this.toString() + '|');
     }
 
-    public void handle(){
-        try{
-            throw new Exception("Subclasses should handle Events on their own");
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-
+    public boolean handle(){
+        // handled in the update method, return false. If a subclass handles itself, it returns true
+        return false;
     }
 
 }

@@ -229,7 +229,11 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
-        unregisterReceiver(finishReceiver);
+        try {
+            unregisterReceiver(finishReceiver);
+        } catch(Exception e){
+            // ignore, probably already unregistered
+        }
     }
 
     @Override

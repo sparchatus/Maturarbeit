@@ -7,6 +7,5 @@ Starting characters:
         L - Game Left
         l - Game Loaded
         S - Game Started
+        s - Stats Selected
         P - Game Paused
-        T - Team Changed
-        t - PlayerType Chosen

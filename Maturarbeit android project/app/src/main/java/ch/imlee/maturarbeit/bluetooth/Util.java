@@ -59,7 +59,7 @@ public class Util{
     public static void sendString(OutputStream outputStream, String text){
         try {
             outputStream.write(text.getBytes());
-            outputStream.flush();
+            //outputStream.flush();
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -103,6 +103,11 @@ public class Util{
                 c = (char) inputStream.read();
                 if(c == '|'){
                     events.add(Event.fromString(string));
+
+                    System.out.println("...");
+                    System.out.println("Event received: " + string);
+                    System.out.println("...");
+
                     string = "";
                 }
                 else{
@@ -131,7 +136,28 @@ public class Util{
 
 
 
+/*
 
+G,
+s20Gs2,0
+s,
+G2,0
+sGs2,0
+G20
+s,G2,0
+s,
+G,
+s20Gs2,0
+
+
+
+
+
+
+
+
+
+ */
 
 
 

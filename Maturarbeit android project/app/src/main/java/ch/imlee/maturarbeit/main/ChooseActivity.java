@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
@@ -109,7 +108,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
             selectedTeam = (byte)(((RadioButton) v).getText().charAt(5)-65);
         }
         else{
-            selectedPlayerType = v.getId();
+            selectedPlayerType = (byte)v.getId();
 
             fluffImage.setImageResource(R.mipmap.ic_launcher);
             fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));

@@ -35,12 +35,12 @@ public class Client implements Runnable{
     public static InputStream inputStream;
     public static OutputStream outputStream;
 
-    private Thread connectThread = new Thread(this, "connectThread");
+    private static Thread connectThread = new Thread(new Client(), "connectThread");
 
     // used to check whether device discovery finished automatically or was cancelled
     private static boolean discoveryCancelled = false;
 
-    public Client(Context context){
+    public static void initialize(Context context){
         c = context;
 
         // name isn't allowed to end with "_HOST", because that's how a host is identified
@@ -60,7 +60,7 @@ public class Client implements Runnable{
         findDevices();
     }
 
-    private void findDevices() {
+    private static void findDevices() {
         devices = new ArrayList<>();
         deviceNames = new ArrayList<>();
         // the adapter puts the found devices into the ListView using the deviceNames ArrayList
@@ -89,12 +89,12 @@ public class Client implements Runnable{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction("connectionFinished");
 
-        c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
+        c.registerReceiver(new Client().mReceiver, filter); // Don't forget to unregister during onDestroy
 
         Util.ba.startDiscovery();
     }
 
-    private void connectToDevice(BluetoothDevice btDevice){
+    private static void connectToDevice(BluetoothDevice btDevice){
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
@@ -185,7 +185,6 @@ public class Client implements Runnable{
             e.printStackTrace();
             System.exit(1);
         }
-        Util.sendString(outputStream, "hello " + deviceName + ", I'm " + Util.ba.getName());
 
         Toast.makeText(c, "connected to " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_SHORT).show();
 
@@ -198,6 +197,16 @@ public class Client implements Runnable{
             public void run() {
                 while(true){
                     if(Util.receiveString(inputStream).length() > 0){
+                        // to get rid of this character
+                        try {
+                            inputStream.read();
+                        } catch(Exception e){
+                            e.printStackTrace();
+                            System.exit(1);
+                        }
+                        System.out.println("...");
+                        System.out.println("Host initiated choosing phase");
+                        System.out.println("...");
                         StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         c.startActivity(StartActivity.startChooseActivity);
                         c.sendBroadcast(new Intent("finish"));

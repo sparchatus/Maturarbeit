@@ -1,7 +1,5 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
-import android.widget.Toast;
-
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.ChooseActivity;
@@ -18,9 +16,23 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
         TEAM = team;
     }
 
+    public PlayerStatsSelectedEvent(String string){
+        if(!string.startsWith(super.toString()+'s')){
+            try{
+                throw new Exception("PlayerStatsSelectedEvent must start with \"Gs\"");
+            } catch(Exception e){
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        string = string.substring(2);
+        TYPE = PlayerType.values()[Integer.parseInt(string.substring(0,string.indexOf(',')))];
+        TEAM = Byte.parseByte(string.substring(string.indexOf(',')+1));
+    }
+
     @Override
     public String toString(){
-        return super.toString() + 't' + TYPE.ordinal() + ',' + TEAM;
+        return super.toString() + 's' + TYPE.ordinal() + ',' + TEAM;
     }
 
     @Override

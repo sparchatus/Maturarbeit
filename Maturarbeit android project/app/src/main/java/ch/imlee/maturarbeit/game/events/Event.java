@@ -3,10 +3,12 @@ package ch.imlee.maturarbeit.game.events;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
+import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent;
 import ch.imlee.maturarbeit.game.events.skillEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;
@@ -45,7 +47,7 @@ public class Event {
             case 'G': switch (string.toCharArray()[1]){
                 case 'C': return new GameCancelledEvent();
                 case 'L': return new GameLeftEvent();
-                //case 'S': return new GameStartEvent();
+                case 's': return new PlayerStatsSelectedEvent(string);
                 case 'P': return new GamePausedEvent();
             }
         }
@@ -60,6 +62,9 @@ public class Event {
         } else{
             this.sendAsClient();
         }
+        System.out.println("...");
+        System.out.println("Event sent: " + this.toString());
+        System.out.println("...");
     }
 
     private void sendAsHost(){

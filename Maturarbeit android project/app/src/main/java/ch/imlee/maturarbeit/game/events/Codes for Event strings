@@ -7,5 +7,7 @@ Starting characters:
     G - Game state changed
         C - Game cancelled
         L - Game Left
+        l - Game Loaded
         S - Game Started
+        s - Stats Selected
         P - Game Paused

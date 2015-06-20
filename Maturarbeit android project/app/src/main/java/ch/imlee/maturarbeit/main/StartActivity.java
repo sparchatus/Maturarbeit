@@ -29,7 +29,6 @@ import java.io.IOException;
 
 public class StartActivity extends AppCompatActivity {
 
-    Host host;
     public static DeviceType deviceType;
 
     // those Views should be accessible from outside this class
@@ -146,14 +145,14 @@ public class StartActivity extends AppCompatActivity {
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
-            host = new Host(getApplicationContext());
+            Host.initialize(getApplicationContext());
 
         }
         else if(view.getId()==R.id.joinButton){
             // join game as client
             deviceType = DeviceType.CLIENT;
             statusText.setText("searching for hosts");
-            new Client(getApplicationContext());
+            Client.initialize(getApplicationContext());
         } else{
             if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
@@ -164,6 +163,9 @@ public class StartActivity extends AppCompatActivity {
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
                     try {
                         Host.outputStreams.get(i).write(0);
+                        System.out.println("...");
+                        System.out.println("letting outputStream number " + (i+1) + " know that the choosing phase started.");
+                        System.out.println("...");
                     } catch(Exception e){
                         e.printStackTrace();
                         if(e instanceof IOException){
@@ -177,11 +179,11 @@ public class StartActivity extends AppCompatActivity {
                         }
                     }
                 }
-                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
-                Util.ba.setName(usernameEditText.getText().toString());
-                sendBroadcast(new Intent("cancelAccept"));
                 // starts the ChooseActivity
                 if(Host.sockets.size()>0) {
+                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
+                    Util.ba.setName(usernameEditText.getText().toString());
+                    sendBroadcast(new Intent("cancelAccept"));
                     startActivity(startChooseActivity);
                     finish();
                 }
@@ -192,6 +194,7 @@ public class StartActivity extends AppCompatActivity {
     public void onBackPressed(){
         //if connected to a host, disconnect
         Client.disconnect();
+        Host.disconnectAll();
 
 
         //if(buttonPressed){
@@ -229,7 +232,11 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
-        unregisterReceiver(finishReceiver);
+        try {
+            unregisterReceiver(finishReceiver);
+        } catch(Exception e){
+            // ignore, probably already unregistered
+        }
     }
 
     @Override

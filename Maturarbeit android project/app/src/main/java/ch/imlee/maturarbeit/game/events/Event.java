@@ -7,8 +7,8 @@ import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -46,7 +46,7 @@ public class Event {
             case 'G': switch (string.toCharArray()[1]){
                 case 'C': return new GameCancelledEvent();
                 case 'L': return new GameLeftEvent();
-                case 'S': return new GameStartEvent();
+                case 's': return new PlayerStatsSelectedEvent(string);
                 case 'P': return new GamePausedEvent();
             }
         }
@@ -60,6 +60,9 @@ public class Event {
         } else{
             this.sendAsClient();
         }
+        System.out.println("...");
+        System.out.println("Event sent: " + this.toString());
+        System.out.println("...");
     }
 
     private void sendAsHost(){
@@ -72,14 +75,9 @@ public class Event {
         Util.sendString(Client.outputStream, this.toString() + '|');
     }
 
-    public void handle(){
-        try{
-            throw new Exception("Subclasses should handle Events on their own");
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-
+    public boolean handle(){
+        // handled in the update method, return false. If a subclass handles itself, it returns true
+        return false;
     }
 
 }

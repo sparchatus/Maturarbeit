@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.Ghost;
-import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
@@ -66,6 +65,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gameThread.user.onTouch(event);
+    }
+
+    public GameThread getGameThread(){
+        return gameThread;
     }
 
     public class GameThread extends Thread implements Tick{

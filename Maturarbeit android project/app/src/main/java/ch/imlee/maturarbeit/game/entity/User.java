@@ -5,7 +5,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -56,8 +56,8 @@ public class User extends Player {
     public Canvas render(Canvas canvas){
         canvas = super.render(canvas);
         //draw mana bar
-        canvas.drawRect(0, GameClient.getHalveScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalveScreenWidth() * 2, GameClient.getHalveScreenHeight() * 2, BAR_BACKGROUND_COLOR);
-        canvas.drawRect(0, GameClient.getHalveScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalveScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalveScreenHeight() * 2, SKILL_BAR_COLOR);
+        canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
+        canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
         return  canvas;
     }
 
@@ -80,16 +80,16 @@ public class User extends Player {
         new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
     }
     public boolean onTouch(MotionEvent event){
-        float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalveScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalveScreenHeight(), 2));
-        float newAngle = (float) Math.acos((event.getX() - GameClient.getHalveScreenWidth()) / distance);
-        if(event.getY() - GameClient.getHalveScreenHeight() < 0){
+        float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalfScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalfScreenHeight(), 2));
+        float newAngle = (float) Math.acos((event.getX() - GameClient.getHalfScreenWidth()) / distance);
+        if(event.getY() - GameClient.getHalfScreenHeight() < 0){
             newAngle *= -1;
         }
         if (distance <= user.PLAYER_RADIUS * PLAYER_SIDE){
             speed = 0;
             return true;
         }else {
-            float newSpeed = distance / GameClient.getHalveScreenHeight();
+            float newSpeed = distance / GameClient.getHalfScreenHeight();
             if (newSpeed > 1) {
                 newSpeed = 1;
             }

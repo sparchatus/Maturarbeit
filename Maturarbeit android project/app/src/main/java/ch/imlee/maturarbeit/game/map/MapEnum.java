@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.map;
 
 /**
  * Created by Sandro on 17.06.2015.

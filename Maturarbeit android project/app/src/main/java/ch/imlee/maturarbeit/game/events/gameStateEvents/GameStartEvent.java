@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.MapEnum;
+import ch.imlee.maturarbeit.game.map.MapEnum;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;

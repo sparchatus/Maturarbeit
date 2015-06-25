@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.map;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.User;
 
 /**
@@ -48,7 +49,7 @@ public class Map {
     public Canvas render(Canvas canvas, User user){
         for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
             for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
-                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalveScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.PLAYER_SIDE, GameClient.getHalveScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.PLAYER_SIDE, null);
+                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalfScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.PLAYER_SIDE, GameClient.getHalfScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.PLAYER_SIDE, null);
             }
         }
         return canvas;

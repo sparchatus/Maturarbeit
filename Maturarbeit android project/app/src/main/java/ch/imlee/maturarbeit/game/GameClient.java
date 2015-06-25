@@ -7,19 +7,21 @@ import android.os.Bundle;
 import android.view.Display;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
-    //TODO: change halve to half :D
 
     private static int screenWidth;
     private static int screenHeight;
-    private static int halveScreenWidth;
-    private static int halveScreenHeight;
+    private static int halfScreenWidth;
+    private static int halfScreenHeight;
     private static Resources rec;
     public static ParticleButton particleButton;
     public static SkillButton skillButton;
+    public static GameSurface.GameThread gameThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +30,19 @@ public class GameClient extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
-        halveScreenWidth = screenWidth / 2;
-        halveScreenHeight = screenHeight / 2;
+        halfScreenWidth = screenWidth / 2;
+        halfScreenHeight = screenHeight / 2;
         rec = getResources();
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
+    }
+
+    public static void initializeStartData(GameStartEvent startData){
+
+    }
+
+    public static void startSynchronizedTick(){
+
     }
 
     public static int getScreenWidth(){
@@ -43,12 +53,12 @@ public class GameClient extends Activity {
         return screenHeight;
     }
 
-    public static int getHalveScreenWidth(){
-        return halveScreenWidth;
+    public static int getHalfScreenWidth(){
+        return halfScreenWidth;
     }
 
-    public static int getHalveScreenHeight(){
-        return halveScreenHeight;
+    public static int getHalfScreenHeight(){
+        return halfScreenHeight;
     }
 
     public static Resources getRec(){

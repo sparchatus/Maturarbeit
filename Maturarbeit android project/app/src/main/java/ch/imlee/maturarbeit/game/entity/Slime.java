@@ -1,6 +1,6 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 

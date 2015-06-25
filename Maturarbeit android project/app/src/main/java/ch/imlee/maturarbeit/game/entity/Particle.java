@@ -11,7 +11,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Particle extends Entity {
 
-    public final int RENDER_RADIUS = GameClient.getHalveScreenHeight() / 45;
+    public final int RENDER_RADIUS = GameClient.getHalfScreenHeight() / 45;
     public final float PARTICLE_RADIUS = (float) (1.0 / 5.0);
     private final float SPEED = 0.3f;
     private final Paint color;
@@ -54,7 +54,7 @@ public class Particle extends Entity {
     }
 
     public Canvas render(Canvas canvas){
-        canvas.drawCircle((xCoordinate - user.getXCoordinate()) * user.PLAYER_SIDE + GameClient.getHalveScreenWidth(), (yCoordinate - user.getYCoordinate()) * user.PLAYER_SIDE + GameClient.getHalveScreenHeight(), RENDER_RADIUS, color);
+        canvas.drawCircle((xCoordinate - user.getXCoordinate()) * user.PLAYER_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate()) * user.PLAYER_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
         return canvas;
     }
 }

@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.Map;
+import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -37,6 +37,7 @@ public class Fluffy extends User {
             if (Math.sqrt(Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) + Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2)) > MAX_RANGE){
                 focusedPlayer = null;
             }
+
         }
     }
 
@@ -44,7 +45,7 @@ public class Fluffy extends User {
     public Canvas render(Canvas canvas) {
         canvas =  super.render(canvas);
         if (focusedPlayer != null){
-            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) *    PLAYER_SIDE + GameClient.getHalveScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalveScreenHeight(), null);
+            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) *    PLAYER_SIDE + GameClient.getHalfScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenHeight(), null);
         }
         return canvas;
     }
@@ -53,7 +54,7 @@ public class Fluffy extends User {
     public boolean onTouch(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             for (Player player : gameThread.getPlayerArray()) {
-                if (Math.sqrt(Math.pow((event.getX() - GameClient.getHalveScreenWidth()) / PLAYER_SIDE + user.getXCoordinate() - player.getXCoordinate(), 2) + Math.pow((event.getY() - GameClient.getHalveScreenHeight()) / PLAYER_SIDE + user.getYCoordinate() - player.getYCoordinate(), 2)) < player.PLAYER_RADIUS) {
+                if (Math.sqrt(Math.pow((event.getX() - GameClient.getHalfScreenWidth()) / PLAYER_SIDE + user.getXCoordinate() - player.getXCoordinate(), 2) + Math.pow((event.getY() - GameClient.getHalfScreenHeight()) / PLAYER_SIDE + user.getYCoordinate() - player.getYCoordinate(), 2)) < player.PLAYER_RADIUS) {
                     if (player.TEAM != user.TEAM) {
                         focusedPlayer = player;
                         return false;

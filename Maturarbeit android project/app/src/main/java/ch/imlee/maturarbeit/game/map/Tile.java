@@ -1,4 +1,4 @@
-package ch.imlee.maturarbeit.game;
+package ch.imlee.maturarbeit.game.map;
 
 import android.graphics.Bitmap;
 

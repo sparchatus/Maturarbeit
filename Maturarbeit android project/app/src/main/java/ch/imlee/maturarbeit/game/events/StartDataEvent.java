@@ -1,6 +1,6 @@
 package ch.imlee.maturarbeit.game.events;
 
-import ch.imlee.maturarbeit.game.MapEnum;
+import ch.imlee.maturarbeit.game.map.MapEnum;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 
 /**

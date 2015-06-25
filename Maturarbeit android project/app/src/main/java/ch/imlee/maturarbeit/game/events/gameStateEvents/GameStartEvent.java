@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.map.MapEnum;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -27,17 +26,17 @@ public class GameStartEvent extends GameStateEvent {
 
     private ArrayList<PlayerType> types = new ArrayList<>();
     private ArrayList<Byte> teams = new ArrayList<>();
-    private final MapEnum MAP;
+    private final int MAP_ID;
     private byte userID = 0;
 
-    public GameStartEvent(ArrayList<PlayerType> types, ArrayList<Byte> teams,  MapEnum map) {
+    public GameStartEvent(ArrayList<PlayerType> types, ArrayList<Byte> teams,  int mapID) {
         this.types = types;
         this.teams = teams;
-        MAP = map;
+        MAP_ID = mapID;
     }
 
-    public GameStartEvent(MapEnum map){
-        MAP = map;
+    public GameStartEvent(int mapID){
+        MAP_ID = mapID;
     }
 
     public void addPlayer(PlayerType type, byte team){
@@ -46,15 +45,31 @@ public class GameStartEvent extends GameStateEvent {
     }
 
     public int getPlayerCount(){
-        return teams.size();
+        return types.size();
+    }
+
+    public int getUserID(){
+        return userID;
+    }
+
+    public int getMapID(){
+        return MAP_ID;
+    }
+
+    public ArrayList<PlayerType> getPlayerTypes(){
+        return types;
+    }
+
+    public ArrayList<Byte> getTeams(){
+        return teams;
     }
 
     public String toString() {
         String playerInfo = "";
-        for (int i = 0; i < types.size(); i++){
+        for (int i = 0; i < types.size(); i++) {
             playerInfo += "p" + types.get(i).ordinal() + "t" + teams.get(i);
         }
-        return super.toString() + 'S' + playerInfo + "i" + userID + "m" + MAP.ordinal();
+        return super.toString() + 'S' + playerInfo + "i" + userID + "m" + MAP_ID;
     }
 
     @Override

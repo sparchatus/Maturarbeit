@@ -13,7 +13,10 @@ import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
+import ch.imlee.maturarbeit.game.entity.Slime;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
@@ -78,6 +81,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          * @see #run()
          */
         private boolean running;
+        private boolean loading;
 
         /**
          *
@@ -100,17 +104,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          */
         @Override
         public void run() {
-            //display loading screen and wait until all information is gathered
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;
-            map = new Map(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.test_map_2, options));
-            user = new Ghost(8.5f, 5.5f, PlayerType.GHOST, map, this, (byte) 1, (byte) 0,user);
-            playerArray = new Player[1];
-            playerArray[0] = new Player(27.5f, 24.5f, PlayerType.GHOST, map, this, (byte) 2, (byte) 1, user);
-            particleButton = GameClient.particleButton;
+            loading = true;
+            particleButton = GameClient.getParticleButton();
             particleButton.setUser(user);
-            skillButton = GameClient.skillButton;
+            skillButton = GameClient.getSkillButton();
             skillButton.setUser(user);
+            while(loading){
+                //just while the real start up isn't working
+                user = new Ghost(8.5f, 5.5f, PlayerType.GHOST, map, this, (byte) 1, (byte) 0);
+                loading = false;
+            }
             while(running){
                 update();
                 render();
@@ -171,6 +174,30 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                     holder.unlockCanvasAndPost(c);
                 }
             }
+        }
+
+        public void setStartData(GameStartEvent startData){
+            if (!loading)return;
+            map = new Map(getResources(), startData.getMapID());
+            playerArray = new Player[startData.getPlayerCount()];
+            for (byte i = 0; i < startData.getPlayerCount(); i++){
+                if (i == startData.getUserID()){
+                    switch (startData.getPlayerTypes().get(i)){
+                        case FLUFFY:playerArray[i] = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                            break;
+                        case GHOST:playerArray[i] = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                            break;
+                        case SLIME:playerArray[i] = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                    }
+                }else {
+                    playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
+                }
+            }
+        }
+
+        public void endLoading(){
+            synchronizedTick = 0;
+            loading = false;
         }
 
         /**

@@ -18,11 +18,22 @@ public class Map {
     private final int BORDER_TILES_TOP = 5;
     private final int BORDER_TILES_RIGHT = 8;
     public final int TILE_SIDE;
+    private final float MAP_WIDTH, MAP_HEIGHT;
+    private final float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
     private final Tile[][]TILE_MAP;
 
-    public Map(Resources rec, Bitmap pixelMap) {
+    public Map(Resources rec, int pixelMapID) {
         TILE_SIDE = GameClient.getScreenHeight() / TILES_IN_SCREEN_HEIGHT;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap pixelMap = BitmapFactory.decodeResource(rec, pixelMapID, options);
+        MAP_WIDTH = pixelMap.getWidth();
+        MAP_HEIGHT = pixelMap.getHeight();
+        TEAM_1_START_X = 8.5f;
+        TEAM_1_START_Y = 5.5f;
+        TEAM_2_START_X = MAP_WIDTH - 8.5f;
+        TEAM_2_START_Y = MAP_HEIGHT - 5.5f;
         Tile voidTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.void_tile), TILE_SIDE, TILE_SIDE, false), false);
         Tile groundTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.ground_tile), TILE_SIDE, TILE_SIDE, false), false);
         Tile wallTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.wall_tile), TILE_SIDE, TILE_SIDE, false), true);
@@ -57,5 +68,21 @@ public class Map {
 
     public boolean getSolid(int xTileCoordinate, int yTileCoordinate){
         return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
+    }
+
+    public float getStartX(byte team) {
+        if (team == 1){
+            return TEAM_1_START_X;
+        }else {
+            return TEAM_2_START_X;
+        }
+    }
+
+    public float getStartY(byte team) {
+        if (team == 1){
+            return TEAM_1_START_Y;
+        }else {
+            return TEAM_2_START_Y;
+        }
     }
 }

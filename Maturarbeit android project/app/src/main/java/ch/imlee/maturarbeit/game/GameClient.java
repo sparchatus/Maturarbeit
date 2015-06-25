@@ -19,14 +19,17 @@ public class GameClient extends Activity {
     private static int halfScreenWidth;
     private static int halfScreenHeight;
     private static Resources rec;
-    public static ParticleButton particleButton;
-    public static SkillButton skillButton;
-    public static GameSurface.GameThread gameThread;
+    private static ParticleButton particleButton;
+    private static SkillButton skillButton;
+    private static GameSurface gameSurface;
+    private static GameSurface.GameThread gameThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+        gameThread = gameSurface.getGameThread();
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
@@ -37,31 +40,39 @@ public class GameClient extends Activity {
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
 
-    public static void initializeStartData(GameStartEvent startData){
-
+    public static void initializeStartData(GameStartEvent gameStartEvent) {
+        gameThread.setStartData(gameStartEvent);
     }
 
-    public static void startSynchronizedTick(){
-
+    public static void startSynchronizedTick() {
+        gameThread.endLoading();
     }
 
-    public static int getScreenWidth(){
+    public static int getScreenWidth() {
         return screenWidth;
     }
 
-    public static int getScreenHeight(){
+    public static int getScreenHeight() {
         return screenHeight;
     }
 
-    public static int getHalfScreenWidth(){
+    public static int getHalfScreenWidth() {
         return halfScreenWidth;
     }
 
-    public static int getHalfScreenHeight(){
+    public static int getHalfScreenHeight() {
         return halfScreenHeight;
     }
 
-    public static Resources getRec(){
+    public static SkillButton getSkillButton() {
+        return skillButton;
+    }
+
+    public static ParticleButton getParticleButton() {
+        return particleButton;
+    }
+
+    public static Resources getRec() {
         return rec;
     }
 }

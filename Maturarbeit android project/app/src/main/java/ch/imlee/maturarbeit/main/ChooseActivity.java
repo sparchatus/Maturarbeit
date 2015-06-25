@@ -16,7 +16,6 @@ import android.widget.RadioGroup;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.map.MapEnum;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
@@ -54,7 +53,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         }
         createFluffRadioButtons();
 
-        gameStartEvent = new GameStartEvent(MapEnum.TEST_MAP_2);
+        gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
         eventReceiver.start();
     }
 

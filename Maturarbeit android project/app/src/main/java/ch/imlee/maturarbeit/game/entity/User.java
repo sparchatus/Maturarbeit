@@ -79,6 +79,7 @@ public class User extends Player {
         yCoordinate = newYCoordinate;
         new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
     }
+
     public boolean onTouch(MotionEvent event){
         float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalfScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalfScreenHeight(), 2));
         float newAngle = (float) Math.acos((event.getX() - GameClient.getHalfScreenWidth()) / distance);

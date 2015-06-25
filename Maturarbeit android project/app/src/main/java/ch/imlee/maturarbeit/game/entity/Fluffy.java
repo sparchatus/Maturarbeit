@@ -21,8 +21,8 @@ public class Fluffy extends User {
     private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId, User theUser) {
-        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
+    public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
+        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, null);
         FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
     }
 

@@ -192,6 +192,7 @@ public class StartActivity extends AppCompatActivity {
     public void onBackPressed(){
         //if connected to a host, disconnect
         Client.disconnect();
+        Host.disconnect();
 
 
         //if(buttonPressed){

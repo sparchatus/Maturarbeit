@@ -139,5 +139,22 @@ public class Host implements Runnable {
         }
     };
 
+    public static void disconnect(){
+        try{
+            for(int i = 0; i < inputStreams.size(); ++i){
+                inputStreams.get(i).close();
+                outputStreams.get(i).close();
+                sockets.get(i).close();
+            }
+            inputStreams.clear();
+            outputStreams.clear();
+            sockets.clear();
+            deviceNames.clear();
+        } catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
 
 }

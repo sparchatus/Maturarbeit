@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
@@ -50,7 +51,6 @@ public class Host implements Runnable {
 
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
-        deviceNames.clear();
         adapter.notifyDataSetChanged();
 
         try {
@@ -84,7 +84,7 @@ public class Host implements Runnable {
 
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
 
-        /*if(!acceptThread.isAlive())*/ acceptThread.start();
+        acceptThread.start();
     }
 
     public void run() {
@@ -127,10 +127,10 @@ public class Host implements Runnable {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action.equals("cancelAccept")) {
+                c.unregisterReceiver(cancelAcceptReceiver);
                 try {
                     acceptThread.interrupt();
                     serverSocket.close();
-                    c.unregisterReceiver(cancelAcceptReceiver);
                     c.unregisterReceiver(threadFinishedReceiver);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -140,25 +140,5 @@ public class Host implements Runnable {
         }
     };
 
-    public static void disconnectAll(){
-        sockets.clear();
-        for(int i = 0; i < outputStreams.size(); ++i){
-            try {
-                outputStreams.get(i).close();
-                inputStreams.get(i).close();
-            } catch(Exception e){
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
-        outputStreams.clear();
-        inputStreams.clear();
-    }
 
 }
-
-
-
-
-
-

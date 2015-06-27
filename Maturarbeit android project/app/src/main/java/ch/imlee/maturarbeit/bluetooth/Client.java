@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.bluetooth;
 
+import ch.imlee.maturarbeit.main.ChooseActivity;
 import ch.imlee.maturarbeit.main.StartActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -29,6 +30,7 @@ public class Client implements Runnable{
 
     private static BluetoothSocket socket;
     private static BluetoothDevice device;
+    private static String deviceName;
 
     public static InputStream inputStream;
     public static OutputStream outputStream;
@@ -43,15 +45,15 @@ public class Client implements Runnable{
 
         // name isn't allowed to end with "_HOST", because that's how a host is identified
         if(StartActivity.usernameEditText.getText().toString().endsWith("_HOST")){
-                Toast.makeText(c, "Invalid Username", Toast.LENGTH_LONG).show();
-                StartActivity.hostButton.setVisibility(View.VISIBLE);
-                StartActivity.joinButton.setVisibility(View.VISIBLE);
-                StartActivity.usernameTextView.setVisibility(View.VISIBLE);
-                StartActivity.usernameEditText.setVisibility(View.VISIBLE);
+            Toast.makeText(c, "Invalid Username", Toast.LENGTH_LONG).show();
+            StartActivity.hostButton.setVisibility(View.VISIBLE);
+            StartActivity.joinButton.setVisibility(View.VISIBLE);
+            StartActivity.usernameTextView.setVisibility(View.VISIBLE);
+            StartActivity.usernameEditText.setVisibility(View.VISIBLE);
 
-                StartActivity.statusText.setVisibility(View.INVISIBLE);
-                StartActivity.listView.setVisibility(View.INVISIBLE);
-                StartActivity.progressBar.setVisibility(View.INVISIBLE);
+            StartActivity.statusText.setVisibility(View.INVISIBLE);
+            StartActivity.listView.setVisibility(View.INVISIBLE);
+            StartActivity.progressBar.setVisibility(View.INVISIBLE);
 
         }
         Util.ba.setName(StartActivity.usernameEditText.getText().toString());
@@ -59,6 +61,9 @@ public class Client implements Runnable{
     }
 
     private void findDevices() {
+        if(Util.ba.isDiscovering()){
+            Toast.makeText(c, "discovering", Toast.LENGTH_SHORT).show();
+        }
         devices = new ArrayList<>();
         deviceNames = new ArrayList<>();
         // the adapter puts the found devices into the ListView using the deviceNames ArrayList
@@ -87,24 +92,10 @@ public class Client implements Runnable{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction("connectionFinished");
 
-        c.registerReceiver(this.mReceiver, filter);
+        c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
 
-        if(Util.ba.startDiscovery()){
-            System.out.println("Discovery started successfully");
-        } else{
-            System.out.println("Discovery didn't start correctly");
-        }
-        //DEBUG
-
-        while(true){try {
-            Thread.sleep(1000);
-        } catch (Exception e){
-
-        }
-            if(Util.ba.isDiscovering()){
-                System.out.println("discovering");
-        } else { System.out.println("not discovering");}
-    }}
+        Util.ba.startDiscovery();
+    }
 
     private void connectToDevice(BluetoothDevice btDevice){
         device = btDevice;
@@ -136,14 +127,16 @@ public class Client implements Runnable{
 
         // because the connection doesn't always work at the first try
         while(true)
-        try {
-            socket.connect();
-            break;
-        } catch (Exception e) {
-            Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-            //try again
-        }
+            try {
+                socket.connect();
+                break;
+            } catch (Exception e) {
+                Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                //try again
+            }
+
+        deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
 
         System.out.println("...");
         System.out.println("connection successful");
@@ -156,10 +149,6 @@ public class Client implements Runnable{
         @Override
         public void onReceive(Context context, Intent intent){
             String action = intent.getAction();
-
-            System.out.println("...");
-            System.out.println(action);
-            System.out.println("...");
 
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
@@ -205,22 +194,12 @@ public class Client implements Runnable{
         listen();
     }
 
-    public void listen(){
+    public static void listen(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
                     if(Util.receiveString(inputStream).length() > 0){
-                        // to get rid of this character
-                        try {
-                            inputStream.read();
-                        } catch(Exception e){
-                            e.printStackTrace();
-                            System.exit(1);
-                        }
-                        System.out.println("...");
-                        System.out.println("Host initiated choosing phase");
-                        System.out.println("...");
                         StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         c.startActivity(StartActivity.startChooseActivity);
                         c.sendBroadcast(new Intent("finish"));

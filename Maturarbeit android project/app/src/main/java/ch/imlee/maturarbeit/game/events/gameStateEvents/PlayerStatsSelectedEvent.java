@@ -1,6 +1,9 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
+import android.widget.Button;
+
 import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.ChooseActivity;
 
@@ -41,7 +44,8 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
         ++ChooseActivity.playersReady;
         if(ChooseActivity.playersReady == Host.sockets.size()){
             ChooseActivity.startGameButton.setClickable(true);
-            ChooseActivity.startGameButton.setText("Start Game");
+            // because you can only change the button's text in the ChooseActivity class itself
+            new ChooseActivity().setStartGameButtonText("Start Game");
         }
         return true;
     }

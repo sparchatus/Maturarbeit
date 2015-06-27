@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.main;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
+import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,11 +24,12 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
+    RadioGroup fluffGroup;
     public static int playersReady = 0;
     public static Button startGameButton;
 
-    private byte selectedTeam;
-    private int selectedPlayerType;
+    private byte selectedTeam = -1;
+    private int selectedPlayerType = -1;
 
     public static GameStartEvent gameStartEvent;
 
@@ -54,6 +56,11 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         createFluffRadioButtons();
 
         gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
         eventReceiver.start();
     }
 
@@ -86,7 +93,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     */
 
     private void createFluffRadioButtons(){
-        RadioGroup fluffGroup = (RadioGroup) findViewById(R.id.fluffGroup);
+        fluffGroup = (RadioGroup) findViewById(R.id.fluffGroup);
         RadioButton fluffRadioButton;
         for(int i = 0; i < fluffButtons.length; ++i){
             fluffRadioButton = new RadioButton(this);
@@ -120,8 +127,20 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
             gameStartEvent.send();
             startActivity(new Intent(this, GameClient.class));
         } else{
-            new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
+            if(selectedTeam >= 0 && selectedPlayerType >= 0) {
+                new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
+                startGameButton.setVisibility(View.GONE);
+            }
         }
+    }
+
+    public void setStartGameButtonText(final String text){
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                startGameButton.setText(text);
+            }
+        });
     }
 
     @Override

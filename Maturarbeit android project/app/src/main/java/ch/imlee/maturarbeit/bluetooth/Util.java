@@ -21,7 +21,6 @@ public class Util{
         ba = BluetoothAdapter.getDefaultAdapter();
 
         if (ba == null) {
-            //TODO: Make it work
 
             new AlertDialog.Builder(c)
                     .setTitle("Error")
@@ -37,7 +36,8 @@ public class Util{
                     .show();
 
         }
-        else if (!ba.isEnabled()) {
+        else {
+            //to close all current connections, restart the adapter
             ba.enable();
         }
     }

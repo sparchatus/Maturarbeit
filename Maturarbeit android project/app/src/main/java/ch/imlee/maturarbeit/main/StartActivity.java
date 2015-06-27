@@ -29,6 +29,7 @@ import java.io.IOException;
 
 public class StartActivity extends AppCompatActivity {
 
+    Host host;
     public static DeviceType deviceType;
 
     // those Views should be accessible from outside this class
@@ -105,14 +106,14 @@ public class StartActivity extends AppCompatActivity {
         // used in the onBackPressed() method
         //buttonPressed = true;
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_test, menu);
-        return true;
-    }
-*/
+    /*
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_test, menu);
+            return true;
+        }
+    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -145,7 +146,7 @@ public class StartActivity extends AppCompatActivity {
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
-            new Host(getApplicationContext());
+            host = new Host(getApplicationContext());
 
         }
         else if(view.getId()==R.id.joinButton){
@@ -163,9 +164,6 @@ public class StartActivity extends AppCompatActivity {
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
                     try {
                         Host.outputStreams.get(i).write(0);
-                        System.out.println("...");
-                        System.out.println("letting outputStream number " + (i+1) + " know that the choosing phase started.");
-                        System.out.println("...");
                     } catch(Exception e){
                         e.printStackTrace();
                         if(e instanceof IOException){
@@ -179,11 +177,11 @@ public class StartActivity extends AppCompatActivity {
                         }
                     }
                 }
+                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
+                Util.ba.setName(usernameEditText.getText().toString());
+                sendBroadcast(new Intent("cancelAccept"));
                 // starts the ChooseActivity
                 if(Host.sockets.size()>0) {
-                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
-                    Util.ba.setName(usernameEditText.getText().toString());
-                    sendBroadcast(new Intent("cancelAccept"));
                     startActivity(startChooseActivity);
                     finish();
                 }
@@ -194,7 +192,6 @@ public class StartActivity extends AppCompatActivity {
     public void onBackPressed(){
         //if connected to a host, disconnect
         Client.disconnect();
-        Host.disconnectAll();
 
 
         //if(buttonPressed){
@@ -202,15 +199,15 @@ public class StartActivity extends AppCompatActivity {
             Util.ba.cancelDiscovery();
         }
 
-            hostButton.setVisibility(View.VISIBLE);
-            joinButton.setVisibility(View.VISIBLE);
-            startButton.setVisibility(View.GONE);
-            usernameTextView.setVisibility(View.VISIBLE);
-            usernameEditText.setVisibility(View.VISIBLE);
+        hostButton.setVisibility(View.VISIBLE);
+        joinButton.setVisibility(View.VISIBLE);
+        startButton.setVisibility(View.GONE);
+        usernameTextView.setVisibility(View.VISIBLE);
+        usernameEditText.setVisibility(View.VISIBLE);
 
-            statusText.setVisibility(View.GONE);
-            listView.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
+        statusText.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         //}
         //buttonPressed = false;
     }

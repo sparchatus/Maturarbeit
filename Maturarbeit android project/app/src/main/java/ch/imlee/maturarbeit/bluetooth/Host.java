@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
@@ -32,11 +31,11 @@ public class Host implements Runnable {
     public static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    private static Thread acceptThread = new Thread(new Host(), "acceptThread");
+    private Thread acceptThread = new Thread(this, "acceptThread");
 
 
 
-    public static void initialize(Context context) {
+    public Host(Context context) {
         c = context;
         // to make the host identifiable
         Util.ba.setName(StartActivity.usernameEditText.getText().toString() + "_HOST");
@@ -64,20 +63,20 @@ public class Host implements Runnable {
 
 
         IntentFilter filter = new IntentFilter("finished");
-        c.registerReceiver(threadFinishedReceiver, filter);
+        c.registerReceiver(this.threadFinishedReceiver, filter);
 
         acceptConnections();
     }
 
-    private static final BroadcastReceiver threadFinishedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver threadFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             manageConnection();
         }
     };
 
-    private static void acceptConnections() {
-        c.registerReceiver(cancelAcceptReceiver, new IntentFilter("cancelAccept"));
+    private void acceptConnections() {
+        c.registerReceiver(this.cancelAcceptReceiver, new IntentFilter("cancelAccept"));
 
         System.out.println("...");
         System.out.println("accepting connections...");
@@ -85,7 +84,7 @@ public class Host implements Runnable {
 
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
 
-        if(!acceptThread.isAlive()) acceptThread.start();
+        /*if(!acceptThread.isAlive())*/ acceptThread.start();
     }
 
     public void run() {
@@ -104,7 +103,7 @@ public class Host implements Runnable {
     }
 
     // it's synchronized so connections won't interfere
-    private static synchronized void manageConnection() {
+    private synchronized void manageConnection() {
 
         System.out.println("...");
         System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());
@@ -123,7 +122,7 @@ public class Host implements Runnable {
 
     }
 
-    public static BroadcastReceiver cancelAcceptReceiver = new BroadcastReceiver() {
+    public BroadcastReceiver cancelAcceptReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

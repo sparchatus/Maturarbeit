@@ -1,6 +1,5 @@
 package ch.imlee.maturarbeit.bluetooth;
 
-import ch.imlee.maturarbeit.main.ChooseActivity;
 import ch.imlee.maturarbeit.main.StartActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -34,12 +33,12 @@ public class Client implements Runnable{
     public static InputStream inputStream;
     public static OutputStream outputStream;
 
-    private static Thread connectThread = new Thread(new Client(), "connectThread");
+    private Thread connectThread = new Thread(this, "connectThread");
 
     // used to check whether device discovery finished automatically or was cancelled
     private static boolean discoveryCancelled = false;
 
-    public static void initialize(Context context){
+    public Client(Context context){
         c = context;
 
         // name isn't allowed to end with "_HOST", because that's how a host is identified
@@ -59,7 +58,7 @@ public class Client implements Runnable{
         findDevices();
     }
 
-    private static void findDevices() {
+    private void findDevices() {
         devices = new ArrayList<>();
         deviceNames = new ArrayList<>();
         // the adapter puts the found devices into the ListView using the deviceNames ArrayList
@@ -88,12 +87,26 @@ public class Client implements Runnable{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction("connectionFinished");
 
-        c.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        c.registerReceiver(this.mReceiver, filter);
 
-        Util.ba.startDiscovery();
-    }
+        if(Util.ba.startDiscovery()){
+            System.out.println("Discovery started successfully");
+        } else{
+            System.out.println("Discovery didn't start correctly");
+        }
+        //DEBUG
 
-    private static void connectToDevice(BluetoothDevice btDevice){
+        while(true){try {
+            Thread.sleep(1000);
+        } catch (Exception e){
+
+        }
+            if(Util.ba.isDiscovering()){
+                System.out.println("discovering");
+        } else { System.out.println("not discovering");}
+    }}
+
+    private void connectToDevice(BluetoothDevice btDevice){
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
@@ -139,10 +152,11 @@ public class Client implements Runnable{
         c.sendBroadcast(new Intent("connectionFinished"));
     }
 
-    private static final BroadcastReceiver mReceiver = new BroadcastReceiver(){
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context context, Intent intent){
             String action = intent.getAction();
+
             System.out.println("...");
             System.out.println(action);
             System.out.println("...");
@@ -172,7 +186,7 @@ public class Client implements Runnable{
         }
     };
 
-    private static void manageConnection(){
+    private void manageConnection(){
         try {
             c.unregisterReceiver(mReceiver);
         } catch (Exception e) {
@@ -191,7 +205,7 @@ public class Client implements Runnable{
         listen();
     }
 
-    public static void listen(){
+    public void listen(){
         new Thread(new Runnable() {
             @Override
             public void run() {

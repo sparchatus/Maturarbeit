@@ -145,14 +145,14 @@ public class StartActivity extends AppCompatActivity {
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
-            Host.initialize(getApplicationContext());
+            new Host(getApplicationContext());
 
         }
         else if(view.getId()==R.id.joinButton){
             // join game as client
             deviceType = DeviceType.CLIENT;
             statusText.setText("searching for hosts");
-            Client.initialize(getApplicationContext());
+            new Client(getApplicationContext());
         } else{
             if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();

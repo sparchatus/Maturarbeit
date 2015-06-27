@@ -105,6 +105,10 @@ public class Client implements Runnable{
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
+        if(connectThread.isAlive()){
+            connectThread.interrupt();
+            disconnect();
+        }
         connectThread.start();
     }
 

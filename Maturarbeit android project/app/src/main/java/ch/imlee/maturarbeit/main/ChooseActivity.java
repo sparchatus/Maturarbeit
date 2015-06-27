@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
@@ -122,30 +124,29 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     }
 
     public void onStartGameClick(View v){
-        if(StartActivity.deviceType == DeviceType.HOST) {
-            // check whether all Clients pressed "Ready?" Button:
-            gameStartEvent.send();
-            startActivity(new Intent(this, GameClient.class));
-        } else{
-            if(selectedTeam >= 0 && selectedPlayerType >= 0) {
+        if(checkInputs()){
+            if(StartActivity.deviceType == DeviceType.HOST) {
+                // we don't have to check whether everyone has selected a team and playertype, because it's not clickable until then.
+                gameStartEvent.send();
+                startActivity(new Intent(this, GameClient.class));
+            } else{
                 new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
                 startGameButton.setVisibility(View.GONE);
             }
         }
     }
 
-    public void setStartGameButtonText(final String text){
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                startGameButton.setText(text);
-            }
-        });
-    }
-
     @Override
     public void onBackPressed(){
         startActivity(new Intent(getBaseContext(), StartActivity.class));
+    }
+
+    public boolean checkInputs(){
+        if(!(selectedPlayerType >=0 && selectedTeam >= 0)){
+            Toast.makeText(this, "Please choose a team and a player type", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 

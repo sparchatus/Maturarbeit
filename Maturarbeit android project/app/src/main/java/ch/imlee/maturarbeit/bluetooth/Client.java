@@ -97,7 +97,7 @@ public class Client implements Runnable{
         Util.ba.startDiscovery();
     }
 
-    private void connectToDevice(BluetoothDevice btDevice){
+    public void connectToDevice(BluetoothDevice btDevice){
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
@@ -198,18 +198,25 @@ public class Client implements Runnable{
         listen();
     }
 
-    public static void listen(){
+    public void listen(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true){
-                    if(Util.receiveString(inputStream).length() > 0){
-                        StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        c.startActivity(StartActivity.startChooseActivity);
-                        c.sendBroadcast(new Intent("finish"));
+                    if(inputStream != null){
+                        if(Util.receiveString(inputStream).length() > 0){
+                            StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            c.startActivity(StartActivity.startChooseActivity);
+                            c.sendBroadcast(new Intent("finish"));
+                            break;
+                        }
+
+                    } else{
+                        disconnect();
+                        Toast.makeText(Util.c, "An error occurred", Toast.LENGTH_SHORT).show();
+                        Client.this.connectToDevice(device);
                         break;
                     }
-
                 }
             }
         }).start();

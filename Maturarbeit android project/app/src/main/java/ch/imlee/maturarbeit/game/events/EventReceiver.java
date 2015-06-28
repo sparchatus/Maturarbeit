@@ -25,7 +25,7 @@ public class EventReceiver extends Thread {
                 ArrayList<Event> temp = Util.receiveEvents(Client.inputStream);
                 for(Event event:temp){
                     // if the event doesn't handle itself, add it to the queue
-                    if(!event.handle()){
+                    if(!event.handle((byte)0)){
                         events.get(0).add(event);
                     }
                 }
@@ -36,11 +36,11 @@ public class EventReceiver extends Thread {
                 events.add(new LinkedBlockingQueue<Event>());
             }
             while(true){
-                for(int i = 0; i < Host.inputStreams.size(); ++i){
+                for(byte i = 0; i < Host.inputStreams.size(); ++i){
                     ArrayList<Event> temp = Util.receiveEvents(Host.inputStreams.get(i));
                     for(Event event:temp){
                         // if the event doesn't handle itself, add it to the queue
-                        if(!event.handle()){
+                        if(!event.handle((byte)(i+(byte)1))){
                             events.get(i).add(event);
                         }
                     }

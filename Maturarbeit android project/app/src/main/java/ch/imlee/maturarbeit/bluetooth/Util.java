@@ -4,13 +4,20 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.events.Event;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 public class Util{
     public static BluetoothAdapter ba;
@@ -116,6 +123,11 @@ public class Util{
             }
         } catch (Exception e){
             e.printStackTrace();
+            if(e instanceof NullPointerException){
+                //TODO
+                // if client: connection to host lost, stop game
+                // if host: connection to one client lost, if it was the only client, stop game, else send GameLeftEvent and handle it
+            }
         }
         temp = string;
         return events;

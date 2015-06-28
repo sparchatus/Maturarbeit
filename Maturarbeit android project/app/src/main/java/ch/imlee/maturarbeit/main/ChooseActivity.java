@@ -57,13 +57,13 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         }
         createFluffRadioButtons();
 
-        gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        eventReceiver.start();
+        if(!eventReceiver.isAlive()) eventReceiver.start();
+        gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
     }
 
     @Override
@@ -126,7 +126,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     public void onStartGameClick(View v){
         if(checkInputs()){
             if(StartActivity.deviceType == DeviceType.HOST) {
-                // we don't have to check whether everyone has selected a team and playertype, because it's not clickable until then.
+                // we don't have to check whether everyone has selected a team and player type, because it's not clickable until then.
+                gameStartEvent.addPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
                 gameStartEvent.send();
                 startActivity(new Intent(this, GameClient.class));
             } else{

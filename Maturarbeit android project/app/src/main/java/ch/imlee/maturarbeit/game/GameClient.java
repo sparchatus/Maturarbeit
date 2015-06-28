@@ -8,13 +8,13 @@ import android.util.Log;
 import android.view.Display;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
-    public static boolean gameSurfaceCreated = false;
 
     private static int screenWidth;
     private static int screenHeight;
@@ -30,23 +30,32 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        rec = getResources();
+        while (rec == null){
+            Log.d("tag", "rec may not be null");
+            rec = getResources();
+        }
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+        //gameThread = gameSurface.getGameThread();
         gameThread = gameSurface.getGameThread();
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
         halfScreenWidth = screenWidth / 2;
         halfScreenHeight = screenHeight / 2;
-        rec = getResources();
-        while (rec == null){
-            Log.d("tag", "rec may not be null");
-            rec = getResources();
-        }
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {
+        while(gameSurface == null){
+            Log.d("tag", "gameSurface is null");
+
+        }
+        while(gameThread == null){
+            Log.d("tag", "gameThread is null");
+            gameThread = gameSurface.getGameThread();
+        }
         gameThread.setStartData(gameStartEvent);
     }
 

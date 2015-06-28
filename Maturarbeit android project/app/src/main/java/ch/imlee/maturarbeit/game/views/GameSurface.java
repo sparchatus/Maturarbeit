@@ -38,10 +38,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         public GameSurface(Context context, AttributeSet attrs) {
             super(context, attrs);
 
-            gameThread = new GameThread();
-            gameThread.setRunning(true);
-            gameThread.start();
-
             holder = getHolder();
             holder.addCallback(this);
         }
@@ -49,6 +45,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+            gameThread = new GameThread();
+            gameThread.setRunning(true);
+            gameThread.start();
         }
 
         @Override
@@ -102,7 +101,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         private Map map;
         private User user;
         private Player[] playerArray;
-        private ArrayList<Particle> particleList = new ArrayList();
+        private ArrayList<Particle> particleList = new ArrayList<>();
         private Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
 
         /**

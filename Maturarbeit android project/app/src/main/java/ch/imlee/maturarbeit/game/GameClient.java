@@ -19,7 +19,6 @@ public class GameClient extends Activity {
     private static int screenHeight;
     private static int halfScreenWidth;
     private static int halfScreenHeight;
-    private static Resources rec;
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
@@ -36,11 +35,6 @@ public class GameClient extends Activity {
         screenHeight = display.getHeight();
         halfScreenWidth = screenWidth / 2;
         halfScreenHeight = screenHeight / 2;
-        rec = getResources();
-        while (rec == null){
-            Log.d("tag", "rec may not be null");
-            rec = getResources();
-        }
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
@@ -75,9 +69,5 @@ public class GameClient extends Activity {
 
     public static ParticleButton getParticleButton() {
         return particleButton;
-    }
-
-    public static Resources getRec() {
-        return rec;
     }
 }

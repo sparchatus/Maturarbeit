@@ -23,7 +23,7 @@ public class Fluffy extends User {
 
     public Fluffy(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, null);
-        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
+        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
     }
 
     @Override

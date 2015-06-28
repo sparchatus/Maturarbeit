@@ -41,15 +41,15 @@ public class Player extends Entity implements Tick {
     public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte Team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         if (type == PlayerType.FLUFFY){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.fluffy), map.TILE_SIDE, map.TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), map.TILE_SIDE, map.TILE_SIDE, false);
         }else if (type == PlayerType.SLIME){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.slime), map.TILE_SIDE, map.TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), map.TILE_SIDE, map.TILE_SIDE, false);
         }else if (type == PlayerType.GHOST){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.ghost), map.TILE_SIDE, map.TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), map.TILE_SIDE, map.TILE_SIDE, false);
         }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.mipmap.ic_launcher), map.TILE_SIDE, map.TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), map.TILE_SIDE, map.TILE_SIDE, false);
         }
-        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.stun_overlay), map.TILE_SIDE, map.TILE_SIDE, false);
+        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), map.TILE_SIDE, map.TILE_SIDE, false);
         PLAYER_SIDE = map.TILE_SIDE;
         TEAM = Team;
         BAR_HEIGHT = PLAYER_SIDE / 5;

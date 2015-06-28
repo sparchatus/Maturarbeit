@@ -22,7 +22,7 @@ public class Ghost extends User {
 
     public Ghost(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, null);
-        INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameClient.getRec(), R.drawable.ghost_invisible), PLAYER_SIDE, PLAYER_SIDE, false);
+        INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible), PLAYER_SIDE, PLAYER_SIDE, false);
     }
 
     @Override

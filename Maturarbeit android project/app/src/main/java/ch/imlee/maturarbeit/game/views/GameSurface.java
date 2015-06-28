@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -34,6 +35,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         private SurfaceHolder holder;
         private GameThread gameThread;
+        private static Resources rec;
 
         public GameSurface(Context context, AttributeSet attrs) {
             super(context, attrs);
@@ -47,7 +49,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             gameThread = new GameThread();
             gameThread.setRunning(true);
             gameThread.start();
-
+            rec = getResources();
         }
 
         @Override
@@ -76,6 +78,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     public GameThread getGameThread(){
         return gameThread;
+    }
+
+    public static Resources getRec(){
+        return rec;
     }
 
     public class GameThread extends Thread implements Tick{

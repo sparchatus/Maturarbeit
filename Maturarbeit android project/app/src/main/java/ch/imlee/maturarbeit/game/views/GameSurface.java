@@ -220,6 +220,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 }
                 lastTime = System.currentTimeMillis();
             }
+            GameClient.getSkillButton().setVisibility(VISIBLE);
+            GameClient.getParticleButton().setVisibility(VISIBLE);
         }
 
         public void setStartData(GameStartEvent startData){

@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -98,6 +100,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         private User user;
         private Player[] playerArray;
         private ArrayList<Particle> particleList = new ArrayList();
+        private Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
 
         /**
          * The method called when the gameThread is started. It contains the main game loop.
@@ -109,11 +112,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             particleButton.setUser(user);
             skillButton = GameClient.getSkillButton();
             skillButton.setUser(user);
-            while(loading){
-                //just while the real start up isn't working
-                user = new Ghost(8.5f, 5.5f, PlayerType.GHOST, map, this, (byte) 1, (byte) 0);
-                loading = false;
-            }
+            loadingScreen0 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_0);
+            loadingScreen1 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_1);
+            loadingScreen2 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_2);
+            loadingScreen3 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_3);
+            displayLoadingScreen();
             while(running){
                 update();
                 render();
@@ -173,6 +176,49 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 if (c != null) {
                     holder.unlockCanvasAndPost(c);
                 }
+            }
+        }
+
+        private void displayLoadingScreen(){
+            int i = 0;
+            while(loading) {
+                Canvas c = null;
+                try {
+                    c = holder.lockCanvas(null);
+                    synchronized (holder) {
+                        if (c != null) {
+                            c.drawColor(Color.BLACK);
+                            switch (i) {
+                                case 0:
+                                    c.drawBitmap(loadingScreen0, 0, 0, null);
+                                    break;
+                                case 1:
+                                    c.drawBitmap(loadingScreen1, 0, 0, null);
+                                    break;
+                                case 2:
+                                    c.drawBitmap(loadingScreen2, 0, 0, null);
+                                    break;
+                                case 3:
+                                    c.drawBitmap(loadingScreen3, 0, 0, null);
+                                    break;
+                            }
+                        }
+                    }
+                } finally {
+                    if (c != null) {
+                        holder.unlockCanvasAndPost(c);
+                    }
+                }
+                i++;
+                if (i > 3) i = 0;
+                if((timeLeft = TIME_PER_LOADING_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
+                    try {
+                        sleep(timeLeft);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                lastTime = System.currentTimeMillis();
             }
         }
 

@@ -4,6 +4,7 @@ package ch.imlee.maturarbeit.game;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 
 import ch.imlee.maturarbeit.R;
@@ -36,6 +37,10 @@ public class GameClient extends Activity {
         halfScreenWidth = screenWidth / 2;
         halfScreenHeight = screenHeight / 2;
         rec = getResources();
+        while (rec == null){
+            Log.d("tag", "rec may not be null");
+            rec = getResources();
+        }
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }

@@ -101,7 +101,7 @@ public class Util{
 
     // if an EventString was not yet completely received by the time this method returns, store the unfinished String here
     private static String temp = "";
-    public static ArrayList<Event> receiveEvents(InputStream inputStream){
+    public static ArrayList<Event> receiveEvents(InputStream inputStream, int id){
         String string = temp;
         ArrayList<Event> events = new ArrayList<>();
         char c;
@@ -124,6 +124,9 @@ public class Util{
         } catch (Exception e){
             e.printStackTrace();
             if(e instanceof NullPointerException){
+
+
+
                 //TODO
                 // if client: connection to host lost, stop game
                 // if host: connection to one client lost, if it was the only client, stop game, else send GameLeftEvent and handle it

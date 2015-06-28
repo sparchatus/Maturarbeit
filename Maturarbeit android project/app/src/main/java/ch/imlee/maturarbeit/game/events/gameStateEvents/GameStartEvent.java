@@ -22,6 +22,7 @@ public class GameStartEvent extends GameStateEvent {
     public boolean handle(byte i){
         // start the game (finally)
         Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        GameClient.initializeStartData(this);
         return true;
     }
 
@@ -123,7 +124,7 @@ public class GameStartEvent extends GameStateEvent {
         // Host has the userID 0, the others are 1 - N, where N is the number of Clients. The numeration corresponds to the position in the Host.sockets position
         for(; userID <= Host.sockets.size(); ++userID){
             // so the client knows which userID he has, send him this.toString(), which contains it.
-            Util.sendString(Host.outputStreams.get(userID-1), this.toString() + '|');
+            Util.sendString(Host.outputStreams.get(userID - 1), this.toString() + '|');
             System.out.println("...");
             System.out.println("sent Event: " + this.toString());
             System.out.println("...");

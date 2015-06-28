@@ -6,6 +6,7 @@ import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
@@ -50,6 +51,7 @@ public class Event {
                 case 's': return new PlayerStatsSelectedEvent(string);
                 case 'P': return new GamePausedEvent();
                 case 'S': return new GameStartEvent(string);
+                case 'l': return new GameLoadedEvent();
             }
         }
         // invalid event:

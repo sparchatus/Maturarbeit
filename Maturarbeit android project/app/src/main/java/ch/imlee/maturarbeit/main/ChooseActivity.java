@@ -19,6 +19,7 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
@@ -130,6 +131,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
                 gameStartEvent.addPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
                 gameStartEvent.send();
                 startActivity(new Intent(this, GameClient.class));
+                new WaitUntilLoadedThread().start();
+                GameClient.initializeStartData(gameStartEvent);
             } else{
                 new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
                 startGameButton.setVisibility(View.GONE);

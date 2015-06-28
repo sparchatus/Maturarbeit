@@ -18,6 +18,7 @@ import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.Slime;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.entity.Particle;
@@ -32,10 +33,15 @@ import ch.imlee.maturarbeit.game.entity.User;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         private SurfaceHolder holder;
-        private GameThread gameThread;
+        private static GameThread gameThread;
 
         public GameSurface(Context context, AttributeSet attrs) {
             super(context, attrs);
+
+            gameThread = new GameThread();
+            gameThread.setRunning(true);
+            gameThread.start();
+
             holder = getHolder();
             holder.addCallback(this);
         }
@@ -43,9 +49,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
-            gameThread = new GameThread();
-            gameThread.setRunning(true);
-            gameThread.start();
         }
 
         @Override
@@ -241,6 +244,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
                 }
             }
+            //TODO dont know if working
+            new GameLoadedEvent().send();
         }
 
         public void endLoading(){

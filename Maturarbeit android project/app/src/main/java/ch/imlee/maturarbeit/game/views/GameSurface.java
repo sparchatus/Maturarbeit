@@ -33,15 +33,10 @@ import ch.imlee.maturarbeit.game.entity.User;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         private SurfaceHolder holder;
-        private static GameThread gameThread;
+        private GameThread gameThread;
 
         public GameSurface(Context context, AttributeSet attrs) {
             super(context, attrs);
-
-            gameThread = new GameThread();
-            gameThread.setRunning(true);
-            gameThread.start();
-
             holder = getHolder();
             holder.addCallback(this);
         }
@@ -49,6 +44,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+            gameThread = new GameThread();
+            gameThread.setRunning(true);
+            gameThread.start();
+
         }
 
         @Override

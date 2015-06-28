@@ -14,7 +14,6 @@ import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
-    public static boolean gameSurfaceCreated = false;
 
     private static int screenWidth;
     private static int screenHeight;

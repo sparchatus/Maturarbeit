@@ -15,6 +15,8 @@ import ch.imlee.maturarbeit.game.views.SkillButton;
 
 public class GameClient extends Activity {
 
+    private static boolean surfaceCreated = false;
+
     private static int screenWidth;
     private static int screenHeight;
     private static int halfScreenWidth;
@@ -40,11 +42,18 @@ public class GameClient extends Activity {
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {
+        while(!surfaceCreated){
+
+        }
         gameThread.setStartData(gameStartEvent);
     }
 
     public static void startSynchronizedTick() {
         gameThread.endLoading();
+    }
+
+    public static void setSurfaceCreated(boolean created){
+        surfaceCreated = created;
     }
 
     public static int getScreenWidth() {

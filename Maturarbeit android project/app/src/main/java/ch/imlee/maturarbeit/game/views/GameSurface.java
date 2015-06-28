@@ -50,6 +50,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             gameThread.setRunning(true);
             gameThread.start();
             rec = getResources();
+            GameClient.setSurfaceCreated(true);
         }
 
         @Override

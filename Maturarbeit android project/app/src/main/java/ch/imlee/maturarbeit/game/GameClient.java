@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;

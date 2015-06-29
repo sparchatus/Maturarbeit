@@ -35,7 +35,7 @@ public class GameStartEvent extends GameStateEvent {
         string = string.substring(2);
         while(string.charAt(0) != 'i'){
             byte i = 0;
-            this.addPlayer(PlayerType.values()[Integer.parseInt(Character.toString(string.charAt(0)))], (byte) string.charAt(1), i);
+            this.addPlayer(PlayerType.values()[Integer.parseInt(Integer.toString(string.charAt(0)))], (byte) string.charAt(1), i);
             string = string.substring(2);
             ++i;
         }

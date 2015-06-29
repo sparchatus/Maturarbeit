@@ -236,12 +236,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }
 
         public void setStartData(GameStartEvent startData){
+            Log.d("initialization", "Start data is initialized");
             if (!loading)return;
             map = new Map(getResources(), startData.getMapID());
             playerArray = new Player[startData.getPlayerCount()];
             for (byte i = 0; i < startData.getPlayerCount(); i++){
                 if (i == startData.getUserID()){
-                    Log.d("user", "The user is beeing initialized.");
+                    Log.d("user", "The user is being initialized.");
                     switch (startData.getPlayerTypes().get(i)){
                         case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.FLUFFY, map, this, startData.getTeams().get(i), i);
                             break;
@@ -251,6 +252,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                     }
                     playerArray[i] = user;
                 }else {
+                    Log.d("player", "A Player is being initialized");
                     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
                 }
             }

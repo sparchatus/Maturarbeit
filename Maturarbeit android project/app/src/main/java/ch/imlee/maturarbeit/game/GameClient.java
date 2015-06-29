@@ -45,7 +45,6 @@ public class GameClient extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-
         Log.d("tag", "GameClient Activity started");
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
 

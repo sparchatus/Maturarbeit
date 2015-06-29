@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
@@ -42,15 +43,15 @@ public class Player extends Entity implements Tick {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         PLAYER_SIDE = map.TILE_SIDE;
         if (type == PlayerType.FLUFFY){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), PLAYER_SIDE, PLAYER_SIDE, true);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), PLAYER_SIDE, PLAYER_SIDE, false);
         }else if (type == PlayerType.SLIME){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), PLAYER_SIDE, PLAYER_SIDE, true);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), PLAYER_SIDE, PLAYER_SIDE, false);
         }else if (type == PlayerType.GHOST){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), PLAYER_SIDE, PLAYER_SIDE, true);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), PLAYER_SIDE, PLAYER_SIDE, false);
         }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), PLAYER_SIDE, PLAYER_SIDE, true);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), PLAYER_SIDE, PLAYER_SIDE, false);
         }
-        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), PLAYER_SIDE, PLAYER_SIDE, true);
+        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
         TEAM = Team;
         BAR_HEIGHT = PLAYER_SIDE / 5;
         BAR_BACKGROUND_COLOR = new Paint();
@@ -68,6 +69,7 @@ public class Player extends Entity implements Tick {
     }
 
     public Canvas render(Canvas canvas){
+        Log.d("null?", "this means that the canvas somehow was null");
         if (!invisible) {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);

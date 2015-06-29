@@ -120,9 +120,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          */
         @Override
         public void run() {
-
             GameClient.setSurfaceCreated(true);
-
             loading = true;
             particleButton = GameClient.getParticleButton();
             particleButton.setUser(user);
@@ -185,7 +183,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                         for (Player player:playerArray){
                             c = player.render(c);
                         }
-                        c = user.render(c);
                     }
                 }
             } finally {
@@ -247,11 +244,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 if (i == startData.getUserID()){
                     Log.d("user", "The user is being initialized.");
                     switch (startData.getPlayerTypes().get(i)){
-                        case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.FLUFFY, map, this, startData.getTeams().get(i), i);
+                        case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
                             break;
-                        case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.GHOST, map, this, startData.getTeams().get(i), i);
+                        case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
                             break;
-                        case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.SLIME, map, this, startData.getTeams().get(i), i);
+                        case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
                             break;
                         case NULL: Log.d("fail", "user PlayerType is NULL");
                     }

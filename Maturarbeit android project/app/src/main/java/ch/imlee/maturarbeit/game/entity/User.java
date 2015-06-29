@@ -35,10 +35,10 @@ public class User extends Player {
         SKILL_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
             SKILL_BAR_COLOR.setColor(0xff0000ff);
-        }else if (type == PlayerType.SLIME){
-            SKILL_BAR_COLOR.setColor(0xff00ff00);
         }else if (type == PlayerType.GHOST){
             SKILL_BAR_COLOR.setColor(0xff000000);
+        }else if (type == PlayerType.SLIME){
+            SKILL_BAR_COLOR.setColor(0xff00ff00);
         }
         this.map = map;
     }
@@ -56,7 +56,6 @@ public class User extends Player {
     @Override
     public Canvas render(Canvas canvas){
         canvas = super.render(canvas);
-        //draw mana bar
         canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
         canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
         return  canvas;

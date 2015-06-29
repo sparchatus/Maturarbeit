@@ -40,33 +40,30 @@ public class Player extends Entity implements Tick {
 
     public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte Team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
-        if (type == PlayerType.FLUFFY){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), map.TILE_SIDE, map.TILE_SIDE, false);
-        }else if (type == PlayerType.SLIME){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), map.TILE_SIDE, map.TILE_SIDE, false);
-        }else if (type == PlayerType.GHOST){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), map.TILE_SIDE, map.TILE_SIDE, false);
-        }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), map.TILE_SIDE, map.TILE_SIDE, false);
-        }
-        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), map.TILE_SIDE, map.TILE_SIDE, false);
         PLAYER_SIDE = map.TILE_SIDE;
+        if (type == PlayerType.FLUFFY){
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), PLAYER_SIDE, PLAYER_SIDE, true);
+        }else if (type == PlayerType.SLIME){
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), PLAYER_SIDE, PLAYER_SIDE, true);
+        }else if (type == PlayerType.GHOST){
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), PLAYER_SIDE, PLAYER_SIDE, true);
+        }else {
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), PLAYER_SIDE, PLAYER_SIDE, true);
+        }
+        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), PLAYER_SIDE, PLAYER_SIDE, true);
         TEAM = Team;
         BAR_HEIGHT = PLAYER_SIDE / 5;
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
         user = theUser;
-        if (user == null){
-            //user = (User) this;
-            STRENGTH_BAR_COLOR.setColor(0xff00ff00);
-        }else if (TEAM == user.TEAM) {
+        if (user == null || TEAM == user.TEAM){
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else {
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
         stunned = false;
-        invisible = true;
+        invisible = false;
         this.ID = playerId;
     }
 

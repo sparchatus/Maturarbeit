@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
@@ -21,6 +22,8 @@ import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.Slime;
+import ch.imlee.maturarbeit.game.events.Event;
+import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
@@ -157,6 +160,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          * This method calls all the update methods of particles, players, etc...
          */
         private void update(){
+            for(Queue<Event> eventQueue:EventReceiver.events){
+                for(Event event:eventQueue){
+                    event.apply(this);
+                }
+            }
+
             user.update();
             for (Player player:playerArray){
                 player.update();

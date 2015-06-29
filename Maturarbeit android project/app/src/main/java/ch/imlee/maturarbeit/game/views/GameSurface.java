@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.Slime;
@@ -28,6 +29,8 @@ import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 /**
  * Created by Sandro on 04.06.2015.
@@ -249,6 +252,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                         case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.GHOST, map, this, startData.getTeams().get(i), i);
                             break;
                         case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.SLIME, map, this, startData.getTeams().get(i), i);
+                            break;
+                        case NULL: Log.d("fail", "user PlayerType is NULL");
                     }
                     playerArray[i] = user;
                 }else {
@@ -256,7 +261,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
                 }
             }
-            new GameLoadedEvent().send();
+            if(StartActivity.deviceType == DeviceType.CLIENT) {
+                new GameLoadedEvent().send();
+            } else{
+                WaitUntilLoadedThread.incrementReady();
+            }
         }
 
         public void endLoading(){

@@ -6,7 +6,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 /**
  * Created by Sandro on 15.06.2015.
  */
-public class PlayerMotionEvent extends Event {
+public class PlayerMotionEvent extends GameActionEvent {
 
     private final float X_COORDINATE, Y_COORDINATE;
     private final double ANGLE;

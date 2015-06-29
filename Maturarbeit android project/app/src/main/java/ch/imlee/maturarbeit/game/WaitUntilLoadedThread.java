@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game;
 
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Lukas on 28.06.2015.
@@ -26,7 +27,7 @@ public class WaitUntilLoadedThread extends Thread {
             }
         }
         new GameLoadedEvent().send();
-        new GameLoadedEvent().handle((byte)0);
+        GameClient.startSynchronizedTick();
     }
 
 }

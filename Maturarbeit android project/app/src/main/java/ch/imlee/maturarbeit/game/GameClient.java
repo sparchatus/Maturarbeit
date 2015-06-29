@@ -41,20 +41,27 @@ public class GameClient extends Activity {
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
 
-    @Override protected void onStart(){
+    @Override
+    protected void onStart(){
+        super.onStart();
 
         Log.d("tag", "GameClient Activity started");
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
-        while(!getSurfaceCreated()){
-            try{
-                Thread.sleep(20);
-            }catch(Exception e){
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
-        initializeStartData(ChooseActivity.gameStartEvent);
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(!getSurfaceCreated()){
+                    try{
+                        Thread.sleep(20);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                initializeStartData(ChooseActivity.gameStartEvent);
+            }
+        }).start();
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {

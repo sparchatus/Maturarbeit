@@ -282,6 +282,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             return synchronizedTick;
         }
 
+        public User getUser(){
+            return user;
+        }
+
         public Player[] getPlayerArray() {
             return playerArray;
         }

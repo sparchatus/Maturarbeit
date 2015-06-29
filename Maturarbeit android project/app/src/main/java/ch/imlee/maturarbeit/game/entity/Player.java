@@ -69,15 +69,14 @@ public class Player extends Entity implements Tick {
     }
 
     public Canvas render(Canvas canvas){
-        Log.d("null?", "this means that the canvas somehow was null");
         if (!invisible) {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
-            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * PLAYER_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * PLAYER_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
+            canvas.drawBitmap(rotated, (xCoordinate - gameThread.getUser().getXCoordinate()) * PLAYER_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - gameThread.getUser().getYCoordinate()) * PLAYER_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
         }
         if (stunned){
-            canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenHeight(), null);
+            canvas.drawBitmap(STUN_BMP, (xCoordinate - gameThread.getUser().getXCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - gameThread.getUser().getYCoordinate() - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenHeight(), null);
         }
         return canvas;
     }

@@ -66,7 +66,6 @@ public class Event {
         }
         System.out.println("...");
         System.out.println("Event sent: " + this.toString());
-        System.out.println("...");
     }
 
     private void sendAsHost(){

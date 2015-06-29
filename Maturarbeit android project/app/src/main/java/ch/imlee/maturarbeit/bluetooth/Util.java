@@ -113,7 +113,6 @@ public class Util{
 
                     System.out.println("...");
                     System.out.println("Event received: " + string);
-                    System.out.println("...");
 
                     string = "";
                 }

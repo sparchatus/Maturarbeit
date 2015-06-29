@@ -109,7 +109,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         private Map map;
         private User user;
         private Player[] playerArray;
-        private ArrayList<Particle> particleList = new ArrayList();
+        private ArrayList<Particle> particleList = new ArrayList<>();
         private Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
 
         /**
@@ -242,17 +242,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             for (byte i = 0; i < startData.getPlayerCount(); i++){
                 if (i == startData.getUserID()){
                     switch (startData.getPlayerTypes().get(i)){
-                        case FLUFFY:playerArray[i] = user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.FLUFFY, map, this, startData.getTeams().get(i), i);
                             break;
-                        case GHOST:playerArray[i] = user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.GHOST, map, this, startData.getTeams().get(i), i);
                             break;
-                        case SLIME:playerArray[i] = user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), PlayerType.SLIME, map, this, startData.getTeams().get(i), i);
                     }
+                    playerArray[i] = user;
                 }else {
                     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
                 }
             }
-            //TODO dont know if working
             new GameLoadedEvent().send();
         }
 

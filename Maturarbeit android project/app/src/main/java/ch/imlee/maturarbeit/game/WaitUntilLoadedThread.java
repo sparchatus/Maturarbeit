@@ -12,9 +12,12 @@ public class WaitUntilLoadedThread extends Thread {
     public static synchronized void incrementReady(){
         ++ready;
     }
+    private static synchronized int getReady(){
+        return ready;
+    }
 
     public void run(){
-        while(ready <= Host.sockets.size()){
+        while(getReady() <= Host.sockets.size()){
             try {
                 Thread.sleep(10);
             } catch(Exception e){

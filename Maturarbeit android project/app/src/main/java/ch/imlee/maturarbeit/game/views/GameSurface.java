@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -46,6 +47,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+            Log.d("tag", "surface gets created");
             gameThread = new GameThread();
             gameThread.setRunning(true);
             gameThread.start();

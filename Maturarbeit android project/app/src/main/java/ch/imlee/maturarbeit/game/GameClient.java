@@ -12,6 +12,7 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
+import ch.imlee.maturarbeit.main.ChooseActivity;
 
 public class GameClient extends Activity {
 
@@ -30,7 +31,7 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+        //gameSurface = (GameSurface) (findViewById(R.id.game_surface));
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
@@ -40,10 +41,23 @@ public class GameClient extends Activity {
         skillButton = (SkillButton) findViewById(R.id.button_skill);
     }
 
-    public static void initializeStartData(GameStartEvent gameStartEvent) {
+    @Override protected void onStart(){
+
+        Log.d("tag", "GameClient Activity started");
+        gameSurface = (GameSurface) (findViewById(R.id.game_surface));
         while(!getSurfaceCreated()){
-            Log.d("tag", "surface not yet created");
+            try{
+                Thread.sleep(20);
+            }catch(Exception e){
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
+        initializeStartData(ChooseActivity.gameStartEvent);
+
+    }
+
+    public static void initializeStartData(GameStartEvent gameStartEvent) {
         gameThread = gameSurface.getGameThread();
         gameThread.setStartData(gameStartEvent);
     }

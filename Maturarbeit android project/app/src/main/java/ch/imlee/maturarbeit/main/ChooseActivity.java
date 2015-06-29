@@ -130,9 +130,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
                 // we don't have to check whether everyone has selected a team and player type, because it's not clickable until then.
                 gameStartEvent.addPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
                 gameStartEvent.send();
-                startActivity(new Intent(this, GameClient.class));
+                gameStartEvent.handle((byte)0);
                 new WaitUntilLoadedThread().start();
-                GameClient.initializeStartData(gameStartEvent);
             } else{
                 new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
                 startGameButton.setVisibility(View.GONE);

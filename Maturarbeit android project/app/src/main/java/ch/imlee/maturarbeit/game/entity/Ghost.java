@@ -36,6 +36,9 @@ public class Ghost extends User {
             }
         }
         mana += 2;
+        if (mana >= MAX_MANA){
+            mana = MAX_MANA;
+        }
     }
 
     @Override

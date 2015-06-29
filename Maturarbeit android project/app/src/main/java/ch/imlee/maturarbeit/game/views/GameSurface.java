@@ -242,11 +242,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             for (byte i = 0; i < startData.getPlayerCount(); i++){
                 if (i == startData.getUserID()){
                     switch (startData.getPlayerTypes().get(i)){
-                        case FLUFFY:playerArray[i] = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case FLUFFY:playerArray[i] = user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
                             break;
-                        case GHOST:playerArray[i] = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case GHOST:playerArray[i] = user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
                             break;
-                        case SLIME:playerArray[i] = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
+                        case SLIME:playerArray[i] = user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i);
                     }
                 }else {
                     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);

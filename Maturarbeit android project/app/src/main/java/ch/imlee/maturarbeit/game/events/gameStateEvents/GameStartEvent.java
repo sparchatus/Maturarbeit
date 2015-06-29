@@ -77,8 +77,8 @@ public class GameStartEvent extends GameStateEvent {
 
     public int getPlayerCount(){
         int temp = 0;
-        for(int i = 0; i < types.size(); ++i){
-            if(types.get(i) != PlayerType.NULL){
+        for(int i = 0; i < teams.size(); ++i){
+            if(teams.get(i) >= 0){
                 ++temp;
             }
         }

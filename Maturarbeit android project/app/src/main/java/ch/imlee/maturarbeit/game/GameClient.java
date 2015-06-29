@@ -14,6 +14,8 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 import ch.imlee.maturarbeit.main.ChooseActivity;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 public class GameClient extends Activity {
 
@@ -48,20 +50,7 @@ public class GameClient extends Activity {
         Log.d("tag", "GameClient Activity started");
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(!getSurfaceCreated()){
-                    try{
-                        Thread.sleep(20);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        System.exit(1);
-                    }
-                }
-                initializeStartData(ChooseActivity.gameStartEvent);
-            }
-        }).start();
+
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {
@@ -73,7 +62,7 @@ public class GameClient extends Activity {
         gameThread.endLoading();
     }
 
-    private static synchronized boolean getSurfaceCreated(){
+    public static synchronized boolean getSurfaceCreated(){
         return surfaceCreated;
     }
 

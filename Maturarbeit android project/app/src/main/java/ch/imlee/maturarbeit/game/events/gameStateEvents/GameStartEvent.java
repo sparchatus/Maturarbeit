@@ -8,6 +8,7 @@ import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.ChooseActivity;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -23,6 +24,20 @@ public class GameStartEvent extends GameStateEvent {
         // start the game (finally)
         Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         //GameClient.initializeStartData(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(!GameClient.getSurfaceCreated()){
+                    try{
+                        Thread.sleep(20);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                GameClient.initializeStartData(GameStartEvent.this);
+            }
+        }).start();
         return true;
     }
 
@@ -34,17 +49,16 @@ public class GameStartEvent extends GameStateEvent {
     public GameStartEvent(String string){
         string = string.substring(2);
         while(string.charAt(0) != 'i'){
-            byte i = 0;
-            this.addPlayer(PlayerType.values()[Integer.parseInt(Integer.toString(string.charAt(0)))], (byte) string.charAt(1), i);
+            types.add(PlayerType.values()[Integer.parseInt(Character.toString(string.charAt(0)))]);
+            teams.add((byte) string.charAt(1));
             string = string.substring(2);
-            ++i;
         }
         userID = Byte.parseByte(Character.toString(string.charAt(1)));
         MAP_ID = Integer.parseInt(string.substring(3));
     }
 
     public GameStartEvent(ArrayList<PlayerType> types, ArrayList<Byte> teams, byte userID, int mapID) {
-        initializeArrays();
+        initializeArrays(types.size());
         this.types = types;
         this.teams = teams;
         this.userID = userID;
@@ -52,25 +66,18 @@ public class GameStartEvent extends GameStateEvent {
     }
 
     public GameStartEvent(int mapID){
-        initializeArrays();
         MAP_ID = mapID;
     }
 
-    private void initializeArrays(){
-        try{
-            types.get(1);
-            teams.get(1);
-        } catch(Exception e){
-            e.printStackTrace();
-            for(int i = 0; i <= Host.sockets.size(); ++i){
-                types.add(PlayerType.NULL);
-                teams.add((byte)-1);
-            }
+    private void initializeArrays(int size){
+        for(int i = types.size(); i < size; ++i){
+            types.add(PlayerType.NULL);
+            teams.add((byte)(-1));
         }
     }
 
-    public void addPlayer(PlayerType type, byte team, byte id){
-        initializeArrays();
+    public void setPlayer(PlayerType type, byte team, byte id){
+        initializeArrays(id+1);
         types.set(id, type);
         teams.set(id, team);
     }
@@ -87,6 +94,10 @@ public class GameStartEvent extends GameStateEvent {
 
     public int getUserID(){
         return userID;
+    }
+
+    public void setUserID(byte id){
+        userID = id;
     }
 
     public int getMapID(){

@@ -128,8 +128,9 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         if(checkInputs()){
             if(StartActivity.deviceType == DeviceType.HOST) {
                 // we don't have to check whether everyone has selected a team and player type, because it's not clickable until then.
-                gameStartEvent.addPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
+                gameStartEvent.setPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
                 gameStartEvent.send();
+                gameStartEvent.setUserID((byte)0);
                 gameStartEvent.handle((byte)0);
                 new WaitUntilLoadedThread().start();
             } else{

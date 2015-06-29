@@ -92,7 +92,7 @@ public class GameStartEvent extends GameStateEvent {
         return temp;
     }
 
-    public int getUserID(){
+    public byte getUserID(){
         return userID;
     }
 

@@ -123,14 +123,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             GameClient.setSurfaceCreated(true);
             loading = true;
             particleButton = GameClient.getParticleButton();
-            particleButton.setUser(user);
             skillButton = GameClient.getSkillButton();
-            skillButton.setUser(user);
             loadingScreen0 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_0);
             loadingScreen1 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_1);
             loadingScreen2 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_2);
             loadingScreen3 = BitmapFactory.decodeResource(getResources(), R.drawable.loading_screen_3);
             displayLoadingScreen();
+            particleButton.setUser(user);
+            skillButton.setUser(user);
             while(running){
                 update();
                 render();
@@ -240,18 +240,18 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             if (!loading)return;
             map = new Map(getResources(), startData.getMapID());
             playerArray = new Player[startData.getPlayerCount()];
+            switch (startData.getPlayerTypes().get(startData.getUserID())){
+                case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+                    break;
+                case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+                    break;
+                case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+                    break;
+                case NULL: Log.d("fail", "user PlayerType is NULL");
+            }
             for (byte i = 0; i < startData.getPlayerCount(); i++){
                 if (i == startData.getUserID()){
                     Log.d("user", "The user is being initialized.");
-                    switch (startData.getPlayerTypes().get(i)){
-                        case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
-                            break;
-                        case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
-                            break;
-                        case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), map, this, startData.getTeams().get(i), i);
-                            break;
-                        case NULL: Log.d("fail", "user PlayerType is NULL");
-                    }
                     playerArray[i] = user;
                 }else {
                     Log.d("player", "A Player is being initialized");

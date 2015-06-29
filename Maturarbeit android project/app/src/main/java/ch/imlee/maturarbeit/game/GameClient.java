@@ -31,7 +31,6 @@ public class GameClient extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
-        gameThread = gameSurface.getGameThread();
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
@@ -42,9 +41,10 @@ public class GameClient extends Activity {
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {
-        while(!surfaceCreated){
-
+        while(!getSurfaceCreated()){
+            Log.d("tag", "surface not yet created");
         }
+        gameThread = gameSurface.getGameThread();
         gameThread.setStartData(gameStartEvent);
     }
 
@@ -52,7 +52,11 @@ public class GameClient extends Activity {
         gameThread.endLoading();
     }
 
-    public static void setSurfaceCreated(boolean created){
+    private static synchronized boolean getSurfaceCreated(){
+        return surfaceCreated;
+    }
+
+    public static synchronized void setSurfaceCreated(boolean created){
         surfaceCreated = created;
     }
 

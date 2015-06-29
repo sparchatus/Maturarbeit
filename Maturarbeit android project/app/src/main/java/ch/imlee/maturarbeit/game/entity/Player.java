@@ -58,7 +58,7 @@ public class Player extends Entity implements Tick {
         STRENGTH_BAR_COLOR = new Paint();
         user = theUser;
         if (user == null){
-            user = (User) this;
+            //user = (User) this;
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else if (TEAM == user.TEAM) {
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);

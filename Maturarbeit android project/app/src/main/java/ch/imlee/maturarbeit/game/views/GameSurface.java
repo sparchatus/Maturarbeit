@@ -50,7 +50,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             gameThread.setRunning(true);
             gameThread.start();
             rec = getResources();
-            GameClient.setSurfaceCreated(true);
         }
 
         @Override
@@ -116,6 +115,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
          */
         @Override
         public void run() {
+
+            GameClient.setSurfaceCreated(true);
+
             loading = true;
             particleButton = GameClient.getParticleButton();
             particleButton.setUser(user);

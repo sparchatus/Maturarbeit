@@ -9,6 +9,7 @@ import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -39,7 +40,7 @@ public class Player extends Entity implements Tick {
     protected final Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
 
-    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte Team, byte playerId, User theUser) {
+    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameThread gameThread, byte Team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         PLAYER_SIDE = map.TILE_SIDE;
         if (type == PlayerType.FLUFFY){

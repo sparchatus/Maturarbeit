@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.entity;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -11,7 +12,7 @@ public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
-    public Slime(float entityXCoordinate, float entityYCoordinate, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
+    public Slime(float entityXCoordinate, float entityYCoordinate, Map map, GameThread gameThread, byte team, byte playerId) {
         super(entityXCoordinate, entityYCoordinate, PlayerType.SLIME, map, gameThread, team, playerId, null);
         slimy = false;
     }
@@ -37,6 +38,7 @@ public class Slime extends User {
         if (slimy){
             slimy = false;
         }else {
+            if (mana <= 10*MANA_CONSUMPTION)return;
             slimy = true;
         }
         new SlimeEvent(ID, slimy).send();

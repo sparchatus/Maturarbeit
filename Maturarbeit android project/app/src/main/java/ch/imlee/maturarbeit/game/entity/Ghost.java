@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.InvisibilityEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -20,7 +21,7 @@ public class Ghost extends User {
 
     private final Bitmap INVISIBLE_GHOST;
 
-    public Ghost(float entityXCoordinate, float entityYCoordinate, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
+    public Ghost(float entityXCoordinate, float entityYCoordinate, Map map, GameThread gameThread, byte team, byte playerId) {
         super(entityXCoordinate, entityYCoordinate, PlayerType.GHOST, map, gameThread, team, playerId, null);
         INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible), PLAYER_SIDE, PLAYER_SIDE, false);
     }

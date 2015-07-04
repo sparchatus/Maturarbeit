@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
@@ -21,7 +22,7 @@ public class Particle extends Entity {
     private float xSpeed;
     private float ySpeed;
 
-    public Particle(User theUser, GameSurface.GameThread gameThread) {
+    public Particle(User theUser, GameThread gameThread) {
         super(theUser.getXCoordinate(), theUser.getYCoordinate(), gameThread);
         color = new Paint();
         switch(colorRotation){

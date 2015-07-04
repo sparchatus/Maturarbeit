@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.entity;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
@@ -7,9 +8,9 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Entity {
     protected float xCoordinate, yCoordinate;
-    protected static GameSurface.GameThread gameThread;
+    protected static GameThread gameThread;
 
-    public Entity(float entityXCoordinate, float entityYCoordinate, GameSurface.GameThread gameThread){
+    public Entity(float entityXCoordinate, float entityYCoordinate, GameThread gameThread){
         xCoordinate = entityXCoordinate;
         yCoordinate = entityYCoordinate;
         this.gameThread = gameThread;

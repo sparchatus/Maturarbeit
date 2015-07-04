@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -21,7 +22,7 @@ public class Fluffy extends User {
     private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, Map map, GameSurface.GameThread gameThread, byte team, byte playerId) {
+    public Fluffy(float entityXCoordinate, float entityYCoordinate, Map map, GameThread gameThread, byte team, byte playerId) {
         super(entityXCoordinate, entityYCoordinate, PlayerType.FLUFFY, map, gameThread, team, playerId, null);
         FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
     }

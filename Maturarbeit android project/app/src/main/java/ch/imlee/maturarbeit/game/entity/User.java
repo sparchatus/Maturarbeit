@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -29,7 +30,7 @@ public class User extends Player {
 
      protected Map map;
 
-    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameSurface.GameThread gameThread, byte team, byte playerId, User theUser) {
+    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameThread gameThread, byte team, byte playerId, User theUser) {
         super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
         user = this;
         SKILL_BAR_COLOR = new Paint();
@@ -62,6 +63,8 @@ public class User extends Player {
     }
 
     private void move() {
+        //TODO better hit boxes with walls
+        //TODO players can fall out of the world
         if (stunned || speed == 0) {
             realSpeed = 0;
             return;
@@ -81,6 +84,11 @@ public class User extends Player {
     }
 
     public boolean onTouch(MotionEvent event){
+        for (LightBulb lightBulb: gameThread.getLightBulbArray()){
+            if(lightBulb.getPossessor() == null){
+
+            }
+        }
         float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalfScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalfScreenHeight(), 2));
         float newAngle = (float) Math.acos((event.getX() - GameClient.getHalfScreenWidth()) / distance);
         if(event.getY() - GameClient.getHalfScreenHeight() < 0){

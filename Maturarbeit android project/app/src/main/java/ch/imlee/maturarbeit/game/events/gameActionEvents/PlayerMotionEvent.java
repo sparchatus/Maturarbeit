@@ -1,6 +1,5 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
-import ch.imlee.maturarbeit.game.events.Event;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**

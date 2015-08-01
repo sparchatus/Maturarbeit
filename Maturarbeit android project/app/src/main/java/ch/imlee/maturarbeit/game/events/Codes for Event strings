@@ -4,6 +4,8 @@ Starting characters:
         I - Invisibility
         L - Slime
         M - Player Motion
+        P - Particle Shot
+
     G - Game state changed
         C - Game cancelled
         L - Game Left

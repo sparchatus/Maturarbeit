@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -50,6 +51,7 @@ public class User extends Player {
         move();
         if (shooting && particleCoolDownTick <= gameThread.getSynchronizedTick()){
             gameThread.addParticle(new Particle(this, gameThread));
+            new ParticleShotEvent(this.getID()).send();
             particleCoolDownTick = gameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
     }

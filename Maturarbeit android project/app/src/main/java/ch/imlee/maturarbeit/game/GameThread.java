@@ -106,14 +106,11 @@ public class GameThread extends Thread implements Tick{
      * This method calls all the update methods of particles, players, etc...
      */
     private void update(){
-        //TODO apply Events
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
                 eventQueue.remove().apply(this);
             }
         }
-
-
         // TODO the Host should handle the particle collision
         user.update();
         for (Player player:playerArray){

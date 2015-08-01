@@ -13,6 +13,7 @@ public class GameActionEvent extends Event {
             case 'I': return new InvisibilityEvent(string);
             case 'M': return new PlayerMotionEvent(string);
             case 'L': return new SlimeEvent(string);
+            case 'P': return new ParticleShotEvent(string);
             case 'S': return new StunEvent(string);
             default:return null;
         }

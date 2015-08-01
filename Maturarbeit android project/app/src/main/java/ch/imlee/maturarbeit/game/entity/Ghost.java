@@ -32,6 +32,7 @@ public class Ghost extends User {
         if (invisible){
             if (mana <= 0){
                 invisible = false;
+                new InvisibilityEvent(ID, false).send();
             }else {
                 mana -= MANA_CONSUMPTION;
             }
@@ -67,6 +68,6 @@ public class Ghost extends User {
         }else {
             invisible = true;
         }
-        new InvisibilityEvent(ID, invisible);
+        new InvisibilityEvent(ID, invisible).send();
     }
 }

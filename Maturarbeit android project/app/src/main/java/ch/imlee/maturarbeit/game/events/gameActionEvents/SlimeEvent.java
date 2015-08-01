@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -36,7 +37,7 @@ public class SlimeEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply(GameSurface.GameThread gameThread) {
+    public void apply(GameThread gameThread) {
         gameThread.getPlayerArray()[PLAYER_ID].setSlimy(SLIMY);
     }
 }

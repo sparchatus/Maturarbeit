@@ -85,7 +85,7 @@ public class User extends Player {
 
     public boolean onTouch(MotionEvent event){
         for (LightBulb lightBulb: gameThread.getLightBulbArray()){
-            if(lightBulb.getPossessor() == null){
+            if(lightBulb != null && lightBulb.getPossessor() == null){
 
             }
         }

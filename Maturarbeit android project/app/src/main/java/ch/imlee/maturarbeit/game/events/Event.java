@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game.events;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
@@ -25,8 +26,8 @@ public class Event {
         return invalidEvent;
     }
 
-    public void apply(GameSurface.GameThread gameThread){
-
+    public void apply(GameThread gameThread){
+        // the events get applied in the subclasses
     }
 
     public EventType getType(){

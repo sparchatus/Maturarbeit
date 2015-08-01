@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -29,7 +30,7 @@ public class StunEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameSurface.GameThread gameThread) {
+    public void apply(GameThread gameThread) {
         gameThread.getPlayerArray()[PLAYER_ID].stun(stunTick);
     }
 }

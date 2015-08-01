@@ -1,6 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.game.GameThread;
 
 /**
  * Created by Sandro on 15.06.2015.
@@ -32,7 +32,7 @@ public class PlayerMotionEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameSurface.GameThread gameThread) {
+    public void apply(GameThread gameThread) {
         gameThread.getPlayerArray()[PLAYER_ID].setCoordinates(X_COORDINATE, Y_COORDINATE);
         gameThread.getPlayerArray()[PLAYER_ID].setAngle(ANGLE);
     }

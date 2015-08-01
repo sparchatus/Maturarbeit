@@ -17,6 +17,7 @@ import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
@@ -103,6 +104,13 @@ public class GameThread extends Thread implements Tick{
      */
     private void update(){
         //TODO apply Events
+        for(int i = 0; i < EventReceiver.events.size(); ++i){
+            while(!EventReceiver.events.get(i).isEmpty()){
+                EventReceiver.events.get(i).remove().apply(this);
+            }
+        }
+
+
         // TODO the Host should handle the particle collision
         user.update();
         for (Player player:playerArray){

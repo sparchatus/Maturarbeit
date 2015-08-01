@@ -28,7 +28,7 @@ public class GameClient extends Activity {
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
-    private static GameSurface.GameThread gameThread;
+    private static GameThread gameThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

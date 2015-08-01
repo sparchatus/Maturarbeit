@@ -78,9 +78,12 @@ public class User extends Player {
             newYCoordinate = (int)newYCoordinate + 0.5f;
         }
         realSpeed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
-        xCoordinate = newXCoordinate;
-        yCoordinate = newYCoordinate;
-        new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
+        //todo: send event if position doesn't change but angle does
+        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate) {
+            xCoordinate = newXCoordinate;
+            yCoordinate = newYCoordinate;
+            new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
+        }
     }
 
     public boolean onTouch(MotionEvent event){

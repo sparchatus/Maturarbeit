@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
@@ -17,6 +19,7 @@ import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.game.events.Event;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
@@ -104,9 +107,9 @@ public class GameThread extends Thread implements Tick{
      */
     private void update(){
         //TODO apply Events
-        for(int i = 0; i < EventReceiver.events.size(); ++i){
-            while(!EventReceiver.events.get(i).isEmpty()){
-                EventReceiver.events.get(i).remove().apply(this);
+        for(Queue<Event> eventQueue:EventReceiver.events){
+            while(!eventQueue.isEmpty()){
+                eventQueue.remove().apply(this);
             }
         }
 

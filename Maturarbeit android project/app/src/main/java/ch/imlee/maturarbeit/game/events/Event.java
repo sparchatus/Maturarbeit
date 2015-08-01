@@ -4,6 +4,7 @@ import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.GameActionEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
@@ -11,6 +12,7 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GamePausedEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.StunEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStateEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;
@@ -31,29 +33,20 @@ public class Event {
     }
 
     public EventType getType(){
-        if(this.toString().equals(invalidEvent)) return null;
-        switch (this.toString().toCharArray()[0]){
+        return getType(this.toString());
+    }
+    public static EventType getType(String string){
+        switch (string.charAt(0)){
             case 'G': return EventType.GAMESTATE;
-            case 'P': return EventType.PLAYERMOTION;
-            case 'S': return EventType.SKILL;
+            case 'A': return EventType.GAMEACTION;
+            default: return null;
         }
-        return null;
     }
 
     public static Event fromString(String string){
-        switch (string.toCharArray()[0]){
-            case 'P': return new PlayerMotionEvent(string);
-            case 'S': switch (string.toCharArray()[1]){
-                case 'S': return new StunEvent(string);
-            }
-            case 'G': switch (string.toCharArray()[1]){
-                case 'C': return new GameCancelledEvent();
-                case 'L': return new GameLeftEvent();
-                case 's': return new PlayerStatsSelectedEvent(string);
-                case 'P': return new GamePausedEvent();
-                case 'S': return new GameStartEvent(string);
-                case 'l': return new GameLoadedEvent();
-            }
+        switch(getType(string)){
+            case GAMESTATE: return GameStateEvent.fromString(string);
+            case GAMEACTION: return GameActionEvent.fromString(string);
         }
         // invalid event:
         return new Event();

@@ -111,7 +111,6 @@ public class Util{
                 if(c == '|'){
                     events.add(Event.fromString(string));
 
-                    System.out.println("...");
                     System.out.println("Event received: " + string);
 
                     string = "";

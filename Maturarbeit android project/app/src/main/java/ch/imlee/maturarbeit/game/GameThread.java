@@ -192,7 +192,7 @@ public class GameThread extends Thread implements Tick{
 
     public void setStartData(GameStartEvent startData){
         Log.d("initialization", "Start data is initialized");
-        if (!loading)return;
+        //if (!loading)return;
         map = new Map(GameSurface.getRec(), startData.getMapID());
         playerArray = new Player[startData.getPlayerCount()];
         switch (startData.getPlayerTypes().get(startData.getUserID())){

@@ -20,7 +20,7 @@ public class StunEvent extends GameActionEvent {
 
     public StunEvent(String eventString){
         char[] eventChar = eventString.toCharArray();
-        PLAYER_ID = eventChar[2];
+        PLAYER_ID = Character.getNumericValue(eventChar[2]);
         stunTick = Double.valueOf(eventString.substring(3));
     }
 

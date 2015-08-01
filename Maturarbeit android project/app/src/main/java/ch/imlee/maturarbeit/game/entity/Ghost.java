@@ -31,6 +31,7 @@ public class Ghost extends User {
         super.update();
         if (invisible){
             if (mana <= 0){
+                //TODO: ändere
                 invisible = false;
                 new InvisibilityEvent(ID, false).send();
             }else {

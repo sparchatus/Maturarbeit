@@ -58,11 +58,16 @@ public class Map {
     }
 
     public Canvas render(Canvas canvas, User user){
+        //TODO: is it really necessary to return the canvas?
         for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
             for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
                 canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalfScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.PLAYER_SIDE, GameClient.getHalfScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.PLAYER_SIDE, null);
             }
         }
+        return canvas;
+    }
+    public Canvas renderMinimap(Canvas canvas){
+
         return canvas;
     }
 

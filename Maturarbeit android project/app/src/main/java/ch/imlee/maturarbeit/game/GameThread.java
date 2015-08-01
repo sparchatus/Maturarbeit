@@ -138,6 +138,7 @@ public class GameThread extends Thread implements Tick{
                     for (Player player:playerArray){
                         c = player.render(c);
                     }
+                    map.renderMinimap(c);
                 }
             }
         } finally {

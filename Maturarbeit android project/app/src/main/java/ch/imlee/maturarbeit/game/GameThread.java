@@ -54,7 +54,7 @@ public class GameThread extends Thread implements Tick{
     private ParticleButton particleButton;
     private SkillButton skillButton;
     private Map map;
-    private User user;
+    private static User user;
     private Player[] playerArray;
     private ArrayList<Particle> particleList = new ArrayList<>();
     private LightBulb[] lightBulbArray;
@@ -133,12 +133,15 @@ public class GameThread extends Thread implements Tick{
                     c.drawColor(Color.BLACK);
                     map.render(c, user);
                     for (Particle particle:particleList){
-                        c = particle.render(c);
+                        particle.render(c);
                     }
                     for (Player player:playerArray){
-                        c = player.render(c);
+                        player.render(c);
                     }
                     map.renderMinimap(c);
+                    if(StartActivity.deviceType == DeviceType.HOST){
+                        displayPauseButton(c);
+                    }
                 }
             }
         } finally {
@@ -189,6 +192,11 @@ public class GameThread extends Thread implements Tick{
             }
             lastTime = System.currentTimeMillis();
         }
+    }
+
+    private Canvas displayPauseButton(Canvas c){
+        //TODO: add pause button and functionality
+        return c;
     }
 
     public void setStartData(GameStartEvent startData){
@@ -244,7 +252,7 @@ public class GameThread extends Thread implements Tick{
         return synchronizedTick;
     }
 
-    public User getUser(){
+    public static User getUser(){
         return user;
     }
 

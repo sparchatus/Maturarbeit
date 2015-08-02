@@ -4,10 +4,13 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 04.06.2015.
@@ -20,6 +23,12 @@ public class Map {
     public final int TILE_SIDE;
     private final float MAP_WIDTH, MAP_HEIGHT;
     private final float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
+
+    private final Bitmap MINIMAP_BITMAP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2);
+    private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
+    private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)MINIMAP_BITMAP.getWidth())*(float)MINIMAP_BITMAP.getHeight());
+    private final Rect MINIMAP_RECT = new Rect(GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, GameClient.getScreenWidth(), MINIMAP_HEIGHT);
+    final int MINIMAP_SCALE = MINIMAP_WIDTH/MINIMAP_BITMAP.getWidth();
 
     private final Tile[][]TILE_MAP;
 
@@ -67,6 +76,18 @@ public class Map {
         return canvas;
     }
     public Canvas renderMinimap(Canvas canvas){
+        Paint paint = new Paint();
+        paint.setAntiAlias(false);
+        paint.setDither(true);
+        paint.setFilterBitmap(false);
+        //canvas.scale(MINIMAP_SCALE, MINIMAP_SCALE);
+        canvas.drawBitmap(MINIMAP_BITMAP, new Rect(BORDER_TILES_RIGHT,
+                BORDER_TILES_TOP,
+                MINIMAP_BITMAP.getHeight()-BORDER_TILES_TOP,
+                MINIMAP_BITMAP.getWidth()-BORDER_TILES_RIGHT),
+                MINIMAP_RECT, paint);
+
+        //canvas.drawBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2), null, MINIMAP_RECT, paint);
 
         return canvas;
     }

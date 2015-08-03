@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
@@ -30,6 +31,7 @@ public class Map {
     private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
     private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT))*
             (float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*BORDER_TILES_TOP));
+    private final Bitmap MINIMAP_ORIGINAL_BITMAP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2);
     private final Bitmap MINIMAP_BITMAP = Bitmap.createScaledBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2),
             BORDER_TILES_RIGHT-1, BORDER_TILES_TOP-1, BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*(BORDER_TILES_RIGHT-1),
             BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*(BORDER_TILES_TOP-1)), MINIMAP_WIDTH, MINIMAP_HEIGHT, false);
@@ -95,7 +97,8 @@ public class Map {
             } else{
                 MINIMAP_PAINT.setColor(0xffff0000);
             }
-            canvas.drawCircle((GAMETHREAD.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(), (GAMETHREAD.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP+1)*MINIMAP_SCALE, MINIMAP_SCALE, MINIMAP_PAINT);
+            canvas.drawCircle((((float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT))*(GAMETHREAD.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT)+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(),
+                    (((float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP))*(GAMETHREAD.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP)+1)*MINIMAP_SCALE, MINIMAP_SCALE, MINIMAP_PAINT);
         }
 
         return canvas;

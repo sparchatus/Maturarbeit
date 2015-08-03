@@ -125,4 +125,8 @@ public class Player extends Entity implements Tick {
     public void setSlimy(boolean slimy){
         this.slimy = slimy;
     }
+
+    public byte getTeam(){
+        return TEAM;
+    }
 }

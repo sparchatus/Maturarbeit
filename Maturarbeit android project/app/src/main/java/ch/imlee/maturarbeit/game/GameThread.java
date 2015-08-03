@@ -202,7 +202,7 @@ public class GameThread extends Thread implements Tick{
     public void setStartData(GameStartEvent startData){
         Log.d("initialization", "Start data is initialized");
         //if (!loading)return;
-        map = new Map(GameSurface.getRec(), startData.getMapID());
+        map = new Map(GameSurface.getRec(), startData.getMapID(), this);
         playerArray = new Player[startData.getPlayerCount()];
         switch (startData.getPlayerTypes().get(startData.getUserID())){
             case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());

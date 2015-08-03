@@ -202,6 +202,7 @@ public class Client implements Runnable{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Looper.prepare();
                 while(true){
                     if(inputStream != null){
                         if(Util.receiveString(inputStream).length() > 0){

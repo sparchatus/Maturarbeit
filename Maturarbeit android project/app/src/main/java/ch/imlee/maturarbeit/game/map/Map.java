@@ -9,6 +9,8 @@ import android.graphics.Rect;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -24,16 +26,22 @@ public class Map {
     private final float MAP_WIDTH, MAP_HEIGHT;
     private final float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
+
     private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
     private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT))*
             (float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*BORDER_TILES_TOP));
-    private final Bitmap MINIMAP_BITMAP = Bitmap.createScaledBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2), BORDER_TILES_RIGHT, BORDER_TILES_TOP, BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*(BORDER_TILES_RIGHT-1), BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*(BORDER_TILES_TOP-1)), MINIMAP_WIDTH, MINIMAP_HEIGHT, false);
+    private final Bitmap MINIMAP_BITMAP = Bitmap.createScaledBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2),
+            BORDER_TILES_RIGHT-1, BORDER_TILES_TOP-1, BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*(BORDER_TILES_RIGHT-1),
+            BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*(BORDER_TILES_TOP-1)), MINIMAP_WIDTH, MINIMAP_HEIGHT, false);
     private final Rect MINIMAP_RECT = new Rect(GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, GameClient.getScreenWidth(), MINIMAP_HEIGHT);
-    final int MINIMAP_SCALE = MINIMAP_WIDTH/(MINIMAP_BITMAP.getWidth()-2*BORDER_TILES_RIGHT);
+    final float MINIMAP_SCALE = MINIMAP_BITMAP.getWidth()/(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT);
+    final Paint MINIMAP_PAINT = new Paint();
 
     private final Tile[][]TILE_MAP;
+    private final GameThread GAMETHREAD;
 
-    public Map(Resources rec, int pixelMapID) {
+    public Map(Resources rec, int pixelMapID, GameThread gameThread) {
+        GAMETHREAD = gameThread;
         TILE_SIDE = GameClient.getScreenHeight() / TILES_IN_SCREEN_HEIGHT;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
@@ -77,13 +85,18 @@ public class Map {
         return canvas;
     }
     public Canvas renderMinimap(Canvas canvas){
-        Paint paint = new Paint();
-        paint.setAntiAlias(false);
-        paint.setDither(true);
-        paint.setFilterBitmap(false);
-        //canvas.scale(MINIMAP_SCALE, MINIMAP_SCALE);
-        canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, paint);
+        canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, null);
 
+        for(byte i = 0; i < GAMETHREAD.getPlayerArray().length; ++i){
+            if(i==GameThread.getUser().getID()){
+                MINIMAP_PAINT.setColor(0xff0000ff);
+            } else if(GAMETHREAD.getPlayerArray()[i].getTeam()==GAMETHREAD.getPlayerArray()[GameThread.getUser().getID()].getTeam()){
+                MINIMAP_PAINT.setColor(0xff00ff00);
+            } else{
+                MINIMAP_PAINT.setColor(0xffff0000);
+            }
+            canvas.drawCircle((GAMETHREAD.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(), (GAMETHREAD.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP+1)*MINIMAP_SCALE, MINIMAP_SCALE, MINIMAP_PAINT);
+        }
 
         return canvas;
     }

@@ -110,6 +110,10 @@ public class Player extends Entity implements Tick {
         this.invisible = invisible;
     }
 
+    public boolean getInvisible(){
+        return invisible;
+    }
+
     public double getAngle() {
         return angle;
     }

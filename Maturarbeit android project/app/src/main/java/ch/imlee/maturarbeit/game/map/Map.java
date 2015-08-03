@@ -24,11 +24,12 @@ public class Map {
     private final float MAP_WIDTH, MAP_HEIGHT;
     private final float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
-    private final Bitmap MINIMAP_BITMAP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2);
     private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
-    private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)MINIMAP_BITMAP.getWidth())*(float)MINIMAP_BITMAP.getHeight());
+    private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT))*
+            (float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*BORDER_TILES_TOP));
+    private final Bitmap MINIMAP_BITMAP = Bitmap.createScaledBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2), BORDER_TILES_RIGHT, BORDER_TILES_TOP, BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*(BORDER_TILES_RIGHT-1), BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*(BORDER_TILES_TOP-1)), MINIMAP_WIDTH, MINIMAP_HEIGHT, false);
     private final Rect MINIMAP_RECT = new Rect(GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, GameClient.getScreenWidth(), MINIMAP_HEIGHT);
-    final int MINIMAP_SCALE = MINIMAP_WIDTH/MINIMAP_BITMAP.getWidth();
+    final int MINIMAP_SCALE = MINIMAP_WIDTH/(MINIMAP_BITMAP.getWidth()-2*BORDER_TILES_RIGHT);
 
     private final Tile[][]TILE_MAP;
 
@@ -81,13 +82,8 @@ public class Map {
         paint.setDither(true);
         paint.setFilterBitmap(false);
         //canvas.scale(MINIMAP_SCALE, MINIMAP_SCALE);
-        canvas.drawBitmap(MINIMAP_BITMAP, new Rect(BORDER_TILES_RIGHT,
-                BORDER_TILES_TOP,
-                MINIMAP_BITMAP.getHeight()-BORDER_TILES_TOP,
-                MINIMAP_BITMAP.getWidth()-BORDER_TILES_RIGHT),
-                MINIMAP_RECT, paint);
+        canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, paint);
 
-        //canvas.drawBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2), null, MINIMAP_RECT, paint);
 
         return canvas;
     }

@@ -90,11 +90,12 @@ public class Map {
         canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, null);
 
         for(byte i = 0; i < GAMETHREAD.getPlayerArray().length; ++i){
-            if(GAMETHREAD.getPlayerArray()[i].getInvisible()) break;
             if(i==GameThread.getUser().getID()){
                 MINIMAP_PAINT.setColor(0xff0000ff);
             } else if(GAMETHREAD.getPlayerArray()[i].getTeam()==GAMETHREAD.getPlayerArray()[GameThread.getUser().getID()].getTeam()){
                 MINIMAP_PAINT.setColor(0xff00ff00);
+            } else if(GAMETHREAD.getPlayerArray()[i].getInvisible()){
+                break;
             } else{
                 MINIMAP_PAINT.setColor(0xffff0000);
             }

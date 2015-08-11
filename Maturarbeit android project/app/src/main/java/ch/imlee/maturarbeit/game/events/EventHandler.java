@@ -2,6 +2,9 @@ package ch.imlee.maturarbeit.game.events;
 
 import android.util.Log;
 
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
+
 /**
  * Created by Lukas on 11.08.2015.
  */
@@ -22,6 +25,7 @@ public class EventHandler extends Thread {
     }
 
     private static synchronized void synchronizedAdd(Event event, byte id) {
+        if(StartActivity.deviceType == DeviceType.HOST) --id;
         EventReceiver.events.get(id).add(event);
     }
 }

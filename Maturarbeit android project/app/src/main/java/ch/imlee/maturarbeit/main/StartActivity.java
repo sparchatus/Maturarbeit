@@ -155,12 +155,11 @@ public class StartActivity extends AppCompatActivity {
             statusText.setText("searching for hosts");
             new Client(getApplicationContext());
         } else{
+            // start the ChooseActivity
             if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
-
-                //TODO: start game
-                // notify others that they should start the ChooseActivity, this is done by simply sending a character
+                // notify others that they should start the ChooseActivity, this is done by simply sending the int 0
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
                     try {
                         Host.outputStreams.get(i).write(0);

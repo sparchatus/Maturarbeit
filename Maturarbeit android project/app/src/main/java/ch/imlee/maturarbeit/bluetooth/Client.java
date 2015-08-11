@@ -35,7 +35,9 @@ public class Client implements Runnable{
     public static InputStream inputStream;
     public static OutputStream outputStream;
 
-    private Thread connectThread = new Thread(this, "connectThread");
+
+    private IntentFilter filter = new IntentFilter();
+    private Thread connectThread;
 
     // used to check whether device discovery finished automatically or was cancelled
     private static boolean discoveryCancelled = false;
@@ -86,7 +88,6 @@ public class Client implements Runnable{
         });
 
 
-        IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -102,14 +103,20 @@ public class Client implements Runnable{
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
-        StartActivity.statusText.setText("connecting...");
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
+        connectThread = new Thread(this, "connectThread");
         connectThread.start();
     }
 
     public void run(){
+        try {
+            c.registerReceiver(mReceiver, filter);
+        } catch(Exception e){
+            // probably already registered
+        }
+        connecting = true;
         // to allow Toasts in this Thread
         Looper.prepare();
         try{
@@ -137,12 +144,11 @@ public class Client implements Runnable{
                 //try again
             }
 
-        deviceName = socket.getRemoteDevice().getName().substring(0,socket.getRemoteDevice().getName().length()-5);
-
         System.out.println("...");
         System.out.println("connection successful");
         System.out.println("...");
 
+        connecting = false;
         c.sendBroadcast(new Intent("connectionFinished"));
     }
 
@@ -171,6 +177,8 @@ public class Client implements Runnable{
                     StartActivity.progressBar.setVisibility(View.GONE);
                 }
             } else if("connectionFinished".equals(action)){
+                StartActivity.statusText.setText("connected to " + device.getName().substring(0, device.getName().length()-5));
+                StartActivity.progressBar.setVisibility(View.GONE);
                 manageConnection();
             }
         }
@@ -200,9 +208,11 @@ public class Client implements Runnable{
             @Override
             public void run() {
                 Looper.prepare();
+                String receivedString;
                 while(true){
                     if(inputStream != null){
-                        if(Util.receiveString(inputStream).length() > 0){
+                        receivedString = Util.receiveString(inputStream);
+                        if(receivedString.indexOf(0)>=0){
                             StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             c.startActivity(StartActivity.startChooseActivity);
                             c.sendBroadcast(new Intent("finish"));
@@ -212,7 +222,7 @@ public class Client implements Runnable{
                     } else{
                         disconnect();
                         Toast.makeText(Util.c, "An error occurred", Toast.LENGTH_SHORT).show();
-                        Client.this.connectToDevice(device);
+                        connectToDevice(device);
                         break;
                     }
                 }

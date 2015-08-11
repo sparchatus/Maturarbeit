@@ -103,7 +103,6 @@ public class Host implements Runnable {
 
     // it's synchronized so connections won't interfere
     private synchronized void manageConnection() {
-
         System.out.println("...");
         System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());
         System.out.println("...");
@@ -119,6 +118,7 @@ public class Host implements Runnable {
             System.exit(1);
         }
 
+        refreshConnectedDevices();
     }
 
     public BroadcastReceiver cancelAcceptReceiver = new BroadcastReceiver() {
@@ -153,6 +153,23 @@ public class Host implements Runnable {
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    private void refreshConnectedDevices(){
+        for(int i = 0; i < sockets.size(); ++i){
+            try{
+                outputStreams.get(i).write(1);
+            } catch (Exception e){
+                e.printStackTrace();
+                // connection lost, remove from list
+                sockets.remove(i);
+                outputStreams.remove(i);
+                inputStreams.remove(i);
+                deviceNames.remove(i);
+                --i;
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 

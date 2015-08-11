@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.game.entity;
 
+import java.util.ArrayList;
+
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 

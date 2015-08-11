@@ -26,7 +26,9 @@ public class LightBulb extends Entity{
     }
 
     public Canvas render(Canvas canvas){
-        if (possessor != null){
+        if (possessor.getClass() == Fluffy.class) {
+            canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - gameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - gameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+        }else{
             canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - gameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE/2, (yCoordinate - gameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
         }
         return canvas;

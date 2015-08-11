@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,9 +10,9 @@ import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
@@ -60,9 +61,12 @@ public class GameThread extends Thread implements Tick{
     private LightBulb[] lightBulbArray;
     private Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
     private SurfaceHolder holder;
+    private BackgroundMusic backgroundMusic;
+    private Context context;
 
-    public GameThread(SurfaceHolder holder){
+    public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
+        this.context = context;
     }
     /**
      * The method called when the gameThread is started. It contains the main game loop.
@@ -80,6 +84,8 @@ public class GameThread extends Thread implements Tick{
         displayLoadingScreen();
         particleButton.setUser(user);
         skillButton.setUser(user);
+        backgroundMusic = new BackgroundMusic(context);
+        backgroundMusic.startMusic();
         while(running){
             update();
             render();

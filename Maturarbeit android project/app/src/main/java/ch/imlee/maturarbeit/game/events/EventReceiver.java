@@ -16,7 +16,7 @@ import ch.imlee.maturarbeit.main.StartActivity;
  * Created by Lukas on 18.06.2015.
  */
 public class EventReceiver extends Thread {
-    private boolean running = true;
+    private boolean running;
     public static ArrayList<Queue<Event>> events = new ArrayList<>();
 
     @Override

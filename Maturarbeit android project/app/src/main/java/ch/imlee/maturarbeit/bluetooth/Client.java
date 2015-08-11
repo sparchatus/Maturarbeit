@@ -28,9 +28,9 @@ public class Client implements Runnable{
     private static ArrayList<String> deviceNames;
     private static ArrayAdapter<String> adapter;
 
+    private static boolean connecting = false;
     private static BluetoothSocket socket;
     private static BluetoothDevice device;
-    private static String deviceName;
 
     public static InputStream inputStream;
     public static OutputStream outputStream;
@@ -98,6 +98,7 @@ public class Client implements Runnable{
     }
 
     public void connectToDevice(BluetoothDevice btDevice){
+        if(connecting) return;
         device = btDevice;
         discoveryCancelled = true;
         Util.ba.cancelDiscovery();
@@ -105,10 +106,6 @@ public class Client implements Runnable{
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
-        if(connectThread.isAlive()){
-            connectThread.interrupt();
-            disconnect();
-        }
         connectThread.start();
     }
 

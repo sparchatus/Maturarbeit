@@ -38,7 +38,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
-    Thread eventReceiver = new EventReceiver();
+    public static EventReceiver eventReceiver = new EventReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     @Override
     public void onStart(){
         super.onStart();
-        if(!eventReceiver.isAlive()) eventReceiver.start();
+        eventReceiver.setRunning(true);
+        eventReceiver.start();
         gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
     }
 

@@ -52,8 +52,12 @@ public class GameClient extends Activity {
         super.onStart();
         Log.d("tag", "GameClient Activity started");
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+    }
 
-
+    @Override
+    protected void onStop(){
+        super.onStop();
+        ChooseActivity.eventReceiver.setRunning(false);
     }
 
     public static void initializeStartData(GameStartEvent gameStartEvent) {

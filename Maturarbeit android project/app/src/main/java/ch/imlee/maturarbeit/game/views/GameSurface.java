@@ -29,7 +29,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             Log.d("tag", "surface gets created");
-            gameThread = new GameThread(holder);
+            gameThread = new GameThread(holder, getContext());
             gameThread.setRunning(true);
             gameThread.start();
             rec = getResources();

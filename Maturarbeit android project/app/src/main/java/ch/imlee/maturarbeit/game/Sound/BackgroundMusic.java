@@ -12,7 +12,7 @@ public class BackgroundMusic {
     MediaPlayer backgroundPlayer;
 
     public BackgroundMusic(Context context){
-        backgroundPlayer = MediaPlayer.create(context, R.raw.Background_test_1);
+        backgroundPlayer = MediaPlayer.create(context, R.raw.background_test_1);
     }
 
     public void startMusic(){

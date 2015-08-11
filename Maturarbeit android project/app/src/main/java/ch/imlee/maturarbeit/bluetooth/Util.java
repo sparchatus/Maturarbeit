@@ -5,6 +5,7 @@ import android.content.Context;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.events.Event;
+import ch.imlee.maturarbeit.game.events.EventHandler;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -72,20 +74,6 @@ public class Util{
             System.exit(1);
         }
     }
-    // TODO: the following method is used later to send Events
-    /*
-    public static void sendEvent(OutputStream outputStream, Event event){
-        String text = event.toString();
-        text = text + '|';
-        try {
-            outputStream.write(text.getBytes());
-            outputStream.flush();
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-    */
 
     public static String receiveString(InputStream inputStream){
         String text = "";
@@ -101,18 +89,15 @@ public class Util{
 
     // if an EventString was not yet completely received by the time this method returns, store the unfinished String here
     private static String temp = "";
-    public static ArrayList<Event> receiveEvents(InputStream inputStream, int id){
+    public static void receiveEvents(InputStream inputStream, byte id){
         String string = temp;
-        ArrayList<Event> events = new ArrayList<>();
         char c;
         try {
             while(inputStream.available()>0) {
                 c = (char) inputStream.read();
                 if(c == '|'){
-                    events.add(Event.fromString(string));
-
-                    System.out.println("Event received: " + string);
-
+                    Log.v("events", "Event received: " + string);
+                    new EventHandler(Event.fromString(string), id).start();
                     string = "";
                 }
                 else{
@@ -131,7 +116,6 @@ public class Util{
             }
         }
         temp = string;
-        return events;
     }
 
 }

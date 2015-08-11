@@ -20,7 +20,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Player extends Entity implements Tick {
 
     protected final byte ID;
-    protected final byte TEAM;
+    public final byte TEAM;
     public final int PLAYER_SIDE;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;

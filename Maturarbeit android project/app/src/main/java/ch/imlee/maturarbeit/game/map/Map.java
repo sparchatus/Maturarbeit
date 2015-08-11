@@ -116,7 +116,7 @@ public class Map {
     }
 
     public float getStartX(byte team) {
-        if (team == 1){
+        if (team == 0){
             return TEAM_1_START_X;
         }else {
             return TEAM_2_START_X;
@@ -124,7 +124,7 @@ public class Map {
     }
 
     public float getStartY(byte team) {
-        if (team == 1){
+        if (team == 0){
             return TEAM_1_START_Y;
         }else {
             return TEAM_2_START_Y;

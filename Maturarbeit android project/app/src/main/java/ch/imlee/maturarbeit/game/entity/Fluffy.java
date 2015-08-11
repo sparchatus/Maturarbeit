@@ -30,7 +30,7 @@ public class Fluffy extends User {
     @Override
     public void update() {
         super.update();
-        mana += realSpeed / MAX_SPEED;
+        mana += speed / MAX_SPEED;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }
@@ -51,21 +51,6 @@ public class Fluffy extends User {
         return canvas;
     }
 
-    @Override
-    public boolean onTouch(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            for (Player player : gameThread.getPlayerArray()) {
-                if (Math.sqrt(Math.pow((event.getX() - GameClient.getHalfScreenWidth()) / PLAYER_SIDE + user.getXCoordinate() - player.getXCoordinate(), 2) + Math.pow((event.getY() - GameClient.getHalfScreenHeight()) / PLAYER_SIDE + user.getYCoordinate() - player.getYCoordinate(), 2)) < player.PLAYER_RADIUS) {
-                    if (player.TEAM != user.TEAM) {
-                        focusedPlayer = player;
-                        return false;
-                    }
-                }
-            }
-        }
-        return super.onTouch(event);
-    }
-
     public void skillActivation() {
         if (mana == MAX_MANA && focusedPlayer != null){
             focusedPlayer.stun(gameThread.getSynchronizedTick() + STUN_TIME);
@@ -73,5 +58,9 @@ public class Fluffy extends User {
             focusedPlayer = null;
             mana -= MANA_CONSUMPTION;
         }
+    }
+
+    public void setFocusedPlayer(Player focusedPlayer){
+        this.focusedPlayer = focusedPlayer;
     }
 }

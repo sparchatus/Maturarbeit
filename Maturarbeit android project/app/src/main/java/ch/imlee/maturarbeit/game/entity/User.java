@@ -25,9 +25,8 @@ public class User extends Player {
     protected double particleCoolDownTick;
 
     protected float mana;
-    protected float speed;
-     protected float realSpeed;
-
+     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
+     protected float velocity, speed, oldAngle;
      protected Map map;
 
     public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameThread gameThread, byte team, byte playerId, User theUser) {
@@ -66,50 +65,25 @@ public class User extends Player {
     private void move() {
         //TODO better hit boxes with walls
         //TODO players can fall out of the world
-        if (stunned || speed == 0) {
-            realSpeed = 0;
+        if (stunned || velocity == 0) {
+            speed = 0;
             return;
         }
-        float newXCoordinate = (float) (xCoordinate + Math.cos(angle) * speed * MAX_SPEED);
-        float newYCoordinate = (float) (yCoordinate + Math.sin(angle) * speed * MAX_SPEED);
+        float newXCoordinate = (float) (xCoordinate + Math.cos(angle) * velocity * MAX_SPEED);
+        float newYCoordinate = (float) (yCoordinate + Math.sin(angle) * velocity * MAX_SPEED);
         if(map.getSolid((int)(newXCoordinate - 0.5), (int)newYCoordinate) || map.getSolid((int)(newXCoordinate + 0.5), (int)newYCoordinate)){
             newXCoordinate = (int)newXCoordinate + 0.5f;
         }
         if(map.getSolid((int)newXCoordinate, (int)(newYCoordinate - 0.5)) || map.getSolid((int)newXCoordinate, (int)(newYCoordinate + 0.5))){
             newYCoordinate = (int)newYCoordinate + 0.5f;
         }
-        realSpeed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
-        //todo: send event if position doesn't change but angle does
-        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate) {
+        speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
+
+        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
             new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
         }
-    }
-
-    public boolean onTouch(MotionEvent event){
-        for (LightBulb lightBulb: gameThread.getLightBulbArray()){
-            if(lightBulb != null && lightBulb.getPossessor() == null){
-
-            }
-        }
-        float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalfScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalfScreenHeight(), 2));
-        float newAngle = (float) Math.acos((event.getX() - GameClient.getHalfScreenWidth()) / distance);
-        if(event.getY() - GameClient.getHalfScreenHeight() < 0){
-            newAngle *= -1;
-        }
-        if (distance <= user.PLAYER_RADIUS * PLAYER_SIDE){
-            speed = 0;
-            return true;
-        }else {
-            float newSpeed = distance / GameClient.getHalfScreenHeight();
-            if (newSpeed > 1) {
-                newSpeed = 1;
-            }
-            speed = newSpeed;
-        }
-        angle = newAngle;
-        return true;
     }
 
     public void skillActivation(){
@@ -119,4 +93,11 @@ public class User extends Player {
     public void setShooting(boolean isShooting){
         shooting = isShooting;
     }
+
+     public void setVelocity(float velocity){
+         this.velocity = velocity;
+     }
+     public float getPLAYER_RADIUS(){
+         return PLAYER_RADIUS;
+     }
 }

@@ -17,7 +17,7 @@ public class LightBulb extends Entity{
     private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_ON;
     private final int SIDE;
     private Player possessor;
-    //TODO implement the light bulb
+
     public LightBulb(float entityXCoordinate, float entityYCoordinate, GameThread gameThread, Map map) {
         super(entityXCoordinate, entityYCoordinate, gameThread);
         SIDE = map.TILE_SIDE;

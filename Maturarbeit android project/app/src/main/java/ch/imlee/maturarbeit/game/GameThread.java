@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.Controller.Controller;
+import ch.imlee.maturarbeit.game.Controller.Controller1;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
@@ -63,6 +65,7 @@ public class GameThread extends Thread implements Tick{
     private SurfaceHolder holder;
     private BackgroundMusic backgroundMusic;
     private Context context;
+    private Controller controller;
 
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
@@ -86,6 +89,7 @@ public class GameThread extends Thread implements Tick{
         skillButton.setUser(user);
         backgroundMusic = new BackgroundMusic(context);
         backgroundMusic.startMusic();
+        controller = new Controller1(user, map);
         while(running){
             update();
             render();
@@ -106,6 +110,8 @@ public class GameThread extends Thread implements Tick{
             lastTime = System.currentTimeMillis();
             synchronizedTick++;
         }
+        //Todo: turn off music?
+        backgroundMusic = null;
     }
 
     /**
@@ -272,5 +278,9 @@ public class GameThread extends Thread implements Tick{
 
     public LightBulb[] getLightBulbArray() {
         return lightBulbArray;
+    }
+
+    public Controller getController(){
+        return controller;
     }
 }

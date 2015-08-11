@@ -13,6 +13,7 @@ public class BackgroundMusic {
 
     public BackgroundMusic(Context context){
         backgroundPlayer = MediaPlayer.create(context, R.raw.background_test_1);
+        backgroundPlayer.setLooping(true);
     }
 
     public void startMusic(){

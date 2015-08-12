@@ -10,9 +10,9 @@ import ch.imlee.maturarbeit.game.map.Map;
 /**
  * Created by Sandro on 11.08.2015.
  */
-public class Controller1 extends Controller{
+public class MovementController1 extends Controller{
 
-    public Controller1(User user, Map map, GameThread gameThread) {
+    public MovementController1(User user, Map map, GameThread gameThread) {
         super(user, map, gameThread);
     }
 

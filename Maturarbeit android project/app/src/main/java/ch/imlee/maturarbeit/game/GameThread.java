@@ -13,7 +13,7 @@ import java.util.Queue;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.Controller.Controller;
-import ch.imlee.maturarbeit.game.Controller.Controller1;
+import ch.imlee.maturarbeit.game.Controller.MovementController1;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
@@ -89,7 +89,7 @@ public class GameThread extends Thread implements Tick{
         skillButton.setUser(user);
         backgroundMusic = new BackgroundMusic(context);
         backgroundMusic.startMusic();
-        controller = new Controller1(user, map);
+        controller = new MovementController1(user, map, this);
         while(running){
             update();
             render();

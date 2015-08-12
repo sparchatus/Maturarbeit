@@ -35,6 +35,7 @@ public class Event {
     public EventType getType(){
         return getType(this.toString());
     }
+
     public static EventType getType(String string){
         switch (string.charAt(0)){
             case 'G': return EventType.GAMESTATE;

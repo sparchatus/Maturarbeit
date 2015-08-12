@@ -38,10 +38,6 @@ public class LightBulb extends Entity{
         this.possessor = possessor;
     }
 
-    public void lost(){
-        possessor = null;
-    }
-
     public Player getPossessor() {
         return possessor;
     }

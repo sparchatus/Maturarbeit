@@ -6,13 +6,12 @@ import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Player;
-import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.map.Map;
 
 /**
  * Created by Sandro on 11.08.2015.
  */
-public class FluffyController1 extends Controller1{
+public class FluffyController1 extends MovementController1 {
 
     private Fluffy fluffy;
     public FluffyController1(Fluffy fluffy, Map map, GameThread gameThread) {

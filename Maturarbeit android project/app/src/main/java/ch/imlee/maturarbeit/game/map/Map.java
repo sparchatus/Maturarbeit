@@ -24,8 +24,8 @@ public class Map {
     private final int BORDER_TILES_TOP = 5;
     private final int BORDER_TILES_RIGHT = 8;
     public final int TILE_SIDE;
-    private final float MAP_WIDTH, MAP_HEIGHT;
-    private final float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
+    private static float MAP_WIDTH, MAP_HEIGHT;
+    private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
 
     private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
@@ -80,16 +80,15 @@ public class Map {
         }
     }
 
-    public Canvas render(Canvas canvas, User user){
+    public void render(Canvas canvas, User user){
         //TODO: is it really necessary to return the canvas?
         for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
             for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
                 canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalfScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.PLAYER_SIDE, GameClient.getHalfScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.PLAYER_SIDE, null);
             }
         }
-        return canvas;
     }
-    public Canvas renderMinimap(Canvas canvas){
+    public void renderMinimap(Canvas canvas){
         minimapPaint.setAlpha(MINIMAP_ALPHA);
         canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, minimapPaint);
 
@@ -108,14 +107,13 @@ public class Map {
                     (((float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP))*(GAMETHREAD.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP)+1)*MINIMAP_SCALE, MINIMAP_SCALE, minimapPaint);
         }
 
-        return canvas;
     }
 
     public boolean getSolid(int xTileCoordinate, int yTileCoordinate){
         return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }
 
-    public float getStartX(byte team) {
+    public static float getStartX(byte team) {
         if (team == 0){
             return TEAM_1_START_X;
         }else {
@@ -123,7 +121,7 @@ public class Map {
         }
     }
 
-    public float getStartY(byte team) {
+    public static float getStartY(byte team) {
         if (team == 0){
             return TEAM_1_START_Y;
         }else {

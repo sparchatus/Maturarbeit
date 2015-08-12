@@ -18,18 +18,24 @@ public class LightBulb extends Entity{
     private final int SIDE;
     private Player possessor;
 
-    public LightBulb(float entityXCoordinate, float entityYCoordinate, GameThread gameThread, Map map) {
-        super(entityXCoordinate, entityYCoordinate, gameThread);
+    public LightBulb(float entityXCoordinate, float entityYCoordinate, Map map) {
+        super(entityXCoordinate, entityYCoordinate);
         SIDE = map.TILE_SIDE;
         LIGHT_BULB_OFF = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE, SIDE, false);
         LIGHT_BULB_ON = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_on), SIDE, SIDE, false);
     }
 
+    public void update(){
+        if (possessor != null){
+            setCoordinates(possessor.getXCoordinate(), possessor.getYCoordinate());
+        }
+    }
+
     public Canvas render(Canvas canvas){
         if (possessor.getClass() == Fluffy.class) {
-            canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - gameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - gameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+            canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
         }else{
-            canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - gameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE/2, (yCoordinate - gameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+            canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE/2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
         }
         return canvas;
     }

@@ -32,8 +32,8 @@ public class PlayerMotionEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.getPlayerArray()[PLAYER_ID].setCoordinates(X_COORDINATE, Y_COORDINATE);
-        gameThread.getPlayerArray()[PLAYER_ID].setAngle(ANGLE);
+    public void apply() {
+        GameThread.getPlayerArray()[PLAYER_ID].setCoordinates(X_COORDINATE, Y_COORDINATE);
+        GameThread.getPlayerArray()[PLAYER_ID].setAngle(ANGLE);
     }
 }

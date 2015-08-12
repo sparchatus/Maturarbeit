@@ -22,9 +22,9 @@ public class Fluffy extends User {
     private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, Map map, GameThread gameThread, byte team, byte playerId) {
-        super(entityXCoordinate, entityYCoordinate, PlayerType.FLUFFY, map, gameThread, team, playerId, null);
-        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), PLAYER_SIDE, PLAYER_SIDE, false);
+    public Fluffy(float entityXCoordinate, float entityYCoordinate, Map map, byte team, byte playerId) {
+        super(entityXCoordinate, entityYCoordinate, PlayerType.FLUFFY, map, team, playerId, null);
+        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), TILE_SIDE, TILE_SIDE, false);
     }
 
     @Override
@@ -46,14 +46,14 @@ public class Fluffy extends User {
     public Canvas render(Canvas canvas) {
         canvas =  super.render(canvas);
         if (focusedPlayer != null){
-            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) *    PLAYER_SIDE + GameClient.getHalfScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * PLAYER_SIDE + GameClient.getHalfScreenHeight(), null);
+            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
         }
         return canvas;
     }
 
     public void skillActivation() {
         if (mana == MAX_MANA && focusedPlayer != null){
-            focusedPlayer.stun(gameThread.getSynchronizedTick() + STUN_TIME);
+            focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             new StunEvent(focusedPlayer.ID, focusedPlayer.stunTick).send();
             focusedPlayer = null;
             mana -= MANA_CONSUMPTION;

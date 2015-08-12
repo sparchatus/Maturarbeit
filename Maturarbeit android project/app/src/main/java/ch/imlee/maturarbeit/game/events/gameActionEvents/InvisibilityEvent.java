@@ -34,7 +34,7 @@ public class InvisibilityEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.getPlayerArray()[PLAYER_ID].setInvisible(INVISIBLE);
+    public void apply() {
+        GameThread.getPlayerArray()[PLAYER_ID].setInvisible(INVISIBLE);
     }
 }

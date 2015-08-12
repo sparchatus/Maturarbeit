@@ -37,7 +37,7 @@ public class SlimeEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.getPlayerArray()[PLAYER_ID].setSlimy(SLIMY);
+    public void apply() {
+        GameThread.getPlayerArray()[PLAYER_ID].setSlimy(SLIMY);
     }
 }

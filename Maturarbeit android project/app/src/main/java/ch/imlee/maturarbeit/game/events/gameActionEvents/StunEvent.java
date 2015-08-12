@@ -30,7 +30,7 @@ public class StunEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.getPlayerArray()[PLAYER_ID].stun(stunTick);
+    public void apply() {
+        GameThread.getPlayerArray()[PLAYER_ID].stun(stunTick);
     }
 }

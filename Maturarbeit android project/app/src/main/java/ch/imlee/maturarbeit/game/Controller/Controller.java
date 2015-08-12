@@ -30,10 +30,6 @@ public class Controller {
         PLAYER_RADIUS = user.getPLAYER_RADIUS();
     }
 
-    public void render(Canvas canvas){
-
-    }
-
     public boolean onTouch(MotionEvent event){
         for (LightBulb lightBulb : gameThread.getLightBulbArray()) {
             if (lightBulb.getPossessor() != null){
@@ -43,7 +39,8 @@ public class Controller {
                 if (holdingBulb == lightBulb) {
                     holdingTicks++;
                     if (holdingTicks == PICK_UP_TICKS){
-
+                        //todo: send a lightbulb wanting to get event
+                        lightBulb.pickUp(user);
                     }
                 } else {
                     holdingBulb = lightBulb;

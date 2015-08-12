@@ -29,8 +29,8 @@ public class User extends Player {
      protected float velocity, speed, oldAngle;
      protected Map map;
 
-    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, GameThread gameThread, byte team, byte playerId, User theUser) {
-        super(entityXCoordinate, entityYCoordinate, type, map, gameThread, team, playerId, theUser);
+    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, byte team, byte playerId, User theUser) {
+        super(entityXCoordinate, entityYCoordinate, type, map, team, playerId, theUser);
         user = this;
         SKILL_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
@@ -47,10 +47,10 @@ public class User extends Player {
     public void update() {
         super.update();
         move();
-        if (shooting && particleCoolDownTick <= gameThread.getSynchronizedTick()){
-            gameThread.addParticle(new Particle(this, gameThread));
+        if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
+            GameThread.addParticle(new Particle(this));
             new ParticleShotEvent(this.getID()).send();
-            particleCoolDownTick = gameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
     }
 

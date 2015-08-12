@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -42,30 +43,29 @@ public class GameThread extends Thread implements Tick{
      * The running variable determines if the game loop goes on or not.
      * @see #run()
      */
-    private boolean running;
-    private boolean loading;
+    private static boolean running;
+    private static boolean loading;
 
     /**
      *
      */
-    private long lastTime;
-    private long timeLeft;
+    private static long lastTime;
+    private static long timeLeft;
 
-    private double synchronizedTick;
-    private double predictedDelay;
+    private static double synchronizedTick;
+    private static double predictedDelay;
 
-    private ParticleButton particleButton;
-    private SkillButton skillButton;
-    private Map map;
+    private static ParticleButton particleButton;
+    private static SkillButton skillButton;
+    protected static Map map;
     private static User user;
-    private Player[] playerArray;
-    private ArrayList<Particle> particleList = new ArrayList<>();
-    private LightBulb[] lightBulbArray;
-    private Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
-    private SurfaceHolder holder;
-    private BackgroundMusic backgroundMusic;
-    private Context context;
-    private Controller controller;
+    protected static Player[] playerArray;
+    protected static ArrayList<Particle> particleList = new ArrayList<>();
+    private static LightBulb[] lightBulbArray;
+    private static SurfaceHolder holder;
+    private static BackgroundMusic backgroundMusic;
+    private static Context context;
+    private static Controller controller;
 
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
@@ -80,15 +80,11 @@ public class GameThread extends Thread implements Tick{
         loading = true;
         particleButton = GameClient.getParticleButton();
         skillButton = GameClient.getSkillButton();
-        loadingScreen0 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_0);
-        loadingScreen1 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_1);
-        loadingScreen2 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_2);
-        loadingScreen3 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_3);
+        backgroundMusic = new BackgroundMusic(context);
+        backgroundMusic.startMusic();
         displayLoadingScreen();
         particleButton.setUser(user);
         skillButton.setUser(user);
-        backgroundMusic = new BackgroundMusic(context);
-        backgroundMusic.startMusic();
         controller = new MovementController1(user, map, this);
         while(running){
             update();
@@ -111,16 +107,17 @@ public class GameThread extends Thread implements Tick{
             synchronizedTick++;
         }
         //Todo: turn off music?
+        backgroundMusic.stop();
         backgroundMusic = null;
     }
 
     /**
      * This method calls all the update methods of particles, players, etc...
      */
-    private void update(){
+    protected void update(){
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
-                eventQueue.remove().apply(this);
+                eventQueue.remove().apply();
             }
         }
         // TODO the Host should handle the particle collision
@@ -164,6 +161,11 @@ public class GameThread extends Thread implements Tick{
     }
 
     private void displayLoadingScreen(){
+        Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
+        loadingScreen0 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_0);
+        loadingScreen1 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_1);
+        loadingScreen2 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_2);
+        loadingScreen3 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_3);
         int i = 0;
         while(loading) {
             Canvas c = null;
@@ -211,17 +213,17 @@ public class GameThread extends Thread implements Tick{
         return c;
     }
 
-    public void setStartData(GameStartEvent startData){
+    public  void setStartData(GameStartEvent startData){
         Log.d("initialization", "Start data is initialized");
         //if (!loading)return;
         map = new Map(GameSurface.getRec(), startData.getMapID(), this);
         playerArray = new Player[startData.getPlayerCount()];
         switch (startData.getPlayerTypes().get(startData.getUserID())){
-            case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+            case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
                 break;
-            case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+            case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
                 break;
-            case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, this, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+            case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
                 break;
             case NULL: Log.d("fail", "user PlayerType is NULL");
         }
@@ -231,7 +233,7 @@ public class GameThread extends Thread implements Tick{
                 playerArray[i] = user;
             }else {
                 Log.d("player", "A Player is being initialized");
-                playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, this, startData.getTeams().get(i), i, user);
+                playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, user);
             }
         }
         lightBulbArray = new LightBulb[2];
@@ -242,12 +244,12 @@ public class GameThread extends Thread implements Tick{
         }
     }
 
-    public void endLoading(){
+    public static void endLoading(){
         synchronizedTick = 0;
         loading = false;
     }
 
-    public void addParticle(Particle newParticle){
+    public static void addParticle(Particle newParticle){
         particleList.add(newParticle);
     }
 
@@ -260,7 +262,7 @@ public class GameThread extends Thread implements Tick{
         this.running = running;
     }
 
-    public double getSynchronizedTick(){
+    public static double getSynchronizedTick(){
         return synchronizedTick;
     }
 
@@ -268,19 +270,19 @@ public class GameThread extends Thread implements Tick{
         return user;
     }
 
-    public Player[] getPlayerArray() {
+    public static Player[] getPlayerArray() {
         return playerArray;
     }
 
-    public void setHolder(SurfaceHolder holder){
+    public  void setHolder(SurfaceHolder holder){
         this.holder = holder;
     }
 
-    public LightBulb[] getLightBulbArray() {
+    public static LightBulb[] getLightBulbArray() {
         return lightBulbArray;
     }
 
-    public Controller getController(){
+    public static Controller getController(){
         return controller;
     }
 }

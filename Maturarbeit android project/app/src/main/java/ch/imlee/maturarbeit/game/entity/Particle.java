@@ -22,8 +22,8 @@ public class Particle extends Entity {
     private float xSpeed;
     private float ySpeed;
 
-    public Particle(Player thePlayer, GameThread gameThread) {
-        super(thePlayer.getXCoordinate(), thePlayer.getYCoordinate(), gameThread);
+    public Particle(Player thePlayer) {
+        super(thePlayer.getXCoordinate(), thePlayer.getYCoordinate());
         color = new Paint();
         switch(colorRotation){
             case 0:color.setColor(0xFFFF0000);
@@ -55,7 +55,7 @@ public class Particle extends Entity {
     }
 
     public Canvas render(Canvas canvas){
-        canvas.drawCircle((xCoordinate - gameThread.getUser().getXCoordinate()) * gameThread.getUser().PLAYER_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - gameThread.getUser().getYCoordinate()) * gameThread.getUser().PLAYER_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
+        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
         return canvas;
     }
 }

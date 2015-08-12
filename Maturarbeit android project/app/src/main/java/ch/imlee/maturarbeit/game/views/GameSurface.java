@@ -1,4 +1,5 @@
 package ch.imlee.maturarbeit.game.views;
+
 //TODO comment everything
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,6 +10,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.entity.Particle;
+import ch.imlee.maturarbeit.game.entity.Player;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 /**
  * Created by Sandro on 04.06.2015.
@@ -29,7 +34,27 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             Log.d("tag", "surface gets created");
-            gameThread = new GameThread(holder, getContext());
+            if (StartActivity.deviceType == DeviceType.HOST) {
+                gameThread = new GameThread(holder, getContext()) {
+                    @Override
+                    protected void update() {
+                        super.update();
+                        for (Particle particle : particleList) {
+                            for (Player player : playerArray) {
+                                if (Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= map.TILE_SIDE) {
+                                    particleList.remove(particle);
+                                    break;
+                                }
+                            }
+                            if (map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
+                                particleList.remove(particle);
+                            }
+                        }
+                    }
+                };
+            }else {
+                gameThread = new GameThread(holder, getContext());
+            }
             gameThread.setRunning(true);
             gameThread.start();
             rec = getResources();

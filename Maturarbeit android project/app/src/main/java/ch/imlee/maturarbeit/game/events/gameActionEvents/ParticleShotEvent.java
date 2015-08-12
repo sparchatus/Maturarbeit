@@ -21,7 +21,7 @@ public class ParticleShotEvent extends GameActionEvent {
         return super.toString() + 'P' + ID;
     }
 
-    public void apply(GameThread gameThread){
-        gameThread.addParticle(new Particle(gameThread.getPlayerArray()[ID], gameThread));
+    public void apply(){
+        GameThread.addParticle(new Particle(GameThread.getPlayerArray()[ID]));
     }
 }

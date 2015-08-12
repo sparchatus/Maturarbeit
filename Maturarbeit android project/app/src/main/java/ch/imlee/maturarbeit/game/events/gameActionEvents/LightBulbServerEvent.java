@@ -21,7 +21,7 @@ public class LightBulbServerEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameThread gameThread) {
+    public void apply() {
 
     }
 }

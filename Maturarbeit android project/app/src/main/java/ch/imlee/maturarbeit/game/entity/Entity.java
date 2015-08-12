@@ -10,12 +10,23 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Entity {
     protected float xCoordinate, yCoordinate;
-    protected static GameThread gameThread;
 
-    public Entity(float entityXCoordinate, float entityYCoordinate, GameThread gameThread){
+    public Entity(float entityXCoordinate, float entityYCoordinate){
         xCoordinate = entityXCoordinate;
         yCoordinate = entityYCoordinate;
-        this.gameThread = gameThread;
+    }
+
+    public void setXCoordinate(float playerXCoordinate){
+        xCoordinate = playerXCoordinate;
+    }
+
+    public void setYCoordinate(float playerYCoordinate){
+        yCoordinate = playerYCoordinate;
+    }
+
+    public void setCoordinates(float playerXCoordinate, float playerYCoordinate){
+        xCoordinate = playerXCoordinate;
+        yCoordinate = playerYCoordinate;
     }
 
     public float getXCoordinate(){

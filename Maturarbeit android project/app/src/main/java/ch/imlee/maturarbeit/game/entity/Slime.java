@@ -12,8 +12,8 @@ public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
-    public Slime(float entityXCoordinate, float entityYCoordinate, Map map, GameThread gameThread, byte team, byte playerId) {
-        super(entityXCoordinate, entityYCoordinate, PlayerType.SLIME, map, gameThread, team, playerId, null);
+    public Slime(float entityXCoordinate, float entityYCoordinate, Map map, byte team, byte playerId) {
+        super(entityXCoordinate, entityYCoordinate, PlayerType.SLIME, map, team, playerId, null);
         slimy = false;
     }
 

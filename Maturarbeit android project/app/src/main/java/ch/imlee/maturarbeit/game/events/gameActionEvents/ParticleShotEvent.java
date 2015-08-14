@@ -8,20 +8,20 @@ import ch.imlee.maturarbeit.game.entity.User;
  * Created by Lukas on 01.08.2015.
  */
 public class ParticleShotEvent extends GameActionEvent {
-    final byte ID;
 
+    final byte TEAM;
     public ParticleShotEvent(byte id){
-        ID = id;
+        TEAM = id;
     }
     public ParticleShotEvent(String string){
-        ID = Byte.parseByte(string.substring(string.length()-1));
+        TEAM = Byte.parseByte(string.substring(string.length()-1));
     }
 
     public String toString(){
-        return super.toString() + 'P' + ID;
+        return super.toString() + 'P' + TEAM;
     }
 
     public void apply(){
-        GameThread.addParticle(new Particle(GameThread.getPlayerArray()[ID]));
+        GameThread.addParticle(new Particle(GameThread.getPlayerArray()[TEAM]));
     }
 }

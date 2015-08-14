@@ -5,7 +5,6 @@ import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 09.06.2015.
@@ -13,11 +12,11 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Particle extends Entity {
 
     public final int RENDER_RADIUS = GameClient.getHalfScreenHeight() / 45;
-    public final float PARTICLE_RADIUS = (float) (1.0 / 5.0);
     private final float SPEED = 0.3f;
-    private final Paint color;
+    private static Paint color;
     private static int colorRotation;
     private static Player player;
+    private static Paint enemyColor;
     public static int TEAM;
     private float xSpeed;
     private float ySpeed;
@@ -25,8 +24,10 @@ public class Particle extends Entity {
     public Particle(Player thePlayer) {
         super(thePlayer.getXCoordinate(), thePlayer.getYCoordinate());
         color = new Paint();
+        enemyColor = new Paint();
+        enemyColor.setColor(0xFFFF0000);
         switch(colorRotation){
-            case 0:color.setColor(0xFFFF0000);
+            case 0:color.setColor(0xFFAA0000);
                 break;
             case 1:color.setColor(0xFFFFFF00);
                 break;
@@ -55,7 +56,11 @@ public class Particle extends Entity {
     }
 
     public Canvas render(Canvas canvas){
-        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
+        if (TEAM == GameThread.getUser().getTeam()) {
+            canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
+        } else {
+            canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, enemyColor);
+        }
         return canvas;
     }
 }

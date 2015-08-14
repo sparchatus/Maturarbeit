@@ -49,7 +49,7 @@ public class User extends Player {
         move();
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
             GameThread.addParticle(new Particle(this));
-            new ParticleShotEvent(this.getID()).send();
+            new ParticleShotEvent(TEAM).send();
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
     }

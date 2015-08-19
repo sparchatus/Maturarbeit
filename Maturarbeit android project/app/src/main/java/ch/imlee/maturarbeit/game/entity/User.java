@@ -26,7 +26,8 @@ public class User extends Player {
 
     protected float mana;
      //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
-     protected float velocity, speed, oldAngle;
+     protected float velocity, speed;
+     protected double oldAngle;
      protected Map map;
 
     public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, byte team, byte playerId, User theUser) {
@@ -46,6 +47,7 @@ public class User extends Player {
     @Override
     public void update() {
         super.update();
+        oldAngle = angle;
         move();
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
             GameThread.addParticle(new Particle(this));
@@ -79,7 +81,7 @@ public class User extends Player {
         }
         speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
 
-        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
+        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate || oldAngle != angle) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
             new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();

@@ -18,6 +18,11 @@ public class LightBulb extends Entity{
     private final int SIDE;
     private Player possessor;
 
+    public LightBulb(byte team, Map map){
+        // so if team 0 it goes to start +1 on x and y and if team = 1 it goes to start -1 on x and y, so always one towards the center of the map
+        this(Map.getStartX(team)+1-(2*team), Map.getStartY(team)+1-(2*team), map);
+    }
+
     public LightBulb(float entityXCoordinate, float entityYCoordinate, Map map) {
         super(entityXCoordinate, entityYCoordinate);
         SIDE = map.TILE_SIDE;
@@ -32,8 +37,10 @@ public class LightBulb extends Entity{
     }
 
     public Canvas render(Canvas canvas){
-        if (possessor.getClass() == Fluffy.class) {
-            canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+        if(possessor != null){
+            if (possessor.getClass() == Fluffy.class) {
+                canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+            }
         }else{
             canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE/2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
         }

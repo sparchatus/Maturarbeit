@@ -147,6 +147,9 @@ public class GameThread extends Thread implements Tick{
                     for (Player player:playerArray){
                         player.render(c);
                     }
+                    for(LightBulb lightBulb : lightBulbArray){
+                        lightBulb.render(c);
+                    }
                     map.renderMinimap(c);
                     if(StartActivity.deviceType == DeviceType.HOST){
                         displayPauseButton(c);
@@ -237,6 +240,9 @@ public class GameThread extends Thread implements Tick{
             }
         }
         lightBulbArray = new LightBulb[2];
+        for(byte i = 0; i < lightBulbArray.length; ++i){
+            lightBulbArray[i] = new LightBulb(i, map);
+        }
         if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
         } else{

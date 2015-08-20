@@ -18,9 +18,9 @@ public class LightBulbEvent extends GameActionEvent{
         PICKED_UP = pickedUp;
     }
     public LightBulbEvent(String string){
-        PLAYER_ID = string.charAt(2);
-        LIGHT_BULB_ID = string.charAt(3);
-        if (string.charAt(4) == '1'){
+        PLAYER_ID = Integer.parseInt(Character.toString(string.charAt(2)));
+        LIGHT_BULB_ID = Integer.parseInt(Character.toString(string.charAt(3)));;
+        if (string.endsWith("i")){
             PICKED_UP = true;
         } else {
             PICKED_UP = false;
@@ -30,9 +30,9 @@ public class LightBulbEvent extends GameActionEvent{
     @Override
     public String toString() {
         if (PICKED_UP) {
-            return super.toString() + 'B' + PLAYER_ID + LIGHT_BULB_ID + '1';
+            return super.toString() + 'B' + PLAYER_ID + LIGHT_BULB_ID + "1";
         }else{
-            return super.toString()+ 'B' + PLAYER_ID + LIGHT_BULB_ID + '0';
+            return super.toString()+ 'B' + PLAYER_ID + LIGHT_BULB_ID + "0";
         }
     }
 

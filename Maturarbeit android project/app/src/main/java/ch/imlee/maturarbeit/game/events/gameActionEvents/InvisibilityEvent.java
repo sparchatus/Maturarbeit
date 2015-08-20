@@ -12,10 +12,10 @@ public class InvisibilityEvent extends GameActionEvent{
 
     public InvisibilityEvent(String eventString){
         PLAYER_ID = Byte.valueOf(eventString.substring(2, 3));
-        if (eventString.substring(3).equals("0")) {
-            INVISIBLE = false;
-        }else {
+        if (eventString.endsWith("1")) {
             INVISIBLE = true;
+        }else {
+            INVISIBLE = false;
         }
     }
 
@@ -27,9 +27,9 @@ public class InvisibilityEvent extends GameActionEvent{
     @Override
     public String toString() {
         if (INVISIBLE) {
-            return super.toString() + "I" + PLAYER_ID + 1;
+            return super.toString() + "I" + PLAYER_ID + "1";
         }else{
-            return super.toString() + "I" + PLAYER_ID + 0;
+            return super.toString() + "I" + PLAYER_ID + "0";
         }
     }
 

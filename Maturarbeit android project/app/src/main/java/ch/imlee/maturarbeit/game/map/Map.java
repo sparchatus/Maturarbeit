@@ -18,11 +18,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 /**
  * Created by Sandro on 04.06.2015.
  */
-public class Map {
-    private final int TILES_IN_SCREEN_WIDTH= 16;
-    private final int TILES_IN_SCREEN_HEIGHT = 9;
-    private final int BORDER_TILES_TOP = 5;
-    private final int BORDER_TILES_RIGHT = 8;
+public class Map implements MapDimensions {
     public final int TILE_SIDE;
     private static float MAP_WIDTH, MAP_HEIGHT;
     private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
@@ -41,12 +37,8 @@ public class Map {
     private static final int MINIMAP_ALPHA = 0xaa;
 
     private final Tile[][]TILE_MAP;
-    private final GameThread GAMETHREAD;
-
-    public Map(Resources rec, int pixelMapID, GameThread gameThread) {
+    public Map(Resources rec, int pixelMapID) {
         minimapPaint.setAlpha(0xCC);
-
-        GAMETHREAD = gameThread;
         TILE_SIDE = GameClient.getScreenHeight() / TILES_IN_SCREEN_HEIGHT;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
@@ -92,19 +84,19 @@ public class Map {
         minimapPaint.setAlpha(MINIMAP_ALPHA);
         canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, minimapPaint);
 
-        for(byte i = 0; i < GAMETHREAD.getPlayerArray().length; ++i){
+        for(byte i = 0; i < GameThread.getPlayerArray().length; ++i){
             if(i==GameThread.getUser().getID()){
                 minimapPaint.setColor(0x0000ff);
-            } else if(GAMETHREAD.getPlayerArray()[i].getTeam()==GAMETHREAD.getPlayerArray()[GameThread.getUser().getID()].getTeam()){
+            } else if(GameThread.getPlayerArray()[i].getTeam()== GameThread.getPlayerArray()[GameThread.getUser().getID()].getTeam()){
                 minimapPaint.setColor(0x00ff00);
-            } else if(GAMETHREAD.getPlayerArray()[i].getInvisible()){
+            } else if(GameThread.getPlayerArray()[i].getInvisible()){
                 break;
             } else{
                 minimapPaint.setColor(0xff0000);
             }
             minimapPaint.setAlpha(MINIMAP_ALPHA);
-            canvas.drawCircle((((float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT))*(GAMETHREAD.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT)+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(),
-                    (((float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP))*(GAMETHREAD.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP)+1)*MINIMAP_SCALE, MINIMAP_SCALE, minimapPaint);
+            canvas.drawCircle((((float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT))*(GameThread.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT)+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(),
+                    (((float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP))*(GameThread.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP)+1)*MINIMAP_SCALE, MINIMAP_SCALE, minimapPaint);
         }
 
     }

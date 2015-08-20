@@ -12,8 +12,8 @@ public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
-    public Slime(float entityXCoordinate, float entityYCoordinate, Map map, byte team, byte playerId) {
-        super(entityXCoordinate, entityYCoordinate, PlayerType.SLIME, map, team, playerId, null);
+    public Slime(Map map, byte team, byte playerId) {
+        super(PlayerType.SLIME, map, team, playerId);
         slimy = false;
     }
 
@@ -41,6 +41,6 @@ public class Slime extends User {
             if (mana <= 10*MANA_CONSUMPTION)return;
             slimy = true;
         }
-        new SlimeEvent(ID, slimy).send();
+        //todo:slime event send
     }
 }

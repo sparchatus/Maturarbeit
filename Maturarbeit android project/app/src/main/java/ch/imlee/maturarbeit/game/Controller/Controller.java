@@ -1,6 +1,5 @@
 package ch.imlee.maturarbeit.game.Controller;
 
-import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
@@ -15,42 +14,51 @@ import ch.imlee.maturarbeit.game.map.Map;
  */
 public class Controller {
 
-    private LightBulb holdingBulb;
-    private int holdingTicks;
-    private final int PICK_UP_TICKS = 5 * Tick.TICK;
-    protected GameThread gameThread;
+    protected LightBulb pickingBulb;
+    protected int pickingTicks;
+    private final int PICK_UP_TICKS = 2 * Tick.TICK;
     protected User user;
     protected final int TILE_SIDE;
     protected final float PLAYER_RADIUS;
+    protected ControllerState controllerState;
 
-    public Controller(User user, Map map, GameThread gameThread){
+    public Controller(User user, Map map){
         this.TILE_SIDE = map.TILE_SIDE;
         this.user = user;
-        this.gameThread = gameThread;
         PLAYER_RADIUS = user.getPLAYER_RADIUS();
+        controllerState = ControllerState.NULL;
+    }
+
+    public void update(){
+        if (controllerState == ControllerState.PICKING || pickingBulb != null){
+            pickingTicks ++;
+            if (pickingTicks >= PICK_UP_TICKS){
+                pickingBulb.setPossessor(user);
+                pickingBulb = null;
+                pickingTicks = 0;
+                controllerState = ControllerState.NULL;
+            }
+        }
     }
 
     public boolean onTouch(MotionEvent event){
-        for (LightBulb lightBulb : gameThread.getLightBulbArray()) {
-            if (lightBulb.getPossessor() != null){
-                continue;
-            }
-            if (Math.sqrt(Math.pow((event.getX() - GameClient.getHalfScreenWidth()) / TILE_SIDE + user.getXCoordinate() - lightBulb.getXCoordinate(), 2) + Math.pow((event.getY() - GameClient.getHalfScreenHeight()) / TILE_SIDE + user.getYCoordinate() - lightBulb.getYCoordinate(), 2)) < user.getPLAYER_RADIUS()) {
-                if (holdingBulb == lightBulb) {
-                    holdingTicks++;
-                    if (holdingTicks == PICK_UP_TICKS){
-                        //todo: send a lightbulb wanting to get event
-                        lightBulb.pickUp(user);
-                    }
-                } else {
-                    holdingBulb = lightBulb;
-                    holdingTicks = 0;
+        if (event.getAction() == MotionEvent.ACTION_DOWN ||controllerState == ControllerState.PICKING) {
+            for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
+                if (lightBulb.getPossessor() != null){
+                    return false;
                 }
-                return true;
+                if (Math.sqrt(Math.pow((event.getX() - GameClient.getHalfScreenWidth()) / TILE_SIDE + user.getXCoordinate() - lightBulb.getXCoordinate(), 2) + Math.pow((event.getY() - GameClient.getHalfScreenHeight()) / TILE_SIDE + user.getYCoordinate() - lightBulb.getYCoordinate(), 2)) <= user.getPLAYER_RADIUS() && Math.sqrt(Math.pow(user.getYCoordinate() - lightBulb.getXCoordinate(), 2) + Math.pow(user.getYCoordinate() - lightBulb.getYCoordinate(), 2)) <= TILE_SIDE * 3) {
+                    if (pickingBulb != lightBulb) {
+                        pickingBulb = lightBulb;
+                        pickingTicks = 0;
+                        controllerState = ControllerState.PICKING;
+                    }
+                    return true;
+                }
             }
         }
-        holdingBulb = null;
-        holdingTicks = 0;
+        pickingBulb = null;
+        pickingTicks = 0;
         return false;
     }
 }

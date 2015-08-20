@@ -22,8 +22,8 @@ public class Fluffy extends User {
     private int MANA_CONSUMPTION = MAX_MANA;
     private final Bitmap FOCUS_BMP;
 
-    public Fluffy(float entityXCoordinate, float entityYCoordinate, Map map, byte team, byte playerId) {
-        super(entityXCoordinate, entityYCoordinate, PlayerType.FLUFFY, map, team, playerId, null);
+    public Fluffy(Map map, byte team, byte playerId) {
+        super(PlayerType.FLUFFY, map, team, playerId);
         FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), TILE_SIDE, TILE_SIDE, false);
     }
 
@@ -54,7 +54,7 @@ public class Fluffy extends User {
     public void skillActivation() {
         if (mana == MAX_MANA && focusedPlayer != null){
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
-            new StunEvent(focusedPlayer.ID, focusedPlayer.stunTick).send();
+            //todo:send event
             focusedPlayer = null;
             mana -= MANA_CONSUMPTION;
         }

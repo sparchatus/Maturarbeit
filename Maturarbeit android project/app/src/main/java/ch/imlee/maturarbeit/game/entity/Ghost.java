@@ -21,8 +21,8 @@ public class Ghost extends User {
 
     private final Bitmap INVISIBLE_GHOST;
 
-    public Ghost(float entityXCoordinate, float entityYCoordinate, Map map, byte team, byte playerId) {
-        super(entityXCoordinate, entityYCoordinate, PlayerType.GHOST, map, team, playerId, null);
+    public Ghost(Map map, byte team, byte playerId) {
+        super(PlayerType.GHOST, map, team, playerId);
         INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible), TILE_SIDE, TILE_SIDE, false);
     }
 
@@ -31,9 +31,8 @@ public class Ghost extends User {
         super.update();
         if (invisible){
             if (mana <= 0){
-                //TODO: ändere
                 invisible = false;
-                new InvisibilityEvent(ID, false).send();
+                //todo:send event
             }else {
                 mana -= MANA_CONSUMPTION;
             }
@@ -46,19 +45,19 @@ public class Ghost extends User {
 
     @Override
     public Canvas render(Canvas canvas) {
-      if (invisible){
-          Matrix matrix = new Matrix();
-          matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-          Bitmap rotated = Bitmap.createBitmap(INVISIBLE_GHOST, 0, 0, INVISIBLE_GHOST.getWidth(), INVISIBLE_GHOST.getHeight(), matrix, true);
-          canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
-          canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
-          canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
-          if (stunned){
-              canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
-          }
-      } else{
-          canvas = super.render(canvas);
-      }
+        if (invisible){
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
+            Bitmap rotated = Bitmap.createBitmap(INVISIBLE_GHOST, 0, 0, INVISIBLE_GHOST.getWidth(), INVISIBLE_GHOST.getHeight(), matrix, true);
+            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
+            canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
+            canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
+            if (stunned){
+                canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
+            }
+        } else{
+            canvas = super.render(canvas);
+        }
         return canvas;
     }
 
@@ -69,6 +68,6 @@ public class Ghost extends User {
         }else {
             invisible = true;
         }
-        new InvisibilityEvent(ID, invisible).send();
+        //todo:send event
     }
 }

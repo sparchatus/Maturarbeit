@@ -1,10 +1,5 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import java.util.ArrayList;
-
-import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.views.GameSurface;
-
 /**
  * Created by Sandro on 05.06.2015.
  */

@@ -14,6 +14,7 @@ import java.util.Queue;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.Controller.Controller;
+import ch.imlee.maturarbeit.game.Controller.FluffyController1;
 import ch.imlee.maturarbeit.game.Controller.MovementController1;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
@@ -21,6 +22,7 @@ import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
+import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.events.Event;
@@ -45,10 +47,6 @@ public class GameThread extends Thread implements Tick{
      */
     private static boolean running;
     private static boolean loading;
-
-    /**
-     *
-     */
     private static long lastTime;
     private static long timeLeft;
 
@@ -76,16 +74,13 @@ public class GameThread extends Thread implements Tick{
      */
     @Override
     public void run() {
-        GameClient.setSurfaceCreated(true);
         loading = true;
         particleButton = GameClient.getParticleButton();
         skillButton = GameClient.getSkillButton();
         backgroundMusic = new BackgroundMusic(context);
         backgroundMusic.startMusic();
+        initializeStartData();
         displayLoadingScreen();
-        particleButton.setUser(user);
-        skillButton.setUser(user);
-        controller = new MovementController1(user, map, this);
         while(running){
             update();
             render();
@@ -100,6 +95,7 @@ public class GameThread extends Thread implements Tick{
                 synchronizedTick -= timeLeft / TIME_PER_TICK;
                 predictedDelay -= timeLeft;
                 if(predictedDelay >= 0.5){
+                    Log.d("main loop", "lag occurred");
                     //request a fresh synchronizedTick
                 }
             }
@@ -115,18 +111,17 @@ public class GameThread extends Thread implements Tick{
      * This method calls all the update methods of particles, players, etc...
      */
     protected void update(){
-        for(Queue<Event> eventQueue:EventReceiver.events){
-            while(!eventQueue.isEmpty()){
-                eventQueue.remove().apply();
-            }
-        }
-        // TODO the Host should handle the particle collision
+        // TODO handle the events
         user.update();
         for (Player player:playerArray){
             player.update();
         }
         for (Particle particle:particleList) {
             particle.update();
+        }
+        controller.update();
+        for (LightBulb lightBulb: lightBulbArray){
+            lightBulb.update();
         }
     }
 
@@ -147,13 +142,12 @@ public class GameThread extends Thread implements Tick{
                     for (Player player:playerArray){
                         player.render(c);
                     }
-                    for(LightBulb lightBulb : lightBulbArray){
+
+                    for (LightBulb lightBulb:lightBulbArray){
                         lightBulb.render(c);
                     }
                     map.renderMinimap(c);
-                    if(StartActivity.deviceType == DeviceType.HOST){
-                        displayPauseButton(c);
-                    }
+                    //todo:display pause button
                 }
             }
         } finally {
@@ -216,39 +210,56 @@ public class GameThread extends Thread implements Tick{
         return c;
     }
 
-    public  void setStartData(GameStartEvent startData){
-        Log.d("initialization", "Start data is initialized");
-        //if (!loading)return;
-        map = new Map(GameSurface.getRec(), startData.getMapID(), this);
-        playerArray = new Player[startData.getPlayerCount()];
-        switch (startData.getPlayerTypes().get(startData.getUserID())){
-            case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-                break;
-            case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-                break;
-            case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-                break;
-            case NULL: Log.d("fail", "user PlayerType is NULL");
-        }
-        for (byte i = 0; i < startData.getPlayerCount(); i++){
-            if (i == startData.getUserID()){
-                Log.d("user", "The user is being initialized.");
-                playerArray[i] = user;
-            }else {
-                Log.d("player", "A Player is being initialized");
-                playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, user);
-            }
-        }
+    //todo:provisional start initializer
+    private void initializeStartData(){
+        map = new Map(GameSurface.getRec(), R.drawable.test_map_2);
+        playerArray = new Player[2];
+        playerArray[0] = user = new Fluffy(map, (byte)0, (byte)0);
+        playerArray[1] = new Player(PlayerType.GHOST, map, (byte)1, (byte)1);
         lightBulbArray = new LightBulb[2];
-        for(byte i = 0; i < lightBulbArray.length; ++i){
-            lightBulbArray[i] = new LightBulb(i, map);
+        lightBulbArray[0] = new LightBulb((byte) 0, map);
+        lightBulbArray[1] = new LightBulb((byte) 1, map);
+        particleButton.setUser(user);
+        skillButton.setUser(user);
+        if (user.getType() == PlayerType.FLUFFY){
+            controller = new FluffyController1((Fluffy) user, map);
+        }else {
+            controller = new MovementController1(user, map);
         }
-        if(StartActivity.deviceType == DeviceType.CLIENT) {
-            new GameLoadedEvent().send();
-        } else{
-            WaitUntilLoadedThread.incrementReady();
-        }
+        loading = false;
     }
+    /**
+     public  void setStartData(GameStartEvent startData){
+     Log.d("initialization", "Start data is initialized");
+     //if (!loading)return;
+     map = new Map(GameSurface.getRec(), startData.getMapID(), this);
+     playerArray = new Player[startData.getPlayerCount()];
+     switch (startData.getPlayerTypes().get(startData.getUserID())){
+     case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+     break;
+     case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+     break;
+     case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
+     break;
+     case NULL: Log.d("fail", "user PlayerType is NULL");
+     }
+     for (byte i = 0; i < startData.getPlayerCount(); i++){
+     if (i == startData.getUserID()){
+     Log.d("user", "The user is being initialized.");
+     playerArray[i] = user;
+     }else {
+     Log.d("player", "A Player is being initialized");
+     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, user);
+     }
+     }
+     lightBulbArray = new LightBulb[2];
+     if(StartActivity.deviceType == DeviceType.CLIENT) {
+     new GameLoadedEvent().send();
+     } else{
+     WaitUntilLoadedThread.incrementReady();
+     }
+     }
+     */
 
     public static void endLoading(){
         synchronizedTick = 0;

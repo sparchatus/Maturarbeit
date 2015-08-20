@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
@@ -17,7 +18,7 @@ public class User extends Player {
 
     protected final Paint SKILL_BAR_COLOR;
     protected final int MAX_MANA = 1000;
-    protected final float MAX_SPEED = 0.2f;
+    protected final float MAX_SPEED = 2f / Tick.TICK;
     protected final int PARTICLE_COOL_DOWN = 300 / TIME_PER_TICK;
 
     protected boolean shooting;
@@ -26,12 +27,11 @@ public class User extends Player {
 
     protected float mana;
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
-    protected float velocity, speed;
-    protected double oldAngle;
+    protected float velocity, speed, oldAngle;
     protected Map map;
 
-    public User(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, byte team, byte playerId, User theUser) {
-        super(entityXCoordinate, entityYCoordinate, type, map, team, playerId, theUser);
+    public User(PlayerType type, Map map, byte team, byte playerId) {
+        super(type, map, team, playerId);
         user = this;
         SKILL_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
@@ -47,11 +47,10 @@ public class User extends Player {
     @Override
     public void update() {
         super.update();
-        oldAngle = angle;
         move();
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
-            GameThread.addParticle(new Particle(this));
-            new ParticleShotEvent(TEAM).send();
+            GameThread.addParticle(new Particle(xCoordinate, yCoordinate, TEAM, angle));
+            //todo:send particle event
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
     }
@@ -81,10 +80,10 @@ public class User extends Player {
         }
         speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
 
-        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate || oldAngle != angle) {
+        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
-            new PlayerMotionEvent(xCoordinate, yCoordinate, angle, ID).send();
+            //todo:send player motion event
         }
     }
 

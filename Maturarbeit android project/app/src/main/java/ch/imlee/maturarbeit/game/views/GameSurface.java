@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Particle;
@@ -21,48 +22,46 @@ import ch.imlee.maturarbeit.main.StartActivity;
  */
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
-        private SurfaceHolder holder;
-        private GameThread gameThread;
-        private static Resources rec;
+    private SurfaceHolder holder;
+    private GameThread gameThread;
+    private static Resources rec;
 
-        public GameSurface(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            holder = getHolder();
-            holder.addCallback(this);
-        }
+    public GameSurface(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        holder = getHolder();
+        holder.addCallback(this);
+    }
 
 
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            Log.d("tag", "surface gets created");
-            if (StartActivity.deviceType == DeviceType.HOST) {
-                gameThread = new GameServerThread(holder, getContext());
-            }else {
-                gameThread = new GameThread(holder, getContext());
-            }
-            gameThread.setRunning(true);
-            gameThread.start();
-            rec = getResources();
-        }
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d("tag", "surface gets created");
+        //todo: only override when it is the host
+        gameThread = new GameServerThread(holder, getContext());
+        gameThread.setRunning(true);
+        gameThread.start();
+        rec = getResources();
+        GameClient.setSurfaceCreated(true);
+    }
 
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-        }
+    }
 
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            gameThread.setRunning(false);
-            boolean retry = true;
-            while(retry){
-                try {
-                    gameThread.join();
-                    retry = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        gameThread.setRunning(false);
+        boolean retry = true;
+        while(retry){
+            try {
+                gameThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

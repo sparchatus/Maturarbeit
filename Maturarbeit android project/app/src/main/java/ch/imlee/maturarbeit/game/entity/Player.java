@@ -24,28 +24,35 @@ public class Player extends Entity implements Tick {
     public final int TILE_SIDE;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
-    protected final float PLAYER_RADIUS = 0.5f;
+    public final float PLAYER_RADIUS = 0.5f;
+    protected final int MAX_STRENGTH = 100;
+    private final int DEATH_TIME = 5 * Tick.TICK;
 
     protected boolean stunned;
     protected boolean invisible;
     protected boolean slimy;
     protected boolean dead;
+    protected boolean flagPossessed = false;
 
     protected int reviveTick;
+    protected int strength;
 
     protected double stunTick;
 
     protected double angle;
 
+    protected final PlayerType TYPE;
     protected User user;
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
+    protected final Paint WHITE_BLACK;
 
-    public Player(float entityXCoordinate, float entityYCoordinate, PlayerType type, Map map, byte Team, byte playerId, User theUser) {
-        super(entityXCoordinate, entityYCoordinate);
+    public Player(PlayerType type, Map map, byte team, byte playerId) {
+        super(map.getStartX(team), map.getStartY(team));
         TILE_SIDE = map.TILE_SIDE;
+        TYPE = type;
         if (type == PlayerType.FLUFFY){
             PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), TILE_SIDE, TILE_SIDE, false);
         }else if (type == PlayerType.SLIME){
@@ -53,15 +60,15 @@ public class Player extends Entity implements Tick {
         }else if (type == PlayerType.GHOST){
             PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), TILE_SIDE, TILE_SIDE, false);
         }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.mipmap.ic_launcher), TILE_SIDE, TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher), TILE_SIDE, TILE_SIDE, false);
         }
         STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), TILE_SIDE, TILE_SIDE, false);
-        TEAM = Team;
+        TEAM = team;
         BAR_HEIGHT = TILE_SIDE / 5;
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
-        user = theUser;
+        user = GameThread.getUser();
         if (user == null || TEAM == user.TEAM){
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else {
@@ -70,6 +77,11 @@ public class Player extends Entity implements Tick {
         stunned = false;
         invisible = false;
         this.ID = playerId;
+        WHITE_BLACK = new Paint();
+        WHITE_BLACK.setShadowLayer(GameClient.getScreenWidth(), 0, 0, 0x99000000);
+        //todo:remove
+
+        death();
     }
 
     public Canvas render(Canvas canvas){
@@ -77,7 +89,7 @@ public class Player extends Entity implements Tick {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
-            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
+            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2f, null);
         }
         if (stunned){
             canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
@@ -89,13 +101,24 @@ public class Player extends Entity implements Tick {
         if (stunned && stunTick <= GameThread.getSynchronizedTick()){
             stunned = false;
         }
+        if (dead && reviveTick <= GameThread.getSynchronizedTick()){
+            dead = false;
+        }
+        if (flagPossessed){
+            strength ++;
+            if (strength >= MAX_STRENGTH){
+                strength = MAX_STRENGTH;
+            }
+            if (strength <= 0) {
+                flagLost();
+            }
+        }
     }
 
     protected void death(){
-        //todo:loose flag
         setCoordinates(Map.getStartX(TEAM), Map.getStartY(TEAM));
         dead = true;
-        if (reviveTick <= GameThread.getSynchronizedTick());
+        reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
     }
 
     public void stun(double stunTick){
@@ -129,5 +152,27 @@ public class Player extends Entity implements Tick {
 
     public byte getTeam(){
         return TEAM;
+    }
+
+    public PlayerType getType(){
+        return TYPE;
+    }
+
+    public void flagReceived(){
+        strength = MAX_STRENGTH;
+        flagPossessed = true;
+    }
+
+    private void flagLost(){
+        flagPossessed = false;
+        //todo;send lost event to server
+        //todo: delete
+        for (LightBulb lightBulb:GameThread.getLightBulbArray()){
+            lightBulb.setPossessor(null);
+        }
+    }
+
+    public void particleHit(){
+        strength--;
     }
 }

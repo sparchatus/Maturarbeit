@@ -12,18 +12,23 @@ import ch.imlee.maturarbeit.game.map.Map;
  */
 public class MovementController1 extends Controller{
 
-    public MovementController1(User user, Map map, GameThread gameThread) {
-        super(user, map, gameThread);
+    public MovementController1(User user, Map map) {
+        super(user, map);
     }
 
     public boolean onTouch(MotionEvent event){
-        if (!super.onTouch(event)){
-            playerControl(event);
+        if (event.getAction() == MotionEvent.ACTION_UP){
+            pickingBulb = null;
+            pickingTicks = 0;
+        } else if (super.onTouch(event)){
+            return true;
         }
+        controllerState = ControllerState.MOVING;
+        playerControl(event);
         return true;
     }
 
-    private boolean playerControl(MotionEvent event){
+    private void playerControl(MotionEvent event){
         float distance = (float) Math.sqrt(Math.pow(event.getX() - GameClient.getHalfScreenWidth(), 2) + Math.pow(event.getY() - GameClient.getHalfScreenHeight(), 2));
         float angle = (float) Math.acos((event.getX() - GameClient.getHalfScreenWidth()) / distance);
         if(event.getY() - GameClient.getHalfScreenHeight() < 0){
@@ -33,13 +38,13 @@ public class MovementController1 extends Controller{
         float velocity;
         if (distance / TILE_SIDE <= PLAYER_RADIUS){
             user.setVelocity(0);
-            return true;
+            return;
         }else {
             if((velocity = distance / GameClient.getHalfScreenHeight()) > 1){
                 velocity= 1;
             }
             user.setVelocity(velocity);
         }
-        return true;
+        return;
     }
 }

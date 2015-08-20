@@ -14,20 +14,16 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  * Created by Sandro on 29.06.2015.
  */
 public class LightBulb extends Entity{
-    private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_ON;
+    private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_OFF_SMALL, LIGHT_BULB_ON_SMALL;
     private final int SIDE;
     private Player possessor;
 
-    public LightBulb(byte team, Map map){
-        // so if team 0 it goes to start +1 on x and y and if team = 1 it goes to start -1 on x and y, so always one towards the center of the map
-        this(Map.getStartX(team)+1-(2*team), Map.getStartY(team)+1-(2*team), map);
-    }
-
-    public LightBulb(float entityXCoordinate, float entityYCoordinate, Map map) {
-        super(entityXCoordinate, entityYCoordinate);
+    public LightBulb(byte team, Map map) {
+        super(map.getStartX(team), map.getStartY(team));
         SIDE = map.TILE_SIDE;
         LIGHT_BULB_OFF = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE, SIDE, false);
-        LIGHT_BULB_ON = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_on), SIDE, SIDE, false);
+        LIGHT_BULB_OFF_SMALL = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE / 3 * 2, SIDE / 3 * 2, false);
+        LIGHT_BULB_ON_SMALL = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_on), SIDE / 3 * 2, SIDE / 3 * 2, false);
     }
 
     public void update(){
@@ -37,17 +33,19 @@ public class LightBulb extends Entity{
     }
 
     public Canvas render(Canvas canvas){
-        if(possessor != null){
-            if (possessor.getClass() == Fluffy.class) {
-                canvas.drawBitmap(LIGHT_BULB_ON, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+        if (possessor!=null){
+            if (possessor.getClass() == Fluffy.class){
+                canvas.drawBitmap(LIGHT_BULB_ON_SMALL, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth() - SIDE / 3f, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE, null);
+                return canvas;
             }
-        }else{
-            canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE/2, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2, null);
+            canvas.drawBitmap(LIGHT_BULB_OFF_SMALL, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE / 3f, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE, null);
+            return canvas;
         }
+        canvas.drawBitmap(LIGHT_BULB_OFF, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameClient.getHalfScreenWidth()- SIDE / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameClient.getHalfScreenHeight() - SIDE / 2f, null);
         return canvas;
     }
 
-    public void pickUp(Player possessor){
+    public void setPossessor(Player possessor){
         this.possessor = possessor;
     }
 

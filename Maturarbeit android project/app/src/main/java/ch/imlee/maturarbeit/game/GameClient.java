@@ -37,7 +37,6 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        //gameSurface = (GameSurface) (findViewById(R.id.game_surface));
         Display display = getWindowManager().getDefaultDisplay();
         screenWidth = display.getWidth();
         screenHeight = display.getHeight();
@@ -55,14 +54,18 @@ public class GameClient extends Activity {
     }
 
     @Override
-    protected void onStop(){
-        super.onStop();
-        ChooseActivity.eventReceiver.setRunning(false);
+    protected void onPause() {
+        super.onPause();
     }
 
-    public static void initializeStartData(GameStartEvent gameStartEvent) {
+    @Override
+    protected void onStop(){
+        super.onStop();
+    }
+
+    public static void initializeStartData() {
         gameThread = gameSurface.getGameThread();
-        gameThread.setStartData(gameStartEvent);
+        //todo: set start data
     }
 
     public static void startSynchronizedTick() {

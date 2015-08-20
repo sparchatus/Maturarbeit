@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
@@ -26,6 +27,7 @@ public class User extends Player {
     protected double particleCoolDownTick;
 
     protected float mana;
+    protected LightBulb possessedLightBulb;
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
     protected float velocity, speed, oldAngle;
     protected Map map;
@@ -52,6 +54,15 @@ public class User extends Player {
             GameThread.addParticle(new Particle(xCoordinate, yCoordinate, TEAM, angle));
             new ParticleShotEvent(this).send();
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+        }
+        if (flagPossessed){
+            strength ++;
+            if (strength >= MAX_STRENGTH){
+                strength = MAX_STRENGTH;
+            }
+            if (strength <= 0) {
+                flagLost();
+            }
         }
     }
 
@@ -100,5 +111,11 @@ public class User extends Player {
     }
     public float getPLAYER_RADIUS(){
         return PLAYER_RADIUS;
+    }
+
+    @Override
+    public void flagLost() {
+        super.flagLost();
+        new LightBulbEvent(ID, possessedLightBulb.getLIGHT_BULB_ID(), false);
     }
 }

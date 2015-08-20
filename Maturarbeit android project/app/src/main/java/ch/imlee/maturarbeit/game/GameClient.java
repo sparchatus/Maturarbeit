@@ -61,11 +61,12 @@ public class GameClient extends Activity {
     @Override
     protected void onStop(){
         super.onStop();
+        ChooseActivity.eventReceiver.setRunning(false);
     }
 
-    public static void initializeStartData() {
+    public static void initializeStartData(GameStartEvent gameStartEvent) {
         gameThread = gameSurface.getGameThread();
-        //todo: set start data
+        gameThread.setStartData(gameStartEvent);
     }
 
     public static void startSynchronizedTick() {

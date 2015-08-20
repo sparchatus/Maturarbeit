@@ -17,9 +17,11 @@ public class LightBulb extends Entity{
     private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_OFF_SMALL, LIGHT_BULB_ON_SMALL;
     private final int SIDE;
     private Player possessor;
+    private final int LIGHT_BULB_ID;
 
-    public LightBulb(byte team, Map map) {
+    public LightBulb(byte team, Map map, int  lightBulbId) {
         super(map.getStartX(team), map.getStartY(team));
+        LIGHT_BULB_ID = lightBulbId;
         SIDE = map.TILE_SIDE;
         LIGHT_BULB_OFF = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE, SIDE, false);
         LIGHT_BULB_OFF_SMALL = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE / 3 * 2, SIDE / 3 * 2, false);
@@ -51,5 +53,9 @@ public class LightBulb extends Entity{
 
     public Player getPossessor() {
         return possessor;
+    }
+
+    public int getLIGHT_BULB_ID(){
+        return LIGHT_BULB_ID;
     }
 }

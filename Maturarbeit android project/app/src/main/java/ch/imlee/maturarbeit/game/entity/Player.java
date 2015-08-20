@@ -10,6 +10,7 @@ import android.util.Log;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -98,15 +99,6 @@ public class Player extends Entity implements Tick {
         if (dead && reviveTick <= GameThread.getSynchronizedTick()){
             dead = false;
         }
-        if (flagPossessed){
-            strength ++;
-            if (strength >= MAX_STRENGTH){
-                strength = MAX_STRENGTH;
-            }
-            if (strength <= 0) {
-                flagLost();
-            }
-        }
     }
 
     protected void death(){
@@ -157,9 +149,8 @@ public class Player extends Entity implements Tick {
         flagPossessed = true;
     }
 
-    private void flagLost(){
+    public void flagLost(){
         flagPossessed = false;
-        //todo: send lost event to server
     }
 
     public void particleHit(){

@@ -78,9 +78,8 @@ public class GameThread extends Thread implements Tick{
         particleButton = GameClient.getParticleButton();
         skillButton = GameClient.getSkillButton();
         backgroundMusic = new BackgroundMusic(context);
-        backgroundMusic.startMusic();
-        initializeStartData();
         displayLoadingScreen();
+        backgroundMusic.startMusic();
         while(running){
             update();
             render();
@@ -96,22 +95,25 @@ public class GameThread extends Thread implements Tick{
                 predictedDelay -= timeLeft;
                 if(predictedDelay >= 0.5){
                     Log.d("main loop", "lag occurred");
-                    //request a fresh synchronizedTick
+                    //todo: request a fresh synchronizedTick
+                    //todo: on receiving a new Tick, the old Data has to be reviewed
                 }
             }
             lastTime = System.currentTimeMillis();
             synchronizedTick++;
         }
-        //Todo: turn off music?
         backgroundMusic.stop();
-        backgroundMusic = null;
     }
 
     /**
      * This method calls all the update methods of particles, players, etc...
      */
     protected void update(){
-        // TODO handle the events
+        for(Queue<Event> eventQueue:EventReceiver.events){
+            while(!eventQueue.isEmpty()){
+                eventQueue.remove().apply();
+            }
+        }
         user.update();
         for (Player player:playerArray){
             player.update();
@@ -210,56 +212,43 @@ public class GameThread extends Thread implements Tick{
         return c;
     }
 
-    //todo:provisional start initializer
-    private void initializeStartData(){
-        map = new Map(GameSurface.getRec(), R.drawable.test_map_2);
-        playerArray = new Player[2];
-        playerArray[0] = user = new Fluffy(map, (byte)0, (byte)0);
-        playerArray[1] = new Player(PlayerType.GHOST, map, (byte)1, (byte)1);
-        lightBulbArray = new LightBulb[2];
-        lightBulbArray[0] = new LightBulb((byte) 0, map);
-        lightBulbArray[1] = new LightBulb((byte) 1, map);
-        particleButton.setUser(user);
-        skillButton.setUser(user);
-        if (user.getType() == PlayerType.FLUFFY){
-            controller = new FluffyController1((Fluffy) user, map);
-        }else {
-            controller = new MovementController1(user, map);
-        }
-        loading = false;
-    }
-    /**
      public  void setStartData(GameStartEvent startData){
-     Log.d("initialization", "Start data is initialized");
-     //if (!loading)return;
-     map = new Map(GameSurface.getRec(), startData.getMapID(), this);
-     playerArray = new Player[startData.getPlayerCount()];
-     switch (startData.getPlayerTypes().get(startData.getUserID())){
-     case FLUFFY:user = new Fluffy(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-     break;
-     case GHOST:user = new Ghost(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-     break;
-     case SLIME:user = new Slime(map.getStartX(startData.getTeams().get(startData.getUserID())), map.getStartY(startData.getTeams().get(startData.getUserID())), map, startData.getTeams().get(startData.getUserID()), startData.getUserID());
-     break;
-     case NULL: Log.d("fail", "user PlayerType is NULL");
+         Log.d("initialization", "Start data is initialized");
+         map = new Map(GameSurface.getRec(), startData.getMapID());
+         playerArray = new Player[startData.getPlayerCount()];
+         for (byte i = 0; i < startData.getPlayerCount(); i++){
+            if (i == startData.getUserID()){
+                Log.d("user", "The user is being initialized.");
+                switch (startData.getPlayerTypes().get(i)){
+                    case FLUFFY:user = new Fluffy(map, startData.getTeams().get(i), i);
+                        break;
+                    case GHOST:user = new Ghost(map, startData.getTeams().get(i), i);
+                        break;
+                    case SLIME:user = new Slime(map, startData.getTeams().get(i), i);
+                        break;
+                    case NULL: Log.d("fail", "user PlayerType is NULL");
+                }
+                playerArray[i] = user;
+            }else {
+                Log.d("player", "A Player is being initialized");
+                playerArray[i] = new Player(startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i);
+            }
+         }
+         lightBulbArray = new LightBulb[2];
+         lightBulbArray[0] = new LightBulb((byte) 0, map, 0);
+         lightBulbArray[1] = new LightBulb((byte) 1, map, 1);
+         //todo: remove when created a new controller
+         if (user.getType() == PlayerType.FLUFFY){
+             controller = new FluffyController1((Fluffy) user, map);
+         }else {
+             controller = new MovementController1(user, map);
+         }
+         if(StartActivity.deviceType == DeviceType.CLIENT) {
+            new GameLoadedEvent().send();
+         } else {
+            WaitUntilLoadedThread.incrementReady();
+         }
      }
-     for (byte i = 0; i < startData.getPlayerCount(); i++){
-     if (i == startData.getUserID()){
-     Log.d("user", "The user is being initialized.");
-     playerArray[i] = user;
-     }else {
-     Log.d("player", "A Player is being initialized");
-     playerArray[i] = new Player(map.getStartX(startData.getTeams().get(i)), map.getStartY(startData.getTeams().get(i)), startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, user);
-     }
-     }
-     lightBulbArray = new LightBulb[2];
-     if(StartActivity.deviceType == DeviceType.CLIENT) {
-     new GameLoadedEvent().send();
-     } else{
-     WaitUntilLoadedThread.incrementReady();
-     }
-     }
-     */
 
     public static void endLoading(){
         synchronizedTick = 0;

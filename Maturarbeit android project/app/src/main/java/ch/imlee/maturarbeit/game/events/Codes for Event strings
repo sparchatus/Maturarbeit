@@ -1,11 +1,13 @@
 Starting characters:
     A - Game action
         B - Light Bulb
+        C - Light Bulb Server
         S - Stun
         I - Invisibility
         L - Slime
         M - Player Motion
         P - Particle Shot
+
 
     G - Game state changed
         C - Game cancelled

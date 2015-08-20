@@ -7,6 +7,7 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbServerEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 
 /**
@@ -30,9 +31,10 @@ public class Controller {
     }
 
     public void update(){
-        if (controllerState == ControllerState.PICKING || pickingBulb != null){
+        if (controllerState == ControllerState.PICKING || pickingBulb != null){ // TODO: shouldnt it be "&&" ?
             pickingTicks ++;
             if (pickingTicks >= PICK_UP_TICKS){
+                new LightBulbServerEvent(user, pickingBulb.getLIGHT_BULB_ID()).send();
                 pickingBulb.setPossessor(user);
                 pickingBulb = null;
                 pickingTicks = 0;

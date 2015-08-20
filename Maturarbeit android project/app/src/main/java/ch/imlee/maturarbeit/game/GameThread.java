@@ -254,6 +254,7 @@ public class GameThread extends Thread implements Tick{
         synchronizedTick = 0;
         loading = false;
         particleButton.setUser(user);
+        skillButton.setUser(user);
     }
 
     public static void addParticle(Particle newParticle){

@@ -16,19 +16,19 @@ public class LightBulbServerEvent extends GameActionEvent {
         LIGHT_BULB_ID = lightBulbId;
     }
     public LightBulbServerEvent(String string){
-        PLAYER_ID = string.charAt(2);
-        LIGHT_BULB_ID = string.charAt(3);
+        PLAYER_ID = Integer.parseInt(Character.toString(string.charAt(2)));
+        LIGHT_BULB_ID = Integer.parseInt(Character.toString(string.charAt(3)));
     }
 
     @Override
     public String toString() {
-        return super.toString() + 'C' + PLAYER_ID;
+        return super.toString() + 'C' + PLAYER_ID + LIGHT_BULB_ID;
     }
 
     @Override
     public void apply() {
-        if (GameThread.getLightBulbArray()[LIGHT_BULB_ID] == null){
+        //if (GameThread.getLightBulbArray()[LIGHT_BULB_ID] == null){
             new LightBulbEvent(PLAYER_ID, LIGHT_BULB_ID, true).send();
-        }
+        //}
     }
 }

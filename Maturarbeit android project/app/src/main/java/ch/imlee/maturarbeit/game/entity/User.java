@@ -116,6 +116,6 @@ public class User extends Player {
     @Override
     public void flagLost() {
         super.flagLost();
-        new LightBulbEvent(ID, possessedLightBulb.getLIGHT_BULB_ID(), false);
+        new LightBulbEvent(ID, possessedLightBulb.getLIGHT_BULB_ID(), false).send();
     }
 }

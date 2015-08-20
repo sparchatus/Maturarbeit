@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.game.events;
 
+import android.util.Log;
+
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
@@ -59,8 +61,7 @@ public class Event {
         } else{
             this.sendAsClient();
         }
-        System.out.println("...");
-        System.out.println("Event sent: " + this.toString());
+        Log.v("event", "Event sent: " + this.toString());
     }
 
     private void sendAsHost(){

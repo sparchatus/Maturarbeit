@@ -19,9 +19,9 @@ public class EventHandler extends Thread {
     @Override
     public void run(){
         if (!event.handle(ID)) {
-            Log.d("Event", "Event " + event.toString() + " didn't handle itself, storing in queue...");
+            Log.v("Event", "Event " + event.toString() + " didn't handle itself, storing in queue...");
             synchronizedAdd(event, ID);
-        } else Log.d("Event", "Event " + event.toString() + "handled itself, going on...");
+        } else Log.v("Event", "Event " + event.toString() + "handled itself, going on...");
     }
 
     private static synchronized void synchronizedAdd(Event event, byte id) {

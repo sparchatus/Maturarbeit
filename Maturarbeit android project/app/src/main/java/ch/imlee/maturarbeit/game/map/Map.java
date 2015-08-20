@@ -6,12 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.views.GameSurface;
 
@@ -31,7 +29,6 @@ public class Map implements MapDimensions {
     private final Bitmap MINIMAP_BITMAP = Bitmap.createScaledBitmap(Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2),
             BORDER_TILES_RIGHT-1, BORDER_TILES_TOP-1, BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*(BORDER_TILES_RIGHT-1),
             BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*(BORDER_TILES_TOP-1)), MINIMAP_WIDTH, MINIMAP_HEIGHT, false);
-    private final Rect MINIMAP_RECT = new Rect(GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, GameClient.getScreenWidth(), MINIMAP_HEIGHT);
     final float MINIMAP_SCALE = MINIMAP_BITMAP.getWidth()/(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT);
     private static Paint minimapPaint = new Paint();
     private static final int MINIMAP_ALPHA = 0xaa;
@@ -73,7 +70,6 @@ public class Map implements MapDimensions {
     }
 
     public void render(Canvas canvas, User user){
-        //TODO: is it really necessary to return the canvas?
         for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
             for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
                 canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalfScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * user.TILE_SIDE, GameClient.getHalfScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* user.TILE_SIDE, null);

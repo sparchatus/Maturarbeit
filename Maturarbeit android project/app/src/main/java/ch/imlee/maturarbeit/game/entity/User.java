@@ -19,7 +19,7 @@ public class User extends Player {
     protected final Paint SKILL_BAR_COLOR;
     protected final int MAX_MANA = 1000;
     protected final float MAX_SPEED = 2f / Tick.TICK;
-    protected final int PARTICLE_COOL_DOWN = 300 / TIME_PER_TICK;
+    protected final int PARTICLE_COOL_DOWN = 500 / TIME_PER_TICK;
 
     protected boolean shooting;
 
@@ -50,7 +50,7 @@ public class User extends Player {
         move();
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
             GameThread.addParticle(new Particle(xCoordinate, yCoordinate, TEAM, angle));
-            //todo:send particle event
+            new ParticleShotEvent(this).send();
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
     }
@@ -83,7 +83,7 @@ public class User extends Player {
         if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
-            //todo:send player motion event
+            new PlayerMotionEvent(this).send();
         }
     }
 

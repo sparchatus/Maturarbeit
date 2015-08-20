@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import android.graphics.YuvImage;
+
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.User;
@@ -9,19 +11,28 @@ import ch.imlee.maturarbeit.game.entity.User;
  */
 public class ParticleShotEvent extends GameActionEvent {
 
-    final byte TEAM;
-    public ParticleShotEvent(byte id){
-        TEAM = id;
+    private final byte TEAM;
+    private final float X_COORDINATE, Y_COORDINATE;
+    private final double ANGLE;
+
+    public ParticleShotEvent(User user){
+        TEAM = user.TEAM;
+        X_COORDINATE = user.getXCoordinate();
+        Y_COORDINATE = user.getYCoordinate();
+        ANGLE = user.getAngle();
     }
     public ParticleShotEvent(String string){
-        TEAM = Byte.parseByte(string.substring(string.length()-1));
+        X_COORDINATE = Float.valueOf(string.substring(string.indexOf("x") + 1, string.indexOf("y")));
+        Y_COORDINATE = Float.valueOf(string.substring(string.indexOf("y") + 1, string.indexOf("t")));
+        TEAM = Byte.valueOf(string.substring(string.indexOf("t") + 1, string.indexOf("a")));
+        ANGLE = Float.valueOf(string.substring(string.indexOf("a") + 1));
     }
 
     public String toString(){
-        return super.toString() + 'P' + TEAM;
+        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE;
     }
 
     public void apply(){
-        GameThread.addParticle(new Particle(GameThread.getPlayerArray()[TEAM]));
+        GameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE));
     }
 }

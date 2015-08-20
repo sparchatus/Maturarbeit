@@ -31,8 +31,7 @@ public class Ghost extends User {
         super.update();
         if (invisible){
             if (mana <= 0){
-                invisible = false;
-                //todo:send event
+                setInvisible(false);
             }else {
                 mana -= MANA_CONSUMPTION;
             }
@@ -64,10 +63,14 @@ public class Ghost extends User {
     @Override
     public void skillActivation() {
         if(invisible){
-            invisible = false;
-        }else {
-            invisible = true;
+            setInvisible(false);
+        }else if (mana >= MAX_MANA / 2){
+            setInvisible(true);
         }
-        //todo:send event
+    }
+    @Override
+    public void setInvisible(boolean invisible){
+        this.invisible = invisible;
+        new InvisibilityEvent(ID, invisible).send();
     }
 }

@@ -54,7 +54,7 @@ public class Fluffy extends User {
     public void skillActivation() {
         if (mana == MAX_MANA && focusedPlayer != null){
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
-            //todo:send event
+            new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             focusedPlayer = null;
             mana -= MANA_CONSUMPTION;
         }

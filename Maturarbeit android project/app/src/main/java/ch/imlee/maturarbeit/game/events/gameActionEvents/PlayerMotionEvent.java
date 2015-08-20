@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.entity.User;
 
 /**
  * Created by Sandro on 15.06.2015.
@@ -19,11 +20,11 @@ public class PlayerMotionEvent extends GameActionEvent {
         PLAYER_ID = Byte.valueOf(eventString.substring(eventString.length() - 1));
     }
 
-    public PlayerMotionEvent(float xCoordinate, float yCoordinate, double angle, byte playerId){
-        X_COORDINATE = xCoordinate;
-        Y_COORDINATE = yCoordinate;
-        ANGLE = angle;
-        PLAYER_ID = playerId;
+    public PlayerMotionEvent(User user){
+        X_COORDINATE = user.getXCoordinate();
+        Y_COORDINATE = user.getYCoordinate();
+        ANGLE = user.getAngle();
+        PLAYER_ID = user.getID();
     }
 
     @Override

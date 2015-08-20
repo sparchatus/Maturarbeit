@@ -47,7 +47,6 @@ public class Player extends Entity implements Tick {
     protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
-    protected final Paint WHITE_BLACK;
 
     public Player(PlayerType type, Map map, byte team, byte playerId) {
         super(map.getStartX(team), map.getStartY(team));
@@ -77,11 +76,6 @@ public class Player extends Entity implements Tick {
         stunned = false;
         invisible = false;
         this.ID = playerId;
-        WHITE_BLACK = new Paint();
-        WHITE_BLACK.setShadowLayer(GameClient.getScreenWidth(), 0, 0, 0x99000000);
-        //todo:remove
-
-        death();
     }
 
     public Canvas render(Canvas canvas){
@@ -165,14 +159,10 @@ public class Player extends Entity implements Tick {
 
     private void flagLost(){
         flagPossessed = false;
-        //todo;send lost event to server
-        //todo: delete
-        for (LightBulb lightBulb:GameThread.getLightBulbArray()){
-            lightBulb.setPossessor(null);
-        }
+        //todo: send lost event to server
     }
 
     public void particleHit(){
-        strength--;
+        strength -=10;
     }
 }

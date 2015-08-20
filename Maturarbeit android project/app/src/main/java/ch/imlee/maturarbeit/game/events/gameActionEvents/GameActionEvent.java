@@ -15,6 +15,8 @@ public class GameActionEvent extends Event {
             case 'L': return new SlimeEvent(string);
             case 'P': return new ParticleShotEvent(string);
             case 'S': return new StunEvent(string);
+            case 'B': return new LightBulbEvent(string);
+            case 'C': return new LightBulbServerEvent(string);
             default:return null;
         }
     }

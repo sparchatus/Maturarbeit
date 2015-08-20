@@ -33,7 +33,9 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
 
     @Override
     public boolean handle(byte id){
-        ChooseActivity.gameStartEvent.setPlayer(TYPE, TEAM, id);
+        ChooseActivity.gameStartEvent.setPlayer(TYPE,
+                TEAM,
+                id);
         ++ChooseActivity.playersReady;
         if(ChooseActivity.playersReady == Host.sockets.size()){
             ChooseActivity.startGameButton.setClickable(true);

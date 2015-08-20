@@ -16,17 +16,23 @@ import ch.imlee.maturarbeit.main.StartActivity;
  * Created by Lukas on 18.06.2015.
  */
 public class EventReceiver extends Thread {
-    private boolean running;
+    private boolean running = false;
     public static ArrayList<Queue<Event>> events = new ArrayList<>();
 
     @Override
     public void run(){
+        setRunning(true);
         if(StartActivity.deviceType == DeviceType.CLIENT){
             events.add(new LinkedBlockingQueue<Event>() {
             });
             while(running){
                 //Log.v("Event", "EventReceiver is on it again");
-                Util.receiveEvents(Client.inputStream, (byte)0);
+                try {
+                    Util.receiveEvents(Client.inputStream, (byte) 0);
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                    setRunning(false);
+                }
             }
 
         } else{
@@ -44,5 +50,8 @@ public class EventReceiver extends Thread {
 
     public void setRunning(boolean running){
         this.running = running;
+    }
+    public boolean getRunning(){
+        return running;
     }
 }

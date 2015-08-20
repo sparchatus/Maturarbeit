@@ -253,6 +253,7 @@ public class GameThread extends Thread implements Tick{
     public static void endLoading(){
         synchronizedTick = 0;
         loading = false;
+        particleButton.setUser(user);
     }
 
     public static void addParticle(Particle newParticle){

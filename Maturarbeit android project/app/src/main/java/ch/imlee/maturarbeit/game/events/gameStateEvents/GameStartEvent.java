@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 
+import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
@@ -67,6 +68,10 @@ public class GameStartEvent extends GameStateEvent {
 
     public GameStartEvent(int mapID){
         MAP_ID = mapID;
+    }
+
+    public GameStartEvent(){
+        MAP_ID = R.drawable.test_map_2;
     }
 
     private void initializeArrays(int size){

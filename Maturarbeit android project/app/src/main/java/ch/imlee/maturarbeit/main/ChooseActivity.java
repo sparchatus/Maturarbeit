@@ -34,7 +34,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     private byte selectedTeam = -1;
     private int selectedPlayerType = -1;
 
-    public static GameStartEvent gameStartEvent;
+    public static GameStartEvent gameStartEvent = new GameStartEvent();
 
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
@@ -63,9 +63,14 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     @Override
     public void onStart(){
         super.onStart();
-        eventReceiver.setRunning(true);
-        eventReceiver.start();
-        gameStartEvent = new GameStartEvent(R.drawable.test_map_2);
+        if(eventReceiver.getRunning()){
+            eventReceiver = new EventReceiver();
+        }
+        try {
+            eventReceiver.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

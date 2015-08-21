@@ -13,7 +13,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
-    private final int SLIME_EJECTION_RATE = Tick.TICK / 2;
+    private final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     private double lastSlimeEjection = 0;
 
     public Slime(Map map, byte team, byte playerId) {

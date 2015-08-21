@@ -120,6 +120,13 @@ public class GameThread extends Thread implements Tick{
         for (Player player:playerArray){
             player.update();
         }
+        for(int i = 0; i < slimeTrailList.size(); ++i){
+            slimeTrailList.get(i).update();
+            if(slimeTrailList.get(i).removable){
+                slimeTrailList.remove(i);
+                --i;
+            }
+        }
         for (Particle particle:particleList) {
             particle.update();
         }
@@ -268,6 +275,7 @@ public class GameThread extends Thread implements Tick{
 
     public static void addSlimeTrail(SlimeTrail slimeTrail){
         slimeTrailList.add(slimeTrail);
+        Log.d("slime", "SlimeTrail added");
     }
 
     /**

@@ -1,6 +1,8 @@
 package ch.imlee.maturarbeit.game.entity;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Tick;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeTrailEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -11,6 +13,8 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
+    private final int SLIME_EJECTION_RATE = Tick.TICK / 2;
+    private double lastSlimeEjection = 0;
 
     public Slime(Map map, byte team, byte playerId) {
         super(PlayerType.SLIME, map, team, playerId);
@@ -25,6 +29,12 @@ public class Slime extends User {
                 slimy = false;
             }else {
                 mana -= MANA_CONSUMPTION;
+            }
+            if(GameThread.getSynchronizedTick()-SLIME_EJECTION_RATE >= lastSlimeEjection){
+                lastSlimeEjection = GameThread.getSynchronizedTick();
+                SlimeTrail slimeTrail = new SlimeTrail(getXCoordinate(), getYCoordinate());
+                GameThread.addSlimeTrail(slimeTrail);
+                new SlimeTrailEvent(slimeTrail).send();
             }
         }
         mana += 2;
@@ -41,6 +51,5 @@ public class Slime extends User {
             if (mana <= 10*MANA_CONSUMPTION)return;
             slimy = true;
         }
-        //todo:slime event send
     }
 }

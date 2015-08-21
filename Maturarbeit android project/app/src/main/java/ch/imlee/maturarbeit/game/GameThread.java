@@ -24,6 +24,7 @@ import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.entity.Slime;
+import ch.imlee.maturarbeit.game.entity.SlimeTrail;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.events.Event;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
@@ -58,6 +59,7 @@ public class GameThread extends Thread implements Tick{
     protected static Map map;
     private static User user;
     protected static Player[] playerArray;
+    protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
     protected static ArrayList<Particle> particleList = new ArrayList<>();
     private static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
@@ -138,6 +140,9 @@ public class GameThread extends Thread implements Tick{
                 if(c!=null) {
                     c.drawColor(Color.BLACK);
                     map.render(c, user);
+                    for(SlimeTrail slimeTrail:slimeTrailList){
+                        slimeTrail.render(c);
+                    }
                     for (Particle particle:particleList){
                         particle.render(c);
                     }
@@ -259,6 +264,10 @@ public class GameThread extends Thread implements Tick{
 
     public static void addParticle(Particle newParticle){
         particleList.add(newParticle);
+    }
+
+    public static void addSlimeTrail(SlimeTrail slimeTrail){
+        slimeTrailList.add(slimeTrail);
     }
 
     /**

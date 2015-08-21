@@ -12,7 +12,7 @@ public class GameActionEvent extends Event {
         switch(string.charAt(1)){
             case 'I': return new InvisibilityEvent(string);
             case 'M': return new PlayerMotionEvent(string);
-            case 'L': return new SlimeEvent(string);
+            case 'L': return new SlimeTrailEvent(string);
             case 'P': return new ParticleShotEvent(string);
             case 'S': return new StunEvent(string);
             case 'B': return new LightBulbEvent(string);

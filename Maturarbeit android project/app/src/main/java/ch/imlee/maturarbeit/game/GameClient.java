@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class GameClient extends Activity {
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
     private static GameThread gameThread;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class GameClient extends Activity {
         halfScreenHeight = screenHeight / 2;
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
+        context = getApplicationContext();
     }
 
     @Override
@@ -103,5 +106,8 @@ public class GameClient extends Activity {
 
     public static ParticleButton getParticleButton() {
         return particleButton;
+    }
+    public static Context getContext(){
+        return context;
     }
 }

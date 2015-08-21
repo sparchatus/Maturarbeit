@@ -17,6 +17,7 @@ import ch.imlee.maturarbeit.game.Controller.Controller;
 import ch.imlee.maturarbeit.game.Controller.FluffyController1;
 import ch.imlee.maturarbeit.game.Controller.MovementController1;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
@@ -79,9 +80,9 @@ public class GameThread extends Thread implements Tick{
         loading = true;
         particleButton = GameClient.getParticleButton();
         skillButton = GameClient.getSkillButton();
-        backgroundMusic = new BackgroundMusic(context);
+        backgroundMusic = new BackgroundMusic();
         displayLoadingScreen();
-        backgroundMusic.startMusic();
+        backgroundMusic.start();
         while(running){
             update();
             render();

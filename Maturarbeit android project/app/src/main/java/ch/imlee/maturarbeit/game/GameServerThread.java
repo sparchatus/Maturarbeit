@@ -5,6 +5,7 @@ import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 
+import ch.imlee.maturarbeit.game.Sound.ParticleCollisionSound;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 
@@ -37,6 +38,7 @@ public class GameServerThread extends GameThread{
         if (particlesToRemove.size() != 0){
             for (Particle particle:particlesToRemove) {
                 particleList.remove(particle);
+                new ParticleCollisionSound().start();
                 //todo:send removal event
             }
         }

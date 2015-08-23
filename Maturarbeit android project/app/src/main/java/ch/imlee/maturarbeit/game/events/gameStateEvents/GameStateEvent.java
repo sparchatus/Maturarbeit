@@ -8,6 +8,8 @@ import ch.imlee.maturarbeit.game.events.Event;
  */
 public class GameStateEvent extends Event {
 
+    public GameStateEvent(){}
+
     public GameStateEvent(byte senderID) {
         super(senderID);
     }

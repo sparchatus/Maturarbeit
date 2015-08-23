@@ -68,12 +68,10 @@ public class GameStartEvent extends GameStateEvent {
     }
 
     public GameStartEvent(int mapID){
-        super(GameThread.getUser().getID());
         MAP_ID = mapID;
     }
 
     public GameStartEvent(){
-        super(GameThread.getUser().getID());
         MAP_ID = R.drawable.test_map_2;
     }
 

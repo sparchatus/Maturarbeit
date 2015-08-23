@@ -63,7 +63,7 @@ public class User extends Player {
     public void update() {
         super.update();
         move();
-        if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
+        if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned){
             if (StartActivity.deviceType == DeviceType.CLIENT){
                 new ParticleServerEvent(this, (int)GameThread.getSynchronizedTick()).send();
             }else{

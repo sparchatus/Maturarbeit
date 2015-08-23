@@ -21,6 +21,7 @@ import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.PlayerStatsSelectedEvent;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;
@@ -121,9 +122,6 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         }
         else{
             selectedPlayerType = (byte)v.getId();
-
-            fluffImage.setImageResource(R.mipmap.ic_launcher);
-            fluffImage.setImageBitmap(BitmapFactory.decodeFile("src/main/res/drawable/fluffy.png"));
         }
     }
 

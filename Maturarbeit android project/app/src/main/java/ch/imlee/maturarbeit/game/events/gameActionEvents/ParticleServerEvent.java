@@ -14,10 +14,10 @@ public class ParticleServerEvent extends GameActionEvent{
     private final double ANGLE;
     private final int SPAWN_TICK;
 
-    public ParticleServerEvent(User user, int spawTick){
+    public ParticleServerEvent(User user, int spawnTick){
         super(user.getID());
         TEAM = user.TEAM;
-        SPAWN_TICK = spawTick;
+        SPAWN_TICK = spawnTick;
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
         ANGLE = user.getAngle();

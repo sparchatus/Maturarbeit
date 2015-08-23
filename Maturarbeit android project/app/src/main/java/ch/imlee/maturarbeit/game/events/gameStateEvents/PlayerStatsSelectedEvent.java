@@ -16,13 +16,12 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
     private final byte TEAM;
 
     public PlayerStatsSelectedEvent(PlayerType type, byte team){
-        super(GameThread.getUser().getID());
         TYPE = type;
         TEAM = team;
+        serverEvent = true;
     }
 
     public PlayerStatsSelectedEvent(String eventString){
-        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         TYPE = PlayerType.values()[Integer.parseInt(eventString.substring(2,eventString.indexOf(',')))];
         TEAM = Byte.parseByte(eventString.substring(eventString.indexOf(',')+1, eventString.indexOf("i")));
     }

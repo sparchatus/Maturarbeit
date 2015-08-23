@@ -19,6 +19,8 @@ public class Event {
     //senderID = -1 happens when the event is invalid
     protected byte senderID;
 
+    public Event(){}
+
     public Event (byte senderID){
         this.senderID = senderID;
     }

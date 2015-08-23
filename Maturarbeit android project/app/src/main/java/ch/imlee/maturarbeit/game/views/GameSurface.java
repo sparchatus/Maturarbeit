@@ -11,8 +11,6 @@ import android.view.SurfaceView;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.Particle;
-import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
 

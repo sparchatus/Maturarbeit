@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -17,7 +16,6 @@ import ch.imlee.maturarbeit.game.Controller.Controller;
 import ch.imlee.maturarbeit.game.Controller.FluffyController1;
 import ch.imlee.maturarbeit.game.Controller.MovementController1;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
-import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;

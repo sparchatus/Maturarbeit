@@ -3,7 +3,6 @@ package ch.imlee.maturarbeit.main;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
-import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,8 +16,6 @@ import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
-import ch.imlee.maturarbeit.bluetooth.Util;
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.events.EventReceiver;

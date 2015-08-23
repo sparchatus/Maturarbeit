@@ -2,10 +2,8 @@ package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
 import android.os.Looper;
 import android.os.Handler;
-import android.widget.Button;
 
 import ch.imlee.maturarbeit.bluetooth.Host;
-import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.ChooseActivity;
 

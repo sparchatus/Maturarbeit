@@ -1,9 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.Sound.SlimeSound;
-import ch.imlee.maturarbeit.game.entity.Slime;
-import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 18.06.2015.

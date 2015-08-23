@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.events.Event;
-import ch.imlee.maturarbeit.game.events.EventType;
 
 /**
  * Created by Lukas on 18.06.2015.

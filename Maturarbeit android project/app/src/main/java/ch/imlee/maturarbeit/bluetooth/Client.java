@@ -1,6 +1,5 @@
 package ch.imlee.maturarbeit.bluetooth;
 
-import ch.imlee.maturarbeit.main.ChooseActivity;
 import ch.imlee.maturarbeit.main.StartActivity;
 
 import android.bluetooth.BluetoothAdapter;

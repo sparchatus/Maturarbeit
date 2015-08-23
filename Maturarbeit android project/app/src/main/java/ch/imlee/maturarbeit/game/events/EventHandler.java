@@ -2,7 +2,6 @@ package ch.imlee.maturarbeit.game.events;
 
 import android.util.Log;
 
-import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
 

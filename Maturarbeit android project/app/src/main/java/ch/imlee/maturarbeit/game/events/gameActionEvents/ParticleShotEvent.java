@@ -1,7 +1,5 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
-import android.graphics.YuvImage;
-
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.User;

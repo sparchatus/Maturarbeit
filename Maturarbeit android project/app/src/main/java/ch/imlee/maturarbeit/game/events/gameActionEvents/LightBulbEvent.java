@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.User;
 
 /**
  * Created by Sandro on 12.08.2015.

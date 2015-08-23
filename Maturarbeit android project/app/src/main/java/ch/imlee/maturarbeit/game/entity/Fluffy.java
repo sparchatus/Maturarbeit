@@ -23,7 +23,7 @@ public class Fluffy extends User {
 
     public Fluffy(Map map, byte team, byte playerId) {
         super(PlayerType.FLUFFY, map, team, playerId);
-        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), TILE_SIDE, TILE_SIDE, false);
+        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), Map.TILE_SIDE, Map.TILE_SIDE, false);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Fluffy extends User {
     public Canvas render(Canvas canvas) {
         canvas =  super.render(canvas);
         if (focusedPlayer != null){
-            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
+            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenWidth(), (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenHeight(), null);
         }
         return canvas;
     }

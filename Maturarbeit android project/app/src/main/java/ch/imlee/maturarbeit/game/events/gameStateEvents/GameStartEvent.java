@@ -72,7 +72,7 @@ public class GameStartEvent extends GameStateEvent {
     }
 
     public GameStartEvent(){
-        MAP_ID = R.drawable.test_map_2;
+        MAP_ID = R.drawable.test_map_3;
     }
 
     private void initializeArrays(int size){

@@ -22,7 +22,6 @@ public class Player extends Entity implements Tick {
 
     protected final byte ID;
     public final byte TEAM;
-    public final int TILE_SIDE;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
     public final float PLAYER_RADIUS = 0.5f;
@@ -56,20 +55,19 @@ public class Player extends Entity implements Tick {
 
     public Player(PlayerType type, Map map, byte team, byte playerId) {
         super(map.getStartX(team), map.getStartY(team));
-        TILE_SIDE = map.TILE_SIDE;
         TYPE = type;
         if (type == PlayerType.FLUFFY){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), TILE_SIDE, TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), Map.TILE_SIDE, Map.TILE_SIDE, false);
         }else if (type == PlayerType.SLIME){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), TILE_SIDE, TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), Map.TILE_SIDE, Map.TILE_SIDE, false);
         }else if (type == PlayerType.GHOST){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), TILE_SIDE, TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), Map.TILE_SIDE, Map.TILE_SIDE, false);
         }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher), TILE_SIDE, TILE_SIDE, false);
+            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher), Map.TILE_SIDE, Map.TILE_SIDE, false);
         }
-        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), TILE_SIDE, TILE_SIDE, false);
+        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), Map.TILE_SIDE, Map.TILE_SIDE, false);
         TEAM = team;
-        BAR_HEIGHT = TILE_SIDE / 5;
+        BAR_HEIGHT = Map.TILE_SIDE / 5;
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
@@ -89,10 +87,10 @@ public class Player extends Entity implements Tick {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
-            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2f, null);
+            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2f, null);
         }
         if (stunned){
-            canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
+            canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenHeight(), null);
         }
         return canvas;
     }

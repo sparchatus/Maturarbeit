@@ -77,10 +77,6 @@ public class Host implements Runnable {
     private void acceptConnections() {
         c.registerReceiver(this.cancelAcceptReceiver, new IntentFilter("cancelAccept"));
 
-        System.out.println("...");
-        System.out.println("accepting connections...");
-        System.out.println("...");
-
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
 
         acceptThread.start();
@@ -103,10 +99,6 @@ public class Host implements Runnable {
 
     // it's synchronized so connections won't interfere
     private synchronized void manageConnection() {
-        System.out.println("...");
-        System.out.println("managing connection with " + sockets.get(sockets.size() - 1).getRemoteDevice().getName());
-        System.out.println("...");
-
         deviceNames.add(sockets.get(sockets.size() - 1).getRemoteDevice().getName());
         adapter.notifyDataSetChanged();
 

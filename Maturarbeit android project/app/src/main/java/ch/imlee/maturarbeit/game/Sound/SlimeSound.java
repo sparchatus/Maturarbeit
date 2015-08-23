@@ -9,7 +9,7 @@ import ch.imlee.maturarbeit.R;
  */
 public class SlimeSound extends Sound{
     public SlimeSound(){
-        mediaPlayer = MediaPlayer.create(context, R.raw.slime);
+        setMedia(R.raw.slime);
         mediaPlayer.setLooping(true);
     }
 

@@ -31,6 +31,10 @@ public class Sound {
         }).start();
     }
 
+    protected void setMedia(int media){
+        mediaPlayer = MediaPlayer.create(context, media);
+    }
+
     public void stop(){
         mediaPlayer.stop();
     }

@@ -9,6 +9,6 @@ import ch.imlee.maturarbeit.R;
  */
 public class ParticleCollisionSound extends Sound{
     public ParticleCollisionSound(){
-        mediaPlayer = MediaPlayer.create(context, R.raw.particle_collision);
+        setMedia(R.raw.particle_collision);
     }
 }

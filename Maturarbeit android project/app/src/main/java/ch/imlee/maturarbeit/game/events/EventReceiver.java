@@ -27,7 +27,7 @@ public class EventReceiver extends Thread {
                 //Log.v("Event", "EventReceiver is on it again");
                 try {
                     Util.receiveEvents(Client.inputStream, (byte) 0);
-                } catch (NullPointerException e){
+                } catch (Exception e){
                     e.printStackTrace();
                     setRunning(false);
                 }

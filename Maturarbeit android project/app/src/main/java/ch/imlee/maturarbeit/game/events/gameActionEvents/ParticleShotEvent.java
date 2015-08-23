@@ -21,7 +21,7 @@ public class ParticleShotEvent extends GameActionEvent {
         TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
         ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
         SPAWN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("p")));
-        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1));
+        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1), eventString.indexOf('i'));
     }
 
     public ParticleShotEvent(ParticleServerEvent particleServerEvent, int particleID){

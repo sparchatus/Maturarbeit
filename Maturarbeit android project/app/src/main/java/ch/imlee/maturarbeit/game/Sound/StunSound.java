@@ -9,7 +9,7 @@ import ch.imlee.maturarbeit.R;
  */
 public class StunSound extends Sound {
     public StunSound(){
-        mediaPlayer = MediaPlayer.create(context, R.raw.stun);
+        setMedia(R.raw.stun);
         mediaPlayer.setLooping(true);
     }
 }

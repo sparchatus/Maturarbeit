@@ -10,7 +10,7 @@ import ch.imlee.maturarbeit.R;
 public class BackgroundMusic extends Sound{
 
     public BackgroundMusic(){
-        mediaPlayer = MediaPlayer.create(context, R.raw.background_test_1);
+        setMedia(R.raw.background_test_1);
         mediaPlayer.setLooping(true);
     }
 }

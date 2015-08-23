@@ -163,15 +163,26 @@ public class Host implements Runnable {
             } catch (Exception e){
                 e.printStackTrace();
                 // connection lost, remove from list
-                sockets.remove(i);
-                outputStreams.remove(i);
-                inputStreams.remove(i);
-                deviceNames.remove(i);
+                removeDevice(i);
                 --i;
-                adapter.notifyDataSetChanged();
+            }
+            // check if the same mac address is there multiple times, if so, remove the duplicates
+            String address = sockets.get(i).getRemoteDevice().getAddress();
+            for(int j = i+1; j < sockets.size(); ++j){
+                if(sockets.get(j).getRemoteDevice().getAddress().equals(address)){
+                    removeDevice(j);
+                    --j;
+                }
             }
         }
     }
 
+    private static void removeDevice(int i){
+        sockets.remove(i);
+        outputStreams.remove(i);
+        inputStreams.remove(i);
+        deviceNames.remove(i);
+        adapter.notifyDataSetChanged();
+    }
 
 }

@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.entity;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeTrailEvent;
 import ch.imlee.maturarbeit.game.map.Map;
@@ -15,6 +16,7 @@ public class Slime extends User {
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
     private final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     private double lastSlimeEjection = 0;
+    private SlimeSound slimeSound = new SlimeSound();
 
     public Slime(Map map, byte team, byte playerId) {
         super(PlayerType.SLIME, map, team, playerId);
@@ -26,7 +28,7 @@ public class Slime extends User {
         super.update();
         if (slimy){
             if (mana <= 0){
-                slimy = false;
+                skillActivation();
             }else {
                 mana -= MANA_CONSUMPTION;
             }
@@ -47,9 +49,12 @@ public class Slime extends User {
     public void skillActivation() {
         if (slimy){
             slimy = false;
+            slimeSound.stop();
+
         }else {
             if (mana <= 10*MANA_CONSUMPTION)return;
             slimy = true;
+            slimeSound.start();
         }
     }
 }

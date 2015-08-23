@@ -121,6 +121,7 @@ public class User extends Player {
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
             if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= PLAYER_RADIUS + SlimeTrail.TRAIL_RADIUS){
                 velocity*= SLOW_AMOUNT;
+                break;
             }
         }
         if (stunned || velocity == 0) {

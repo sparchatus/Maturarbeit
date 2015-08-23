@@ -9,28 +9,26 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class StunEvent extends GameActionEvent {
 
-    public final int PLAYER_ID;
-
     public double stunTick;
 
     public StunEvent(byte playerID, double stunTick){
-        PLAYER_ID = playerID;
+        senderID = playerID;
         this.stunTick = stunTick;
     }
 
     public StunEvent(String eventString){
         char[] eventChar = eventString.toCharArray();
-        PLAYER_ID = Character.getNumericValue(eventChar[2]);
+        senderID = (byte)Character.getNumericValue(eventChar[2]);
         stunTick = Double.valueOf(eventString.substring(3));
     }
 
     @Override
     public String toString() {
-        return super.toString() + "S" + PLAYER_ID + stunTick;
+        return super.toString() + "S" + senderID + stunTick;
     }
 
     @Override
     public void apply() {
-        GameThread.getPlayerArray()[PLAYER_ID].stun(stunTick);
+        GameThread.getPlayerArray()[senderID].stun(stunTick);
     }
 }

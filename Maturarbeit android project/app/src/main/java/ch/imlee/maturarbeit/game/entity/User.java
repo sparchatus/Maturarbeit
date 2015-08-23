@@ -106,8 +106,8 @@ public class User extends Player {
     @Override
     public Canvas render(Canvas canvas){
         canvas = super.render(canvas);
-        canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
-        canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
+        canvas.drawRect(0, GameSurface.getSurfaceHeight() - BAR_HEIGHT, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
+        canvas.drawRect(0, GameSurface.getSurfaceHeight() - BAR_HEIGHT, GameSurface.getSurfaceWidth() * mana / MAX_MANA, GameSurface.getSurfaceHeight(), SKILL_BAR_COLOR);
         if (pickUpBulb != null){
             canvas.drawRect(0, 0, BAR_HEIGHT, GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
             canvas.drawRect(0, GameSurface.getSurfaceHeight() - GameSurface.getSurfaceHeight() * pickUpTickCount / PICK_UP_TICKS, BAR_HEIGHT, GameSurface.getSurfaceHeight(), PICK_UP_BAR_COLOR);

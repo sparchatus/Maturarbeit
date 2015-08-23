@@ -39,8 +39,8 @@ public class SlimeTrail extends Entity {
 
     public void render(Canvas c){
         c.drawBitmap(SLIME_TRAIL_BITMAP,
-                GameClient.getHalfScreenWidth() + (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
-                GameClient.getHalfScreenHeight() + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
+                GameSurface.getSurfaceWidth() / 2+ (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
+                GameSurface.getSurfaceHeight() / 2 + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
                 null);
     }
 

@@ -8,6 +8,7 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.map.MapDimensions;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 09.06.2015.
@@ -15,7 +16,7 @@ import ch.imlee.maturarbeit.game.map.MapDimensions;
 public class Particle extends Entity {
 
     public final float PARTICLE_RADIUS = 1 / 10f;
-    public final int RENDER_RADIUS = (int) (GameClient.getHalfScreenHeight() / MapDimensions.TILES_IN_SCREEN_HEIGHT * PARTICLE_RADIUS);
+    public final int RENDER_RADIUS = (int) (GameSurface.getSurfaceHeight() / 2 / MapDimensions.TILES_IN_SCREEN_HEIGHT * PARTICLE_RADIUS);
     private final float SPEED;
     private final Paint color;
     public static int TEAM;
@@ -46,7 +47,7 @@ public class Particle extends Entity {
     }
 
     public Canvas render(Canvas canvas){
-        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
+        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, RENDER_RADIUS, color);
         return canvas;
     }
 

@@ -18,10 +18,6 @@ public class GameClient extends Activity {
 
     private static boolean surfaceCreated = false;
 
-    private static int screenWidth;
-    private static int screenHeight;
-    private static int halfScreenWidth;
-    private static int halfScreenHeight;
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
@@ -33,10 +29,6 @@ public class GameClient extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Display display = getWindowManager().getDefaultDisplay();
-        screenWidth = display.getWidth();
-        screenHeight = display.getHeight();
-        halfScreenWidth = screenWidth / 2;
-        halfScreenHeight = screenHeight / 2;
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
         context = getApplicationContext();
@@ -75,22 +67,6 @@ public class GameClient extends Activity {
 
     public static synchronized void setSurfaceCreated(boolean created){
         surfaceCreated = created;
-    }
-
-    public static int getScreenWidth() {
-        return screenWidth;
-    }
-
-    public static int getScreenHeight() {
-        return screenHeight;
-    }
-
-    public static int getHalfScreenWidth() {
-        return halfScreenWidth;
-    }
-
-    public static int getHalfScreenHeight() {
-        return halfScreenHeight;
     }
 
     public static SkillButton getSkillButton() {

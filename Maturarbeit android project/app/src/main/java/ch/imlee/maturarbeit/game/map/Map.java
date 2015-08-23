@@ -21,7 +21,7 @@ public class Map implements MapDimensions {
     private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
 
-    private final int MINIMAP_WIDTH = GameClient.getScreenWidth()/4;
+    private final int MINIMAP_WIDTH = GameSurface.getSurfaceWidth()/4;
     private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT))*
             (float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*BORDER_TILES_TOP));
     private final Bitmap MINIMAP_ORIGINAL_BITMAP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2);
@@ -35,7 +35,7 @@ public class Map implements MapDimensions {
     private final Tile[][]TILE_MAP;
     public Map(Resources rec, int pixelMapID) {
         minimapPaint.setAlpha(0xCC);
-        TILE_SIDE = GameClient.getScreenHeight() / TILES_IN_SCREEN_HEIGHT;
+        TILE_SIDE = GameSurface.getSurfaceHeight() / TILES_IN_SCREEN_HEIGHT;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
         Bitmap pixelMap = BitmapFactory.decodeResource(rec, pixelMapID, options);
@@ -71,13 +71,13 @@ public class Map implements MapDimensions {
     public void render(Canvas canvas, User user){
         for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
             for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
-                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameClient.getHalfScreenWidth() + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * TILE_SIDE, GameClient.getHalfScreenHeight() + (((int) user.getYCoordinate()) + i - user.getYCoordinate())* TILE_SIDE, null);
+                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameSurface.getSurfaceWidth() / 2 + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * TILE_SIDE, GameSurface.getSurfaceHeight() / 2+ (((int) user.getYCoordinate()) + i - user.getYCoordinate())* TILE_SIDE, null);
             }
         }
     }
     public void renderMinimap(Canvas canvas){
         minimapPaint.setAlpha(MINIMAP_ALPHA);
-        canvas.drawBitmap(MINIMAP_BITMAP, GameClient.getScreenWidth()-MINIMAP_WIDTH, 0, minimapPaint);
+        canvas.drawBitmap(MINIMAP_BITMAP, GameSurface.getSurfaceWidth()-MINIMAP_WIDTH, 0, minimapPaint);
 
         for(byte i = 0; i < GameThread.getPlayerArray().length; ++i){
             if(i==GameThread.getUser().getID()){
@@ -90,7 +90,7 @@ public class Map implements MapDimensions {
                 minimapPaint.setColor(0xff0000);
             }
             minimapPaint.setAlpha(MINIMAP_ALPHA);
-            canvas.drawCircle((((float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT))*(GameThread.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT)+1)*MINIMAP_SCALE + GameClient.getScreenWidth()-MINIMAP_BITMAP.getWidth(),
+            canvas.drawCircle((((float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getWidth()-2*BORDER_TILES_RIGHT))*(GameThread.getPlayerArray()[i].getXCoordinate()-BORDER_TILES_RIGHT)+1)*MINIMAP_SCALE +GameSurface.getSurfaceWidth()-MINIMAP_BITMAP.getWidth(),
                     (((float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP-2)/(float)(MINIMAP_ORIGINAL_BITMAP.getHeight()-2*BORDER_TILES_TOP))*(GameThread.getPlayerArray()[i].getYCoordinate()-BORDER_TILES_TOP)+1)*MINIMAP_SCALE, MINIMAP_SCALE, minimapPaint);
         }
 

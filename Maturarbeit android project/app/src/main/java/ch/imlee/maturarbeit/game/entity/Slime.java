@@ -14,9 +14,6 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
-    private final int SLIME_EJECTION_RATE = Tick.TICK / 5;
-    private double lastSlimeEjection = 0;
-    private SlimeSound slimeSound = new SlimeSound();
 
     public Slime(Map map, byte team, byte playerId) {
         super(PlayerType.SLIME, map, team, playerId);
@@ -32,12 +29,6 @@ public class Slime extends User {
             }else {
                 mana -= MANA_CONSUMPTION;
             }
-            if(GameThread.getSynchronizedTick()-SLIME_EJECTION_RATE >= lastSlimeEjection){
-                lastSlimeEjection = GameThread.getSynchronizedTick();
-                SlimeTrail slimeTrail = new SlimeTrail(getXCoordinate(), getYCoordinate());
-                GameThread.addSlimeTrail(slimeTrail);
-                new SlimeTrailEvent(slimeTrail).send();
-            }
         }
         mana += 2;
         if (mana >= MAX_MANA){
@@ -47,14 +38,14 @@ public class Slime extends User {
 
     @Override
     public void skillActivation() {
-        if (slimy){
-            slimy = false;
-            slimeSound.stop();
-
-        }else {
-            if (mana <= 10*MANA_CONSUMPTION)return;
+        SlimeEvent slimeEvent = new SlimeEvent(ID, false);
+        if(!slimy && mana > 10*MANA_CONSUMPTION) {
+            slimeEvent.setSlimy(true);
             slimy = true;
-            slimeSound.start();
+        } else{
+            slimy = false;
         }
+        slimeEvent.send();
+        slimeEvent.apply();
     }
 }

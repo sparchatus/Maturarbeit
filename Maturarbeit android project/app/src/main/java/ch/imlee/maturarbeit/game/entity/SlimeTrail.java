@@ -39,7 +39,6 @@ public class SlimeTrail extends Entity {
                 GameClient.getHalfScreenWidth() + (xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE - SLIMETRAIL_BITMAP.getWidth()/2,
                 GameClient.getHalfScreenHeight() + (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE - SLIMETRAIL_BITMAP.getHeight()/2,
                 null);
-        Log.v("slime", "slime rendered");
     }
 
 

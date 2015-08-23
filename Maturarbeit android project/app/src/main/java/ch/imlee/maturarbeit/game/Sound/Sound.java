@@ -16,6 +16,21 @@ public class Sound {
         mediaPlayer.start();
     }
 
+    public void start(final long TIME){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mediaPlayer.start();
+                try {
+                    Thread.sleep(TIME);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                mediaPlayer.stop();
+            }
+        }).start();
+    }
+
     public void stop(){
         mediaPlayer.stop();
     }

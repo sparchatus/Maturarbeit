@@ -3,7 +3,6 @@ package ch.imlee.maturarbeit.game.Controller;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.map.Map;
 

@@ -1,6 +1,5 @@
 package ch.imlee.maturarbeit.game.Sound;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 import ch.imlee.maturarbeit.R;

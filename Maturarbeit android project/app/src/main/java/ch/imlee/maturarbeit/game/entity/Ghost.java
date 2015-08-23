@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
-import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.InvisibilityEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;

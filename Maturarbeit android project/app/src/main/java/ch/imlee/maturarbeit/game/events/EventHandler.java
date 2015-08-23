@@ -18,6 +18,9 @@ public class EventHandler extends Thread {
 
     @Override
     public void run(){
+        if(StartActivity.deviceType == DeviceType.HOST){
+            event.send();
+        }
         if (!event.handle(ID)) {
             Log.v("Event", "Event " + event.toString() + " didn't handle itself, storing in queue...");
             synchronizedAdd(event, ID);

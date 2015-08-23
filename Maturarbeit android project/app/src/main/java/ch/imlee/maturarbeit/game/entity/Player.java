@@ -5,12 +5,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
+import ch.imlee.maturarbeit.game.Sound.SlimeSound;
+import ch.imlee.maturarbeit.game.Sound.StunSound;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -34,6 +34,10 @@ public class Player extends Entity implements Tick {
     protected boolean slimy;
     protected boolean dead;
     protected boolean flagPossessed = false;
+
+    protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
+    protected double lastSlimeEjection = 0;
+    protected SlimeSound slimeSound = new SlimeSound();
 
     protected int reviveTick;
     protected int strength;
@@ -99,6 +103,13 @@ public class Player extends Entity implements Tick {
         if (dead && reviveTick <= GameThread.getSynchronizedTick()){
             dead = false;
         }
+        if(slimy) {
+            if (GameThread.getSynchronizedTick() - SLIME_EJECTION_RATE >= lastSlimeEjection) {
+                lastSlimeEjection = GameThread.getSynchronizedTick();
+                SlimeTrail slimeTrail = new SlimeTrail(getXCoordinate(), getYCoordinate());
+                GameThread.addSlimeTrail(slimeTrail);
+            }
+        }
     }
 
     protected void death(){
@@ -108,8 +119,13 @@ public class Player extends Entity implements Tick {
     }
 
     public void stun(double stunTick){
+        new StunSound().start(TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
+    }
+
+    public SlimeSound getSlimeSound(){
+        return slimeSound;
     }
 
     public void setInvisible(boolean invisible){

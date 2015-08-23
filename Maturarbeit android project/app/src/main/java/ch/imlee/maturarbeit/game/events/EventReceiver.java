@@ -1,7 +1,5 @@
 package ch.imlee.maturarbeit.game.events;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;

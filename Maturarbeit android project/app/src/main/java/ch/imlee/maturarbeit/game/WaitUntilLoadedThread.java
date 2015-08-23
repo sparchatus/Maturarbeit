@@ -2,7 +2,6 @@ package ch.imlee.maturarbeit.game;
 
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
-import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Lukas on 28.06.2015.

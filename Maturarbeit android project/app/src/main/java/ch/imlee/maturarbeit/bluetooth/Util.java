@@ -4,22 +4,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.UUID;
 
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.events.Event;
 import ch.imlee.maturarbeit.game.events.EventHandler;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLeftEvent;
-import ch.imlee.maturarbeit.main.DeviceType;
-import ch.imlee.maturarbeit.main.StartActivity;
 
 public class Util{
     public static BluetoothAdapter ba;

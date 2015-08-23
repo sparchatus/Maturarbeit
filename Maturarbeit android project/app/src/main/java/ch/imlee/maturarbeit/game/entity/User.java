@@ -2,7 +2,6 @@ package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;

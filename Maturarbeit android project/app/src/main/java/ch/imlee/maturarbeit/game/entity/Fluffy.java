@@ -3,7 +3,6 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameClient;

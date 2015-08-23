@@ -1,43 +1,49 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.Slime;
-import ch.imlee.maturarbeit.game.views.GameSurface;
 
 /**
  * Created by Sandro on 18.06.2015.
  */
 public class SlimeEvent extends GameActionEvent{
 
-    private final boolean SLIMY;
-
-    private final byte PLAYER_ID;
+    private boolean slimy;
 
     public SlimeEvent(String eventString){
-        PLAYER_ID = Byte.valueOf(eventString.substring(2, 3));
+        senderID = Byte.valueOf(eventString.substring(2, 3));
         if (eventString.substring(3).equals("0")){
-            SLIMY = false;
+            slimy = false;
         }else {
-            SLIMY = true;
+            slimy = true;
         }
     }
 
     public SlimeEvent(byte playerId, boolean slimy){
-        PLAYER_ID = playerId;
-        SLIMY = slimy;
+        senderID = playerId;
+        this.slimy = slimy;
     }
+
+    public void setSlimy(boolean slimy) {
+        this.slimy = slimy;
+    }
+
 
     @Override
     public String toString() {
-        if (SLIMY) {
-            return super.toString() + "L" + PLAYER_ID + 0;
+        if (slimy) {
+            return super.toString() + "L" + senderID + '1';
         }else {
-            return super.toString() + "L" + PLAYER_ID + 1;
+            return super.toString() + "L" + senderID + '0';
         }
     }
 
     @Override
     public void apply() {
-        GameThread.getPlayerArray()[PLAYER_ID].setSlimy(SLIMY);
+        GameThread.getPlayerArray()[senderID].setSlimy(slimy);
+        if(slimy){
+            GameThread.getPlayerArray()[senderID].getSlimeSound().start();
+        } else{
+            GameThread.getPlayerArray()[senderID].getSlimeSound().stop();
+        }
     }
 }

@@ -12,10 +12,8 @@ public class SlimeEvent extends GameActionEvent{
 
     private boolean slimy;
 
-    private final byte PLAYER_ID;
-
     public SlimeEvent(String eventString){
-        PLAYER_ID = Byte.valueOf(eventString.substring(2, 3));
+        senderID = Byte.valueOf(eventString.substring(2, 3));
         if (eventString.substring(3).equals("0")){
             slimy = false;
         }else {
@@ -24,7 +22,7 @@ public class SlimeEvent extends GameActionEvent{
     }
 
     public SlimeEvent(byte playerId, boolean slimy){
-        PLAYER_ID = playerId;
+        senderID = playerId;
         this.slimy = slimy;
     }
 
@@ -36,19 +34,19 @@ public class SlimeEvent extends GameActionEvent{
     @Override
     public String toString() {
         if (slimy) {
-            return super.toString() + "L" + PLAYER_ID + '1';
+            return super.toString() + "L" + senderID + '1';
         }else {
-            return super.toString() + "L" + PLAYER_ID + '0';
+            return super.toString() + "L" + senderID + '0';
         }
     }
 
     @Override
     public void apply() {
-        GameThread.getPlayerArray()[PLAYER_ID].setSlimy(slimy);
+        GameThread.getPlayerArray()[senderID].setSlimy(slimy);
         if(slimy){
-            GameThread.getPlayerArray()[PLAYER_ID].getSlimeSound().start();
+            GameThread.getPlayerArray()[senderID].getSlimeSound().start();
         } else{
-            GameThread.getPlayerArray()[PLAYER_ID].getSlimeSound().stop();
+            GameThread.getPlayerArray()[senderID].getSlimeSound().stop();
         }
     }
 }

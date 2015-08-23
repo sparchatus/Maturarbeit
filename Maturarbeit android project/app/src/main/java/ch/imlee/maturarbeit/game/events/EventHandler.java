@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game.events;
 
 import android.util.Log;
 
+import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
 
@@ -18,6 +19,9 @@ public class EventHandler extends Thread {
 
     @Override
     public void run(){
+        if(StartActivity.deviceType == DeviceType.HOST){
+            event.send();
+        }
         if (!event.handle(ID)) {
             Log.v("Event", "Event " + event.toString() + " didn't handle itself, storing in queue...");
             synchronizedAdd(event, ID);

@@ -20,16 +20,18 @@ public class ParticleShotEvent extends GameActionEvent {
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
         ANGLE = user.getAngle();
+        senderID = user.getID();
     }
     public ParticleShotEvent(String string){
         X_COORDINATE = Float.valueOf(string.substring(string.indexOf("x") + 1, string.indexOf("y")));
         Y_COORDINATE = Float.valueOf(string.substring(string.indexOf("y") + 1, string.indexOf("t")));
         TEAM = Byte.valueOf(string.substring(string.indexOf("t") + 1, string.indexOf("a")));
-        ANGLE = Float.valueOf(string.substring(string.indexOf("a") + 1));
+        ANGLE = Float.valueOf(string.substring(string.indexOf("a") + 1, string.length()-3));
+        senderID = Byte.parseByte(string.substring(string.length()-1));
     }
 
     public String toString(){
-        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE;
+        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 'i' + senderID;
     }
 
     public void apply(){

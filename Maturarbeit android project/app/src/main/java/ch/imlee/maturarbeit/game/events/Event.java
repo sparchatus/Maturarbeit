@@ -24,7 +24,9 @@ import ch.imlee.maturarbeit.main.StartActivity;
  * Created by Sandro on 13.06.2015.
  */
 public class Event {
+    public boolean serverEvent = false;
     private static final String invalidEvent = "INVALID EVENT";
+    protected byte senderID;
 
     public String toString(){
         return invalidEvent;
@@ -57,7 +59,9 @@ public class Event {
 
     public void send(){
         if(StartActivity.deviceType == DeviceType.HOST){
-            this.sendAsHost();
+            if(!serverEvent) {
+                this.sendAsHost();
+            }
         } else{
             this.sendAsClient();
         }
@@ -67,6 +71,7 @@ public class Event {
     private void sendAsHost(){
         for(int i = 0; i < Host.outputStreams.size(); ++i){
             // the '|' character is to let the other device know that the Event is finished
+            if(senderID != i+1);
             Util.sendString(Host.outputStreams.get(i), this.toString() + '|');
         }
     }

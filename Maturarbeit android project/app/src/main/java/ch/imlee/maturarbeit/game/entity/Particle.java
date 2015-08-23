@@ -13,15 +13,16 @@ import ch.imlee.maturarbeit.game.map.MapDimensions;
  */
 public class Particle extends Entity {
 
-    public final float PARTICLE_RADIUS = 1f / 5;
+    public final float PARTICLE_RADIUS = 1 / 10f;
     public final int RENDER_RADIUS = (int) (GameClient.getHalfScreenHeight() / MapDimensions.TILES_IN_SCREEN_HEIGHT * PARTICLE_RADIUS);
     private final float SPEED;
     private final Paint color;
     public static int TEAM;
     private float xSpeed;
     private float ySpeed;
+    private final int ID;
 
-    public Particle(float xCoordinate, float yCoordinate, byte team, double angle) {
+    public Particle(float xCoordinate, float yCoordinate, byte team, double angle, int spawnTick, int ID) {
         super(xCoordinate, yCoordinate);
         TEAM = team;
         color = new Paint();
@@ -33,6 +34,9 @@ public class Particle extends Entity {
         SPEED = 6f / Tick.TICK;
         xSpeed = (float) (Math.cos(angle) * SPEED);
         ySpeed = (float) (Math.sin(angle) * SPEED);
+        this.xCoordinate += (GameThread.getSynchronizedTick() - spawnTick) * xSpeed;
+        this.yCoordinate += (GameThread.getSynchronizedTick() - spawnTick) * ySpeed;
+        this.ID = ID;
     }
 
     public void update(){
@@ -43,5 +47,9 @@ public class Particle extends Entity {
     public Canvas render(Canvas canvas){
         canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
         return canvas;
+    }
+
+    public int getID(){
+        return ID;
     }
 }

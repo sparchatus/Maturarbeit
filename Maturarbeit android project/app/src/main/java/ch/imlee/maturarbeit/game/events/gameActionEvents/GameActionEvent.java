@@ -10,13 +10,15 @@ public class GameActionEvent extends Event {
 
     public static GameActionEvent fromString(String string){
         switch(string.charAt(1)){
-            case 'I': return new InvisibilityEvent(string);
-            case 'M': return new PlayerMotionEvent(string);
-            case 'L': return new SlimeTrailEvent(string);
-            case 'P': return new ParticleShotEvent(string);
-            case 'S': return new StunEvent(string);
             case 'B': return new LightBulbEvent(string);
             case 'C': return new LightBulbServerEvent(string);
+            case 'H': return new ParticleHitEvent(string);
+            case 'I': return new InvisibilityEvent(string);
+            case 'L': return new SlimeTrailEvent(string);
+            case 'M': return new PlayerMotionEvent(string);
+            case 'P': return new ParticleShotEvent(string);
+            case 'Q': return new ParticleServerEvent(string);
+            case 'S': return new StunEvent(string);
             default:return null;
         }
     }

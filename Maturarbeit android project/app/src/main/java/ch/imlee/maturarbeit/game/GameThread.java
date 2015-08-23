@@ -62,6 +62,7 @@ public class GameThread extends Thread implements Tick{
     protected static Player[] playerArray;
     protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
     protected static ArrayList<Particle> particleList = new ArrayList<>();
+    protected static ArrayList<Integer> freeParticleIDs = new ArrayList<>();
     private static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
@@ -271,7 +272,22 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void addParticle(Particle newParticle){
-        particleList.add(newParticle);
+        particleList.add(newParticle.getID(), newParticle);
+    }
+
+    public static void removeParticle(int ID){
+        for (Particle particle:particleList){
+            if (particle.getID() == ID){
+                particleList.remove(particle);
+                break;
+            }
+        }
+        freeParticleIDs.add(ID, ID);
+    }
+
+    public static void playerHit(byte playerID){
+        if (playerID < 0)return;
+        playerArray[playerID].particleHit();
     }
 
     public static void addSlimeTrail(SlimeTrail slimeTrail){
@@ -310,5 +326,9 @@ public class GameThread extends Thread implements Tick{
 
     public static Controller getController(){
         return controller;
+    }
+
+    public static ArrayList<Particle> getParticleList(){
+        return particleList;
     }
 }

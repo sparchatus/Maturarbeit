@@ -2,12 +2,13 @@ Starting characters:
     A - Game action
         B - Light Bulb
         C - Light Bulb Server
-        S - Stun
+        H - Particle Hit
         I - Invisibility
-        L - Slime
+        L - Slime Trail
         M - Player Motion
         P - Particle Shot
-
+        Q - Particle Server
+        S - Stun
 
     G - Game state changed
         C - Game cancelled

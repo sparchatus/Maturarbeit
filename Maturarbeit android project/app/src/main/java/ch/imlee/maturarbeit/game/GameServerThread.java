@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import ch.imlee.maturarbeit.game.Sound.ParticleCollisionSound;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleHitEvent;
 
 /**
  * Created by Sandro on 14.08.2015.
  */
 public class GameServerThread extends GameThread{
 
-    private ArrayList<Particle> particlesToRemove= new ArrayList<>();
+    private ArrayList<Particle> particlesToRemove = new ArrayList<>();
+    private static int currentParticleID = 0;
 
     public GameServerThread(SurfaceHolder holder, Context context) {
         super(holder, context);
@@ -29,6 +31,7 @@ public class GameServerThread extends GameThread{
             }
             for (Player player:playerArray) {
                 if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.PLAYER_RADIUS) {
+                    new ParticleHitEvent(particle.getID(), player.getID()).send();
                     player.particleHit();
                     particlesToRemove.add(particle);
                     break;
@@ -37,10 +40,20 @@ public class GameServerThread extends GameThread{
         }
         if (particlesToRemove.size() != 0){
             for (Particle particle:particlesToRemove) {
+                new ParticleHitEvent(particle.getID(), (byte) -1).send();
                 particleList.remove(particle);
                 new ParticleCollisionSound().start();
-                //todo:send removal event
             }
         }
+    }
+
+    public static int getCurrentParticleID(){
+        if (!freeParticleIDs.isEmpty()){
+            int currentID = freeParticleIDs.get(0);
+            freeParticleIDs.remove(0);
+            return currentID;
+        }
+        currentParticleID++;
+        return currentParticleID - 1;
     }
 }

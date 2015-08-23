@@ -5,12 +5,16 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 /**
  * Created by Sandro on 06.06.2015.
@@ -51,8 +55,11 @@ public class User extends Player {
         super.update();
         move();
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick()){
-            GameThread.addParticle(new Particle(xCoordinate, yCoordinate, TEAM, angle));
-            new ParticleShotEvent(this).send();
+            if (StartActivity.deviceType == DeviceType.CLIENT){
+                new ParticleServerEvent(this, (int)GameThread.getSynchronizedTick()).send();
+            }else{
+                new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
+            }
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
         if (flagPossessed){
@@ -90,7 +97,6 @@ public class User extends Player {
             newYCoordinate = (int)newYCoordinate + 0.5f;
         }
         speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
-
         if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
@@ -117,5 +123,9 @@ public class User extends Player {
     public void flagLost() {
         super.flagLost();
         new LightBulbEvent(ID, possessedLightBulb.getLIGHT_BULB_ID(), false).send();
+    }
+
+    public void shootServerParticle(){
+
     }
 }

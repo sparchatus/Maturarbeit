@@ -8,6 +8,7 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -45,18 +46,20 @@ public class GameStartEvent extends GameStateEvent {
     private final int MAP_ID;
     private byte userID = 1;
 
-    public GameStartEvent(String string){
-        string = string.substring(2);
-        while(string.charAt(0) != 'i'){
-            types.add(PlayerType.values()[Integer.parseInt(Character.toString(string.charAt(0)))]);
-            teams.add((byte) string.charAt(1));
-            string = string.substring(2);
+    public GameStartEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        eventString = eventString.substring(2);
+        while(eventString.charAt(0) != 'i'){
+            types.add(PlayerType.values()[Integer.parseInt(Character.toString(eventString.charAt(0)))]);
+            teams.add((byte) eventString.charAt(1));
+            eventString = eventString.substring(2);
         }
-        userID = Byte.parseByte(Character.toString(string.charAt(1)));
-        MAP_ID = Integer.parseInt(string.substring(3));
+        userID = Byte.parseByte(Character.toString(eventString.charAt(1)));
+        MAP_ID = Integer.parseInt(eventString.substring(3, eventString.indexOf("i")));
     }
 
     public GameStartEvent(ArrayList<PlayerType> types, ArrayList<Byte> teams, byte userID, int mapID) {
+        super(GameThread.getUser().getID());
         initializeArrays(types.size());
         this.types = types;
         this.teams = teams;
@@ -65,10 +68,12 @@ public class GameStartEvent extends GameStateEvent {
     }
 
     public GameStartEvent(int mapID){
+        super(GameThread.getUser().getID());
         MAP_ID = mapID;
     }
 
     public GameStartEvent(){
+        super(GameThread.getUser().getID());
         MAP_ID = R.drawable.test_map_2;
     }
 
@@ -121,7 +126,7 @@ public class GameStartEvent extends GameStateEvent {
             playerInfo += types.get(i).ordinal();
             playerInfo += teams.get(i);
         }
-        return super.toString() + 'S' + playerInfo + "i" + userID + "m" + MAP_ID;
+        return super.toString() + 'S' + playerInfo + "i" + userID + "m" + MAP_ID + 'i' + senderID;
     }
 
     @Override

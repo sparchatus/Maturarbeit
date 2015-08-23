@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
 import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
@@ -10,8 +11,8 @@ import ch.imlee.maturarbeit.main.StartActivity;
  */
 public class GameLoadedEvent extends GameStateEvent{
     // this Event is used by the Client to notify the Host that it's finished loading and by the Host to notify the clients that every device has finished loading.
-    public GameLoadedEvent(byte senderID) {
-        super(senderID);
+    public GameLoadedEvent() {
+        super(GameThread.getUser().getID());
     }
 
     public GameLoadedEvent(String eventString){

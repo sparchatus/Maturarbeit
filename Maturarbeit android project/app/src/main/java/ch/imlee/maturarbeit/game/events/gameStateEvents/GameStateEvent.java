@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.events.Event;
 
 /**

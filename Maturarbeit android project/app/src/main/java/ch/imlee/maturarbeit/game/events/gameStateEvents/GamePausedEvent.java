@@ -1,11 +1,14 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
+
 /**
  * Created by Lukas on 18.06.2015.
  */
 public class GamePausedEvent extends GameStateEvent {
-    public GamePausedEvent(byte senderID) {
-        super(senderID);
+
+    public GamePausedEvent() {
+        super(GameThread.getUser().getID());
     }
 
     public GamePausedEvent(String eventString){

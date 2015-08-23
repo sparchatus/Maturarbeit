@@ -1,12 +1,14 @@
 package ch.imlee.maturarbeit.game.events.gameStateEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
+
 /**
  * Created by Lukas on 18.06.2015.
  */
 public class GameLeftEvent extends GameStateEvent {
 
-    public GameLeftEvent(byte senderID) {
-        super(senderID);
+    public GameLeftEvent() {
+        super(GameThread.getUser().getID());
     }
 
     public GameLeftEvent(String eventString){

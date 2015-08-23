@@ -74,7 +74,7 @@ public class GameStartEvent extends GameStateEvent {
 
     public GameStartEvent(){
         super(GameThread.getUser().getID());
-        MAP_ID = R.drawable.test_map_2;
+        MAP_ID = R.drawable.test_map_3;
     }
 
     private void initializeArrays(int size){

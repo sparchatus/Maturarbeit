@@ -22,7 +22,7 @@ public class Ghost extends User {
 
     public Ghost(Map map, byte team, byte playerId) {
         super(PlayerType.GHOST, map, team, playerId);
-        INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible), TILE_SIDE, TILE_SIDE, false);
+        INVISIBLE_GHOST = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible), Map.TILE_SIDE, Map.TILE_SIDE, false);
     }
 
     @Override
@@ -47,11 +47,11 @@ public class Ghost extends User {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(INVISIBLE_GHOST, 0, 0, INVISIBLE_GHOST.getWidth(), INVISIBLE_GHOST.getHeight(), matrix, true);
-            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
+            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenWidth() - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenHeight() - rotated.getHeight() / 2, null);
             canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
             canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
             if (stunned){
-                canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * TILE_SIDE + GameClient.getHalfScreenHeight(), null);
+                canvas.drawBitmap(STUN_BMP, (xCoordinate - user.getXCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - user.getYCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameClient.getHalfScreenHeight(), null);
             }
         } else{
             canvas = super.render(canvas);

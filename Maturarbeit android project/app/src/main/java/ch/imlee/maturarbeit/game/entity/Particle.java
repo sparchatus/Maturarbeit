@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
+import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.map.MapDimensions;
 
 /**
@@ -45,7 +46,7 @@ public class Particle extends Entity {
     }
 
     public Canvas render(Canvas canvas){
-        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * GameThread.getUser().TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
+        canvas.drawCircle((xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenWidth(), (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameClient.getHalfScreenHeight(), RENDER_RADIUS, color);
         return canvas;
     }
 

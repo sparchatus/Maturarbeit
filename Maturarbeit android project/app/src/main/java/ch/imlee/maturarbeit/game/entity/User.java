@@ -29,6 +29,7 @@ public class User extends Player {
     protected final int PARTICLE_COOL_DOWN = 500 / TIME_PER_TICK;
     protected final int PICK_UP_RANGE = 2;
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
+    protected final float SLOW_AMOUNT = 1 / 2f;
     protected LightBulb pickUpBulb = null;
 
     protected boolean shooting;
@@ -91,7 +92,6 @@ public class User extends Player {
                 }
             }
         }
-
         if (flagPossessed){
             strength ++;
             if (strength >= MAX_STRENGTH){
@@ -110,7 +110,7 @@ public class User extends Player {
         canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
         if (pickUpBulb != null){
             canvas.drawRect(0, 0, BAR_HEIGHT, GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
-            canvas.drawRect(0,GameSurface.getSurfaceHeight() - GameSurface.getSurfaceHeight() * pickUpTickCount / PICK_UP_TICKS, BAR_HEIGHT, GameSurface.getSurfaceHeight(), PICK_UP_BAR_COLOR);
+            canvas.drawRect(0, GameSurface.getSurfaceHeight() - GameSurface.getSurfaceHeight() * pickUpTickCount / PICK_UP_TICKS, BAR_HEIGHT, GameSurface.getSurfaceHeight(), PICK_UP_BAR_COLOR);
         }
         return  canvas;
     }
@@ -118,6 +118,11 @@ public class User extends Player {
     private void move() {
         //TODO better hit boxes with walls
         //TODO players can fall out of the world
+        for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
+            if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= PLAYER_RADIUS + SlimeTrail.TRAIL_RADIUS){
+                velocity*= SLOW_AMOUNT;
+            }
+        }
         if (stunned || velocity == 0) {
             speed = 0;
             return;

@@ -18,9 +18,12 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
 public class SlimeTrail extends Entity {
     private static final Bitmap SLIME_TRAIL_BITMAP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime_trail), Map.TILE_SIDE, Map.TILE_SIDE, false);
     private static double LIFETIME = Tick.TICK * 5;
+    public static float TRAIL_RADIUS = 0.5f;
 
     public boolean removable = false;
+
     private final double TIME_CREATED;
+
     public SlimeTrail(float x, float y){
         super(x, y);
         TIME_CREATED = GameThread.getSynchronizedTick();
@@ -36,8 +39,8 @@ public class SlimeTrail extends Entity {
 
     public void render(Canvas c){
         c.drawBitmap(SLIME_TRAIL_BITMAP,
-                GameClient.getHalfScreenWidth() + (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - SLIME_TRAIL_BITMAP.getWidth()/2,
-                GameClient.getHalfScreenHeight() + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - SLIME_TRAIL_BITMAP.getHeight()/2,
+                GameClient.getHalfScreenWidth() + (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
+                GameClient.getHalfScreenHeight() + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
                 null);
     }
 

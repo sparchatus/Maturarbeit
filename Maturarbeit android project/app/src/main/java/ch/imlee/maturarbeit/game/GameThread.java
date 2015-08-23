@@ -322,4 +322,8 @@ public class GameThread extends Thread implements Tick{
     public static ArrayList<Particle> getParticleList(){
         return particleList;
     }
+
+    public static ArrayList<SlimeTrail> getSlimeTrailList(){
+        return slimeTrailList;
+    }
 }

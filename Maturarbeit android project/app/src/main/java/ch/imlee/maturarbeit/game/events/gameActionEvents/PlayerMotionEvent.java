@@ -13,13 +13,14 @@ public class PlayerMotionEvent extends GameActionEvent {
 
 
     public PlayerMotionEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
         Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("a")));
         ANGLE = Double.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf("i")));
-        senderID = Byte.valueOf(eventString.substring(eventString.length() - 1));
     }
 
     public PlayerMotionEvent(User user){
+        super(user.getID());
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
         ANGLE = user.getAngle();

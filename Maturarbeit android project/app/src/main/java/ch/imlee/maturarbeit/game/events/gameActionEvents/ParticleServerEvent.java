@@ -15,22 +15,24 @@ public class ParticleServerEvent extends GameActionEvent{
     private final int SPAWN_TICK;
 
     public ParticleServerEvent(User user, int spawTick){
+        super(user.getID());
         TEAM = user.TEAM;
         SPAWN_TICK = spawTick;
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
         ANGLE = user.getAngle();
     }
-    public ParticleServerEvent(String string){
-        X_COORDINATE = Float.valueOf(string.substring(string.indexOf("x") + 1, string.indexOf("y")));
-        Y_COORDINATE = Float.valueOf(string.substring(string.indexOf("y") + 1, string.indexOf("t")));
-        TEAM = Byte.valueOf(string.substring(string.indexOf("t") + 1, string.indexOf("a")));
-        ANGLE = Float.valueOf(string.substring(string.indexOf("a") + 1, string.indexOf('s')));
-        SPAWN_TICK = Integer.valueOf(string.substring(string.indexOf("s") + 1));
+    public ParticleServerEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
+        Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("t")));
+        TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
+        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
+        SPAWN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("i")));
     }
 
     public String toString(){
-        return super.toString() + 'Q' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK;
+        return super.toString() + 'Q' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + "i" + senderID;
     }
 
     public void apply(){

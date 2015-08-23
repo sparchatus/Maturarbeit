@@ -16,7 +16,7 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  * Created by Sandro on 04.06.2015.
  */
 public class Map implements MapDimensions {
-    public final int TILE_SIDE;
+    public static int TILE_SIDE;
     private static float MAP_WIDTH, MAP_HEIGHT;
     private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 

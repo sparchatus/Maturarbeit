@@ -16,7 +16,12 @@ import ch.imlee.maturarbeit.main.StartActivity;
 public class Event {
     public boolean serverEvent = false;
     private static final String invalidEvent = "INVALID EVENT";
+    //senderID = -1 happens when the event is invalid
     protected byte senderID;
+
+    public Event (byte senderID){
+        this.senderID = senderID;
+    }
 
     public String toString(){
         return invalidEvent;
@@ -24,10 +29,6 @@ public class Event {
 
     public void apply(){
         // the events get applied in the subclasses
-    }
-
-    public EventType getType(){
-        return getType(this.toString());
     }
 
     public static EventType getType(String string){
@@ -44,7 +45,7 @@ public class Event {
             case GAMEACTION: return GameActionEvent.fromString(string);
         }
         // invalid event:
-        return new Event();
+        return new Event((byte) -1);
     }
 
     public void send(){
@@ -74,6 +75,13 @@ public class Event {
         return false;
     }
 
+    public EventType getType(){
+        return getType(this.toString());
+    }
+
+    public byte getSenderID() {
+        return senderID;
+    }
 }
 
 

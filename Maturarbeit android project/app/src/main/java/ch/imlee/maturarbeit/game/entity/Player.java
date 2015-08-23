@@ -34,6 +34,7 @@ public class Player extends Entity implements Tick {
     protected boolean slimy;
     protected boolean dead;
     protected boolean flagPossessed = false;
+    protected LightBulb possessedLightBulb = null;
 
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     protected double lastSlimeEjection = 0;
@@ -160,12 +161,16 @@ public class Player extends Entity implements Tick {
         return TYPE;
     }
 
-    public void flagReceived(){
+    public void bulbReceived(int lightBulbID){
+        possessedLightBulb = GameThread.getLightBulbArray()[lightBulbID];
+        possessedLightBulb.setPossessor(this);
         strength = MAX_STRENGTH;
         flagPossessed = true;
     }
 
-    public void flagLost(){
+    public void bulbLost(){
+        possessedLightBulb.setPossessor(null);
+        possessedLightBulb = null;
         flagPossessed = false;
     }
 

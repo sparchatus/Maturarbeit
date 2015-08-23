@@ -7,17 +7,21 @@ import ch.imlee.maturarbeit.game.events.Event;
  */
 public class GameActionEvent extends Event {
 
-    public static GameActionEvent fromString(String string){
-        switch(string.charAt(1)){
-            case 'B': return new LightBulbEvent(string);
-            case 'C': return new LightBulbServerEvent(string);
-            case 'H': return new ParticleHitEvent(string);
-            case 'I': return new InvisibilityEvent(string);
-            case 'L': return new SlimeEvent(string);
-            case 'M': return new PlayerMotionEvent(string);
-            case 'P': return new ParticleShotEvent(string);
-            case 'Q': return new ParticleServerEvent(string);
-            case 'S': return new StunEvent(string);
+    public GameActionEvent(byte senderID) {
+        super(senderID);
+    }
+
+    public static GameActionEvent fromString(String eventString){
+        switch(eventString.charAt(1)){
+            case 'B': return new LightBulbEvent(eventString);
+            case 'C': return new LightBulbServerEvent(eventString);
+            case 'H': return new ParticleHitEvent(eventString);
+            case 'I': return new InvisibilityEvent(eventString);
+            case 'L': return new SlimeEvent(eventString);
+            case 'M': return new PlayerMotionEvent(eventString);
+            case 'P': return new ParticleShotEvent(eventString);
+            case 'Q': return new ParticleServerEvent(eventString);
+            case 'S': return new StunEvent(eventString);
             default:return null;
         }
     }

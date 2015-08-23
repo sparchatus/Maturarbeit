@@ -10,9 +10,17 @@ import ch.imlee.maturarbeit.main.StartActivity;
  */
 public class GameLoadedEvent extends GameStateEvent{
     // this Event is used by the Client to notify the Host that it's finished loading and by the Host to notify the clients that every device has finished loading.
+    public GameLoadedEvent(byte senderID) {
+        super(senderID);
+    }
+
+    public GameLoadedEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+    }
+
     @Override
     public String toString(){
-        return super.toString() + 'l';
+        return super.toString() + 'l' + 'i' + senderID;
     }
 
     @Override

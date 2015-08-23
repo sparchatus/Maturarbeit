@@ -17,9 +17,9 @@ public class LightBulb extends Entity{
     private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_OFF_SMALL, LIGHT_BULB_ON_SMALL;
     private final int SIDE;
     private Player possessor;
-    private final int LIGHT_BULB_ID;
+    private final byte LIGHT_BULB_ID;
 
-    public LightBulb(byte team, Map map, int lightBulbId) {
+    public LightBulb(byte team, Map map, byte lightBulbId) {
         super(map.getStartX(team), map.getStartY(team));
         LIGHT_BULB_ID = lightBulbId;
         SIDE = map.TILE_SIDE;
@@ -55,7 +55,7 @@ public class LightBulb extends Entity{
         return possessor;
     }
 
-    public int getLIGHT_BULB_ID(){
+    public byte getLIGHT_BULB_ID(){
         return LIGHT_BULB_ID;
     }
 }

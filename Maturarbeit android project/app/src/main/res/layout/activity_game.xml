@@ -3,25 +3,30 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <ch.imlee.maturarbeit.game.views.GameSurface
+    <com.example.sandro.gametestapp.game.views.GameSurface
         android:id="@+id/game_surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ch.imlee.maturarbeit.game.views.ParticleButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center_vertical|end"
-        android:id="@+id/button_particle"
-        android:text="@string/button_particle"
-        android:background="@drawable/button_particle_states"/>
-
-    <ch.imlee.maturarbeit.game.views.SkillButton
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+    <com.example.sandro.gametestapp.game.views.SkillButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom|end"
         android:id="@+id/button_skill"
-        android:text="@string/button_skill"
+        android:background="@drawable/button_skill_states" />
+
+    <com.example.sandro.gametestapp.game.views.ParticleButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="right|bottom"
+        android:id="@+id/button_particle"
         android:background="@drawable/button_particle_states"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="70dp" />
+
+    <com.example.sandro.gametestapp.game.views.JoystickSurface
+        android:layout_width="140dp"
+        android:layout_height="fill_parent"
+        class="com.example.sandro.gametestapp.game.Controller.JoystickController"
+        android:id="@+id/joystick"
+        android:layout_gravity="left|bottom" />
 </FrameLayout>

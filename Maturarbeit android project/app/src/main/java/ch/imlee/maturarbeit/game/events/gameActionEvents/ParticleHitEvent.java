@@ -11,19 +11,21 @@ public class ParticleHitEvent extends GameActionEvent{
     //if no player was hit: ID = -1
     private final byte PLAYER_HIT_ID;
 
-    public ParticleHitEvent(String string){
-        PARTICLE_ID = Integer.valueOf(string.substring(string.indexOf("p") + 1, string.indexOf("h")));
-        PLAYER_HIT_ID = Byte.valueOf(string.substring(string.indexOf("h") + 1));
+    public ParticleHitEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1, eventString.indexOf("h")));
+        PLAYER_HIT_ID = Byte.valueOf(eventString.substring(eventString.indexOf("h") + 1, eventString.indexOf("i")));
     }
 
-    public ParticleHitEvent(int particleID, byte playerHitID){
+    public ParticleHitEvent(int particleID, byte playerHitID, byte serverID){
+        super(serverID);
         PARTICLE_ID = particleID;
         PLAYER_HIT_ID = playerHitID;
     }
 
     @Override
     public String toString() {
-        return super.toString() + 'H' + 'p' + PARTICLE_ID+ 'h' + PLAYER_HIT_ID;
+        return super.toString() + 'H' + 'p' + PARTICLE_ID+ 'h' + PLAYER_HIT_ID + 'i' + senderID;
     }
 
     @Override

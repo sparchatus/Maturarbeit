@@ -31,7 +31,7 @@ public class GameServerThread extends GameThread{
             }
             for (Player player:playerArray) {
                 if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.PLAYER_RADIUS) {
-                    new ParticleHitEvent(particle.getID(), player.getID()).send();
+                    new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
                     player.particleHit();
                     particlesToRemove.add(particle);
                     break;
@@ -40,7 +40,7 @@ public class GameServerThread extends GameThread{
         }
         if (particlesToRemove.size() != 0){
             for (Particle particle:particlesToRemove) {
-                new ParticleHitEvent(particle.getID(), (byte) -1).send();
+                new ParticleHitEvent(particle.getID(), (byte) -1, user.getID()).send();
                 particleList.remove(particle);
                 new ParticleCollisionSound().start();
             }

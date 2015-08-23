@@ -14,16 +14,18 @@ public class ParticleShotEvent extends GameActionEvent {
     private final int SPAWN_TICK;
     private final int PARTICLE_ID;
 
-    public ParticleShotEvent(String string){
-        X_COORDINATE = Float.valueOf(string.substring(string.indexOf("x") + 1, string.indexOf("y")));
-        Y_COORDINATE = Float.valueOf(string.substring(string.indexOf("y") + 1, string.indexOf("t")));
-        TEAM = Byte.valueOf(string.substring(string.indexOf("t") + 1, string.indexOf("a")));
-        ANGLE = Float.valueOf(string.substring(string.indexOf("a") + 1, string.indexOf('s')));
-        SPAWN_TICK = Integer.valueOf(string.substring(string.indexOf("s") + 1, string.indexOf("p")));
-        PARTICLE_ID = Integer.valueOf(string.substring(string.indexOf("p") + 1));
+    public ParticleShotEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
+        Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("t")));
+        TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
+        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
+        SPAWN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("p")));
+        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1));
     }
 
     public ParticleShotEvent(ParticleServerEvent particleServerEvent, int particleID){
+        super(particleServerEvent.getSenderID());
         TEAM = particleServerEvent.getTEAM();
         X_COORDINATE = particleServerEvent.getX_COORDINATE();
         Y_COORDINATE = particleServerEvent.getX_COORDINATE();
@@ -33,6 +35,7 @@ public class ParticleShotEvent extends GameActionEvent {
     }
 
     public ParticleShotEvent (User user, int spawnTick, int particleID) {
+        super(user.getID());
         TEAM = user.TEAM;
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
@@ -43,7 +46,7 @@ public class ParticleShotEvent extends GameActionEvent {
 
     @Override
     public String toString() {
-        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + 'p' + PARTICLE_ID;
+        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + 'p' + PARTICLE_ID + "i" + senderID;
     }
 
     @Override

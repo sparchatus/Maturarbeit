@@ -12,16 +12,14 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.game.Controller.Controller;
-import ch.imlee.maturarbeit.game.Controller.FluffyController1;
-import ch.imlee.maturarbeit.game.Controller.MovementController1;
+import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
+import ch.imlee.maturarbeit.game.Controller.JoystickController;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
-import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.SlimeTrail;
 import ch.imlee.maturarbeit.game.entity.User;
@@ -31,6 +29,7 @@ import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.game.views.JoystickSurface;
 import ch.imlee.maturarbeit.game.views.ParticleButton;
 import ch.imlee.maturarbeit.game.views.SkillButton;
 import ch.imlee.maturarbeit.main.DeviceType;
@@ -56,7 +55,7 @@ public class GameThread extends Thread implements Tick{
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     protected static Map map;
-    private static User user;
+    protected static User user;
     protected static Player[] playerArray;
     protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
     protected static ArrayList<Particle> particleList = new ArrayList<>();
@@ -65,7 +64,8 @@ public class GameThread extends Thread implements Tick{
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
     private static Context context;
-    private static Controller controller;
+    private static JoystickController joystickController;
+    private static GameSurfaceController gameSurfaceController;
 
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
@@ -116,7 +116,8 @@ public class GameThread extends Thread implements Tick{
                 eventQueue.remove().apply();
             }
         }
-        user.update();
+        joystickController.update();
+        gameSurfaceController.update();
         for (Player player:playerArray){
             player.update();
         }
@@ -130,7 +131,6 @@ public class GameThread extends Thread implements Tick{
         for (Particle particle:particleList) {
             particle.update();
         }
-        controller.update();
         for (LightBulb lightBulb: lightBulbArray){
             lightBulb.update();
         }
@@ -247,14 +247,11 @@ public class GameThread extends Thread implements Tick{
             }
          }
          lightBulbArray = new LightBulb[2];
-         lightBulbArray[0] = new LightBulb((byte) 0, map, 0);
-         lightBulbArray[1] = new LightBulb((byte) 1, map, 1);
+         lightBulbArray[0] = new LightBulb((byte) 0, map, (byte) 0);
+         lightBulbArray[1] = new LightBulb((byte) 1, map, (byte) 1);
          //todo: remove when created a new controller
-         if (user.getType() == PlayerType.FLUFFY){
-             controller = new FluffyController1((Fluffy) user, map);
-         }else {
-             controller = new MovementController1(user, map);
-         }
+         joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
+         gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());
          if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
          } else {
@@ -320,10 +317,6 @@ public class GameThread extends Thread implements Tick{
 
     public static LightBulb[] getLightBulbArray() {
         return lightBulbArray;
-    }
-
-    public static Controller getController(){
-        return controller;
     }
 
     public static ArrayList<Particle> getParticleList(){

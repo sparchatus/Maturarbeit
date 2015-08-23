@@ -10,19 +10,18 @@ public class StunEvent extends GameActionEvent {
     public double stunTick;
 
     public StunEvent(byte playerID, double stunTick){
-        senderID = playerID;
+        super(playerID);
         this.stunTick = stunTick;
     }
 
     public StunEvent(String eventString){
-        char[] eventChar = eventString.toCharArray();
-        senderID = (byte)Character.getNumericValue(eventChar[2]);
-        stunTick = Double.valueOf(eventString.substring(3));
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        stunTick = Double.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("i")));
     }
 
     @Override
     public String toString() {
-        return super.toString() + "S" + senderID + stunTick;
+        return super.toString() + "S" + 's' + stunTick + 'i' + senderID;
     }
 
     @Override

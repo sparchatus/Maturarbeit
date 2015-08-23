@@ -8,10 +8,12 @@ import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.game.views.GameSurface;
 import ch.imlee.maturarbeit.main.DeviceType;
 import ch.imlee.maturarbeit.main.StartActivity;
 
@@ -21,16 +23,22 @@ import ch.imlee.maturarbeit.main.StartActivity;
 public class User extends Player {
 
     protected final Paint SKILL_BAR_COLOR;
+    protected final Paint PICK_UP_BAR_COLOR;
     protected final int MAX_MANA = 1000;
     protected final float MAX_SPEED = 2f / Tick.TICK;
     protected final int PARTICLE_COOL_DOWN = 500 / TIME_PER_TICK;
+    protected final int PICK_UP_RANGE = 2;
+    protected final int PICK_UP_TICKS = 2 * Tick.TICK;
+    protected LightBulb pickUpBulb = null;
 
     protected boolean shooting;
+
+    protected int pickUpTickCount;
 
     protected double particleCoolDownTick;
 
     protected float mana;
-    protected LightBulb possessedLightBulb;
+
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
     protected float velocity, speed, oldAngle;
     protected Map map;
@@ -39,6 +47,7 @@ public class User extends Player {
         super(type, map, team, playerId);
         user = this;
         SKILL_BAR_COLOR = new Paint();
+        PICK_UP_BAR_COLOR = new Paint();
         if (type == PlayerType.FLUFFY){
             SKILL_BAR_COLOR.setColor(0xff0000ff);
         }else if (type == PlayerType.GHOST){
@@ -46,6 +55,7 @@ public class User extends Player {
         }else if (type == PlayerType.SLIME){
             SKILL_BAR_COLOR.setColor(0xff00ff00);
         }
+        PICK_UP_BAR_COLOR.setColor(0xa0ffff00);
         this.map = map;
     }
 
@@ -57,17 +67,38 @@ public class User extends Player {
             if (StartActivity.deviceType == DeviceType.CLIENT){
                 new ParticleServerEvent(this, (int)GameThread.getSynchronizedTick()).send();
             }else{
-                new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
+                ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
+                particleShotEvent.send();
+                particleShotEvent.apply();
             }
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
+        if (pickUpBulb != null){
+            pickUpTickCount++;
+            if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
+                pickUpTickCount = 0;
+                pickUpBulb = null;
+            } else if (pickUpTickCount >= PICK_UP_TICKS){
+                new LightBulbServerEvent(this, pickUpBulb.getLIGHT_BULB_ID()).send();
+                pickUpBulb = null;
+                pickUpTickCount = 0;
+            }
+        } else {
+            for (LightBulb lightBulb:GameThread.getLightBulbArray()) {
+                if (lightBulb.getPossessor() == null && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE){
+                    pickUpBulb = lightBulb;
+                    break;
+                }
+            }
+        }
+
         if (flagPossessed){
             strength ++;
             if (strength >= MAX_STRENGTH){
                 strength = MAX_STRENGTH;
             }
             if (strength <= 0) {
-                flagLost();
+                bulbLost();
             }
         }
     }
@@ -77,6 +108,10 @@ public class User extends Player {
         canvas = super.render(canvas);
         canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2, GameClient.getHalfScreenHeight() * 2, BAR_BACKGROUND_COLOR);
         canvas.drawRect(0, GameClient.getHalfScreenHeight() * 2 - BAR_HEIGHT, GameClient.getHalfScreenWidth() * 2 * mana / MAX_MANA, GameClient.getHalfScreenHeight() * 2, SKILL_BAR_COLOR);
+        if (pickUpBulb != null){
+            canvas.drawRect(0, 0, BAR_HEIGHT, GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
+            canvas.drawRect(0,GameSurface.getSurfaceHeight() * (1 -pickUpTickCount / PICK_UP_TICKS), BAR_HEIGHT, GameSurface.getSurfaceHeight(), PICK_UP_BAR_COLOR);
+        }
         return  canvas;
     }
 
@@ -119,12 +154,8 @@ public class User extends Player {
     }
 
     @Override
-    public void flagLost() {
-        super.flagLost();
-        new LightBulbEvent(ID, possessedLightBulb.getLIGHT_BULB_ID(), false).send();
-    }
-
-    public void shootServerParticle(){
-
+    public void bulbLost() {
+        super.bulbLost();
+        new LightBulbEvent(possessedLightBulb.getLIGHT_BULB_ID(), ID).send();
     }
 }

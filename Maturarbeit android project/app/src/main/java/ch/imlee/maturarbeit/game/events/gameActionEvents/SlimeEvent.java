@@ -10,6 +10,7 @@ public class SlimeEvent extends GameActionEvent{
     private boolean slimy;
 
     public SlimeEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         senderID = Byte.valueOf(eventString.substring(2, 3));
         if (eventString.substring(3).equals("0")){
             slimy = false;
@@ -19,7 +20,7 @@ public class SlimeEvent extends GameActionEvent{
     }
 
     public SlimeEvent(byte playerId, boolean slimy){
-        senderID = playerId;
+        super(playerId);
         this.slimy = slimy;
     }
 
@@ -31,9 +32,9 @@ public class SlimeEvent extends GameActionEvent{
     @Override
     public String toString() {
         if (slimy) {
-            return super.toString() + "L" + senderID + '1';
+            return super.toString() + "L" + senderID + '1'+ "i" + senderID;
         }else {
-            return super.toString() + "L" + senderID + '0';
+            return super.toString() + "L" + senderID + '0'+ "i" + senderID;
         }
     }
 

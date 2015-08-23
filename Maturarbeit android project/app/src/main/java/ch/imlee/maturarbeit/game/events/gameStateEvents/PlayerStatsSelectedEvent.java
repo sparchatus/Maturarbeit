@@ -4,6 +4,7 @@ import android.os.Looper;
 import android.os.Handler;
 
 import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.main.ChooseActivity;
 
@@ -15,18 +16,20 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
     private final byte TEAM;
 
     public PlayerStatsSelectedEvent(PlayerType type, byte team){
+        super(GameThread.getUser().getID());
         TYPE = type;
         TEAM = team;
     }
 
-    public PlayerStatsSelectedEvent(String string){
-        TYPE = PlayerType.values()[Integer.parseInt(string.substring(2,string.indexOf(',')))];
-        TEAM = Byte.parseByte(string.substring(string.indexOf(',')+1));
+    public PlayerStatsSelectedEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        TYPE = PlayerType.values()[Integer.parseInt(eventString.substring(2,eventString.indexOf(',')))];
+        TEAM = Byte.parseByte(eventString.substring(eventString.indexOf(',')+1, eventString.indexOf("i")));
     }
 
     @Override
     public String toString(){
-        return super.toString() + 's' + TYPE.ordinal() + ',' + TEAM;
+        return super.toString() + 's' + TYPE.ordinal() + ',' + TEAM + 'i' + senderID;
     }
 
     @Override

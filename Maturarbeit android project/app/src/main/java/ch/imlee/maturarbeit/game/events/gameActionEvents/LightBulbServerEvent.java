@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
 
 /**
@@ -7,26 +8,29 @@ import ch.imlee.maturarbeit.game.entity.User;
  */
 public class LightBulbServerEvent extends GameActionEvent {
 
-    private final int LIGHT_BULB_ID;
+    private final byte LIGHT_BULB_ID;
 
-    public LightBulbServerEvent(User user, int lightBulbId){
-        senderID = user.getID();
+    public LightBulbServerEvent(User user, byte lightBulbId){
+        super(user.getID());
         LIGHT_BULB_ID = lightBulbId;
     }
-    public LightBulbServerEvent(String string){
-        senderID = Byte.parseByte(Character.toString(string.charAt(2)));
-        LIGHT_BULB_ID = Integer.parseInt(Character.toString(string.charAt(3)));
+    public LightBulbServerEvent(String eventString){
+        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        LIGHT_BULB_ID = Byte.valueOf(eventString.substring(eventString.indexOf("l") + 1, eventString.indexOf("i")));
     }
 
     @Override
     public String toString() {
-        return super.toString() + 'C' + senderID + LIGHT_BULB_ID;
+        return super.toString() + 'C' + 'l' + LIGHT_BULB_ID + 'i' + senderID;
     }
 
     @Override
     public void apply() {
-        //if (GameThread.getLightBulbArray()[LIGHT_BULB_ID] == null){
-            new LightBulbEvent(senderID, LIGHT_BULB_ID, true).send();
-        //}
+        new LightBulbEvent(this).send();
+        GameThread.getPlayerArray()[senderID].bulbReceived(LIGHT_BULB_ID);
+    }
+
+    public byte getLIGHT_BULB_ID(){
+        return LIGHT_BULB_ID;
     }
 }

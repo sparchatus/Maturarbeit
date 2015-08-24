@@ -11,6 +11,8 @@ public class GameActionEvent extends Event {
         super(senderID);
     }
 
+    public GameActionEvent(){super();}
+
     public static GameActionEvent fromString(String eventString){
         switch(eventString.charAt(1)){
             case 'B': return new LightBulbEvent(eventString);
@@ -22,6 +24,7 @@ public class GameActionEvent extends Event {
             case 'P': return new ParticleShotEvent(eventString);
             case 'Q': return new ParticleServerEvent(eventString);
             case 'S': return new StunEvent(eventString);
+            case 'W': return new SweetSpawnEvent(eventString);
             default:return null;
         }
     }

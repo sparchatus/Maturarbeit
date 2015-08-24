@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import ch.imlee.maturarbeit.game.Sound.ParticleCollisionSound;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
+import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleHitEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetSpawnEvent;
 
 /**
  * Created by Sandro on 14.08.2015.
@@ -17,6 +19,9 @@ public class GameServerThread extends GameThread{
 
     private ArrayList<Particle> particlesToRemove = new ArrayList<>();
     private static int currentParticleID = 0;
+    private static final int SWEET_SPAWN_RATE = Tick.TICK * 1; //TODO: increase, its that small for testing purposes
+    private static int lastSweetSpawn = 0;
+    private static int currentSweetId = 0;
 
     public GameServerThread(SurfaceHolder holder, Context context) {
         super(holder, context);
@@ -25,6 +30,10 @@ public class GameServerThread extends GameThread{
     @Override
     protected void update() {
         super.update();
+        if(lastSweetSpawn + SWEET_SPAWN_RATE <= getSynchronizedTick()){
+            spawnSweet();
+        }
+
         for (Particle particle:particleList) {
             if (map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())){
                 particlesToRemove.add(particle);
@@ -55,5 +64,20 @@ public class GameServerThread extends GameThread{
         }
         currentParticleID++;
         return currentParticleID - 1;
+    }
+
+    public static void spawnSweet(){
+        int tempX, tempY;
+        Sweet tempSweet;
+        boolean possible;
+        do{
+            tempX = (int)(Math.random() * (map.MAP_WIDTH-map.BORDER_TILES_RIGHT*2)+map.BORDER_TILES_RIGHT);
+            tempY = (int)(Math.random() * (map.MAP_HEIGHT-map.BORDER_TILES_TOP*2)+map.BORDER_TILES_TOP);
+            possible = !map.getSolid(tempX, tempY);
+        }while(!possible);
+        tempSweet = new Sweet(tempX, tempY, currentSweetId);
+        sweets.add(tempSweet);
+        new SweetSpawnEvent(tempSweet).send();
+        ++currentSweetId;
     }
 }

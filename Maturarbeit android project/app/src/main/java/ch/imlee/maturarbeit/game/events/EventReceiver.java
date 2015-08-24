@@ -24,7 +24,6 @@ public class EventReceiver extends Thread {
             events.add(new LinkedBlockingQueue<Event>() {
             });
             while(running){
-                //Log.v("Event", "EventReceiver is on it again");
                 try {
                     Util.receiveEvents(Client.inputStream, (byte) 0);
                 } catch (Exception e){
@@ -38,7 +37,6 @@ public class EventReceiver extends Thread {
                 events.add(new LinkedBlockingQueue<Event>());
             }
             while(running){
-                //Log.v("Event", "EventReceiver is on it again");
                 for(byte i = 1; i <= Host.inputStreams.size(); ++i){
                     Util.receiveEvents(Host.inputStreams.get(i-1), i);
                 }

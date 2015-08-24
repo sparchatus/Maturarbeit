@@ -12,6 +12,8 @@ import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
 import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.main.DeviceType;
+import ch.imlee.maturarbeit.main.StartActivity;
 
 /**
  * Created by Sandro on 04.06.2015.
@@ -34,7 +36,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d("tag", "surface gets created");
         //todo: only override when it is the host
-        gameThread = new GameServerThread(holder, getContext());
+        if(StartActivity.deviceType == DeviceType.HOST) {
+            gameThread = new GameServerThread(holder, getContext());
+        }else{
+            gameThread = new GameThread(holder, getContext());
+        }
         gameThread.setRunning(true);
         gameThread.start();
         rec = getResources();

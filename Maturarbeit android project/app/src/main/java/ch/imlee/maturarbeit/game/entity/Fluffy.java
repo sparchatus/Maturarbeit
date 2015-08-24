@@ -44,9 +44,9 @@ public class Fluffy extends User {
     @Override
     public Canvas render(Canvas canvas) {
         canvas =  super.render(canvas);
-        if (focusedPlayer != null){
+        if (focusedPlayer != null) {
+            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
         }
-        canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (focusedPlayer.getYCoordinate() - yCoordinate - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
         return canvas;
     }
 

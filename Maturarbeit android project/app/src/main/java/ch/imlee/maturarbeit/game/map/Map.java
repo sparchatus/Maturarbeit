@@ -17,7 +17,8 @@ import ch.imlee.maturarbeit.game.views.GameSurface;
  */
 public class Map implements MapDimensions {
     public static int TILE_SIDE;
-    private static float MAP_WIDTH, MAP_HEIGHT;
+    public static float MAP_WIDTH, MAP_HEIGHT;
+    //todo: why is map with and height static?
     private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
 
 

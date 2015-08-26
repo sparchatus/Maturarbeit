@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
@@ -62,6 +64,7 @@ public class GameThread extends Thread implements Tick{
     protected static ArrayList<Particle> particleList = new ArrayList<>();
     protected static ArrayList<Integer> freeParticleIDs = new ArrayList<>();
     public static ArrayList<Sweet> sweets = new ArrayList<>();
+    public static Set<Integer> sweetsToRemove = new HashSet<>();
     private static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
@@ -116,6 +119,11 @@ public class GameThread extends Thread implements Tick{
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
                 eventQueue.remove().apply();
+            }
+        }
+        for(int i = 0; i < sweets.size(); ++i){
+            if(sweetsToRemove.contains(sweets.get(i).getID())){
+                sweets.remove(i);
             }
         }
         joystickController.update();

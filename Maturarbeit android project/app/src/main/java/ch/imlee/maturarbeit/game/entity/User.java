@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.views.GameSurface;
@@ -31,6 +32,11 @@ public class User extends Player {
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
     protected final float SLOW_AMOUNT = 1 / 2f;
     protected LightBulb pickUpBulb = null;
+
+    private final float MIN_RADIUS = getPLAYER_RADIUS();
+    private final float MAX_RADIUS = getPLAYER_RADIUS()*2;
+    private int lastWeightLoss = 0;
+    private int weightLossCooldown = TICK * 3;
 
     protected boolean shooting;
 
@@ -64,6 +70,14 @@ public class User extends Player {
     public void update() {
         super.update();
         move();
+        if(GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss){
+            loseWeight();
+        }
+        for(Sweet sweet:GameThread.sweets){
+            if(Math.sqrt(Math.pow((double)(sweet.getXCoordinate()-this.getXCoordinate()), 2) + Math.pow((double)(sweet.getYCoordinate()-this.getYCoordinate()), 2)) < getPLAYER_RADIUS()){
+                eatSweet(sweet);
+            }
+        }
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned){
             if (StartActivity.deviceType == DeviceType.CLIENT){
                 new ParticleServerEvent(this, (int)GameThread.getSynchronizedTick()).send();
@@ -142,6 +156,25 @@ public class User extends Player {
             yCoordinate = newYCoordinate;
             new PlayerMotionEvent(this).send();
         }
+    }
+
+    private void loseWeight(){
+        // decrease player radius
+        if(getPLAYER_RADIUS() < MIN_RADIUS){
+            // set player radius to min radius
+        }
+        // send SetRadiusEvent
+    }
+
+    public void eatSweet(Sweet sweet){
+        // increase player radius and handle collisions
+        if(getPLAYER_RADIUS() > MAX_RADIUS){
+            // set player radius to max radius
+        }
+        // send SetRadiusEvent
+        SweetEatenEvent tempSweetEatenEvent = new SweetEatenEvent(sweet);
+        tempSweetEatenEvent.send();
+        tempSweetEatenEvent.apply();
     }
 
     public void skillActivation(){

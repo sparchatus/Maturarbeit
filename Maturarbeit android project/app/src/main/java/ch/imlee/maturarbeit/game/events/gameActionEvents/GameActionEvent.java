@@ -25,6 +25,7 @@ public class GameActionEvent extends Event {
             case 'Q': return new ParticleServerEvent(eventString);
             case 'S': return new StunEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
+            case 'E': return new SweetEatenEvent(eventString);
             default:return null;
         }
     }

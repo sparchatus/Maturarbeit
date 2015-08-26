@@ -17,12 +17,12 @@ public class Sweet extends Entity {
             BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.sweet), Map.TILE_SIDE, Map.TILE_SIDE, false);
     private final int ID;
     public Sweet(int x, int y, int id){
-        super(x, y);
+        super(x + 0.5f, y + 0.5f);
         ID = id;
     }
     public void render(Canvas canvas){
-        canvas.drawBitmap(SWEET_BITMAP, GameSurface.getSurfaceWidth()/2+(this.xCoordinate-GameThread.getUser().xCoordinate)*Map.TILE_SIDE,
-                GameSurface.getSurfaceHeight()/2+(this.yCoordinate-GameThread.getUser().yCoordinate)*Map.TILE_SIDE, null);
+        canvas.drawBitmap(SWEET_BITMAP, GameSurface.getSurfaceWidth()/2+(this.xCoordinate-GameThread.getUser().xCoordinate - 0.5f)*Map.TILE_SIDE,
+                GameSurface.getSurfaceHeight()/2+(this.yCoordinate-GameThread.getUser().yCoordinate - 0.5f)*Map.TILE_SIDE, null);
     }
     public int getID(){
         return ID;

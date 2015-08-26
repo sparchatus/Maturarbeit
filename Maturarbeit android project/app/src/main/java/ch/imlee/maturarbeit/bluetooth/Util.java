@@ -61,6 +61,7 @@ public class Util{
         try {
             outputStream.write(text.getBytes());
             //outputStream.flush();
+            Log.v("bluetooth", "sent String: " + text);
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -80,20 +81,19 @@ public class Util{
     }
 
     // if an EventString was not yet completely received by the time this method returns, store the unfinished String here
-    private static String temp = "";
     public static void receiveEvents(InputStream inputStream, byte id){
-        String string = temp;
+        String string = "";
         char c;
         try {
-            while(inputStream.available()>0) {
+            // if string.length != 0 but there is nothing available, wait for the event to be sent completely before returning
+            while(inputStream.available()>0 || string.length() != 0) {
                 c = (char) inputStream.read();
                 if(c == '|'){
                     Log.v("events", "Event received: " + string);
                     new EventHandler(Event.fromString(string), id).start();
                     string = "";
-                }
-                else{
-                    string = string + c;
+                } else{
+                    string += c;
                 }
             }
         } catch (Exception e){
@@ -107,7 +107,6 @@ public class Util{
                 // if host: connection to one client lost, if it was the only client, stop game, else send GameLeftEvent and handle it
             }
         }
-        temp = string;
     }
 
 }

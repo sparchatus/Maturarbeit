@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.game.events.gameActionEvents;
 
+import android.util.Log;
+
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 
@@ -14,8 +16,8 @@ public class SweetSpawnEvent extends GameActionEvent{
         ID = sweet.getID();
     }
     public SweetSpawnEvent(String eventString){
-        X = Integer.parseInt(eventString.substring(eventString.indexOf('x')+1, eventString.indexOf('y')-1));
-        Y = Integer.parseInt(eventString.substring(eventString.indexOf('y')+1), eventString.indexOf('i')-1);
+        X = Integer.parseInt(eventString.substring(eventString.indexOf('x')+1, eventString.indexOf('y')));
+        Y = Integer.parseInt(eventString.substring(eventString.indexOf('y')+1, eventString.indexOf('i')));
         ID = Integer.parseInt(eventString.substring(eventString.indexOf('i')+1));
     }
     public String toString(){

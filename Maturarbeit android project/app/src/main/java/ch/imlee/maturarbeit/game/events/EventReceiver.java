@@ -38,7 +38,12 @@ public class EventReceiver extends Thread {
             }
             while(running){
                 for(byte i = 1; i <= Host.inputStreams.size(); ++i){
-                    Util.receiveEvents(Host.inputStreams.get(i-1), i);
+                    try {
+                        Util.receiveEvents(Host.inputStreams.get(i-1), i);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        setRunning(false);
+                    }
                 }
             }
         }

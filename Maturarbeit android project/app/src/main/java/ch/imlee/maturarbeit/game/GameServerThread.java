@@ -19,7 +19,7 @@ public class GameServerThread extends GameThread{
 
     private ArrayList<Particle> particlesToRemove = new ArrayList<>();
     private static int currentParticleID = 0;
-    private static final int SWEET_SPAWN_RATE = Tick.TICK * 1; //TODO: increase, its that small for testing purposes
+    private static final int SWEET_SPAWN_RATE = Tick.TICK * 10;
     private static int lastSweetSpawn = 0;
     private static int currentSweetId = 0;
 
@@ -35,7 +35,8 @@ public class GameServerThread extends GameThread{
         }
 
         for (Particle particle:particleList) {
-            if (map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())){
+            // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
+            if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())){
                 particlesToRemove.add(particle);
             }
             for (Player player:playerArray) {

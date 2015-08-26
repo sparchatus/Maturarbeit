@@ -45,9 +45,9 @@ public class Event {
         switch(getType(string)){
             case GAMESTATE: return GameStateEvent.fromString(string);
             case GAMEACTION: return GameActionEvent.fromString(string);
+            // invalid event:
+            default: return new Event((byte) -1);
         }
-        // invalid event:
-        return new Event((byte) -1);
     }
 
     public void send(){

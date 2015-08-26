@@ -26,6 +26,7 @@ public class GameActionEvent extends Event {
             case 'S': return new StunEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
             case 'E': return new SweetEatenEvent(eventString);
+            case 'R': return new RadiusChangedEvent(eventString);
             default:return null;
         }
     }

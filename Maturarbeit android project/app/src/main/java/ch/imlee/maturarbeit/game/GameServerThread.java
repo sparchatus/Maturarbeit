@@ -40,7 +40,8 @@ public class GameServerThread extends GameThread{
                 particlesToRemove.add(particle);
             }
             for (Player player:playerArray) {
-                if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.PLAYER_RADIUS) {
+                if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
+                        Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.getPlayerRadius()) {
                     new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
                     player.particleHit();
                     particlesToRemove.add(particle);

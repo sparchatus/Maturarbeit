@@ -24,7 +24,7 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
-    public final float PLAYER_RADIUS = 0.5f;
+    public float playerRadius = 0.3f;
     protected final int MAX_STRENGTH = 100;
     private final int DEATH_TIME = 5 * Tick.TICK;
 
@@ -90,7 +90,7 @@ public class Player extends Entity implements Tick {
             canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2  - rotated.getHeight() / 2f, null);
         }
         if (stunned){
-            canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate() - PLAYER_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
+            canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
         }
         return canvas;
     }
@@ -174,5 +174,13 @@ public class Player extends Entity implements Tick {
 
     public void particleHit(){
         strength -=10;
+    }
+
+    public float getPlayerRadius(){
+        return playerRadius;
+    }
+
+    public void setPlayerRadius(float radius){
+        playerRadius = radius;
     }
 }

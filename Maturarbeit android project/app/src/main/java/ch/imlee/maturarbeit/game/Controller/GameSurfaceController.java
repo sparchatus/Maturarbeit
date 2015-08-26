@@ -41,7 +41,7 @@ public class GameSurfaceController {
         synchronized (controllerState) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 for (Player player : GameThread.getPlayerArray()) {
-                    if (Math.sqrt(Math.pow((user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE) - player.getXCoordinate(), 2) + Math.pow((user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE) - player.getYCoordinate(), 2)) < user.getPLAYER_RADIUS()) {
+                    if (Math.sqrt(Math.pow((user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE) - player.getXCoordinate(), 2) + Math.pow((user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE) - player.getYCoordinate(), 2)) < user.getPlayerRadius()) {
                         controllerState = ControllerState.FOCUS;
                         return false;
                     }

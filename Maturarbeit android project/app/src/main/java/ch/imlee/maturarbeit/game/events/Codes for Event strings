@@ -11,6 +11,7 @@ Starting characters:
         S - Stun
         W - Sweet Spawned
         E - Sweet Eaten
+        R - Radius Changed
 
     G - Game state changed
         C - Game cancelled

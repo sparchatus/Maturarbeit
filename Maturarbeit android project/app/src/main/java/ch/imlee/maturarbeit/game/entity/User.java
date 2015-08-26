@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
+import ch.imlee.maturarbeit.game.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
@@ -33,10 +34,11 @@ public class User extends Player {
     protected final float SLOW_AMOUNT = 1 / 2f;
     protected LightBulb pickUpBulb = null;
 
-    private final float MIN_RADIUS = getPLAYER_RADIUS();
-    private final float MAX_RADIUS = getPLAYER_RADIUS()*2;
-    private int lastWeightLoss = 0;
-    private int weightLossCooldown = TICK * 3;
+    private final float MIN_RADIUS = getPlayerRadius();
+    private final float MAX_RADIUS = getPlayerRadius()*3;
+    private final float RADIUS_CHANGE = 0.2f;
+    private double lastWeightLoss = 0;
+    private int weightLossCooldown = Tick.TICK * 3;
 
     protected boolean shooting;
 
@@ -71,10 +73,11 @@ public class User extends Player {
         super.update();
         move();
         if(GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss){
-            loseWeight();
+            //loseWeight();
+            lastWeightLoss = GameThread.getSynchronizedTick();
         }
         for(Sweet sweet:GameThread.sweets){
-            if(Math.sqrt(Math.pow((double)(sweet.getXCoordinate()-this.getXCoordinate()), 2) + Math.pow((double)(sweet.getYCoordinate()-this.getYCoordinate()), 2)) < getPLAYER_RADIUS()){
+            if(Math.sqrt(Math.pow((double)(sweet.getXCoordinate()-this.getXCoordinate()), 2) + Math.pow((double)(sweet.getYCoordinate()-this.getYCoordinate()), 2)) < getPlayerRadius()){
                 eatSweet(sweet);
             }
         }
@@ -133,7 +136,7 @@ public class User extends Player {
         //TODO better hit boxes with walls
         //TODO players can fall out of the world
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
-            if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= PLAYER_RADIUS + SlimeTrail.TRAIL_RADIUS){
+            if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= playerRadius + SlimeTrail.TRAIL_RADIUS){
                 velocity*= SLOW_AMOUNT;
                 break;
             }
@@ -159,22 +162,24 @@ public class User extends Player {
     }
 
     private void loseWeight(){
-        // decrease player radius
-        if(getPLAYER_RADIUS() < MIN_RADIUS){
-            // set player radius to min radius
+        setPlayerRadius(getPlayerRadius()-RADIUS_CHANGE);
+        if(getPlayerRadius() < MIN_RADIUS){
+            setPlayerRadius(MIN_RADIUS);
         }
         // send SetRadiusEvent
     }
 
     public void eatSweet(Sweet sweet){
-        // increase player radius and handle collisions
-        if(getPLAYER_RADIUS() > MAX_RADIUS){
-            // set player radius to max radius
+        setPlayerRadius(getPlayerRadius() + RADIUS_CHANGE);
+        if(getPlayerRadius() > MAX_RADIUS){
+            setPlayerRadius(MAX_RADIUS);
         }
-        // send SetRadiusEvent
-        SweetEatenEvent tempSweetEatenEvent = new SweetEatenEvent(sweet);
-        tempSweetEatenEvent.send();
-        tempSweetEatenEvent.apply();
+        // handle collisions
+        RadiusChangedEvent radiusChangedEvent = new RadiusChangedEvent(getPlayerRadius());
+        radiusChangedEvent.send();
+        SweetEatenEvent sweetEatenEvent = new SweetEatenEvent(sweet);
+        sweetEatenEvent.send();
+        sweetEatenEvent.apply();
     }
 
     public void skillActivation(){
@@ -187,9 +192,6 @@ public class User extends Player {
 
     public void setVelocity(float velocity){
         this.velocity = velocity;
-    }
-    public float getPLAYER_RADIUS(){
-        return PLAYER_RADIUS;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class Sound {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
-                mediaPlayer.stop();
+                stop();
             }
         }).start();
     }
@@ -37,5 +37,6 @@ public class Sound {
 
     public void stop(){
         mediaPlayer.stop();
+        mediaPlayer.release();
     }
 }

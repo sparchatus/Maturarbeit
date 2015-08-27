@@ -139,7 +139,9 @@ public class GameThread extends Thread implements Tick{
             }
         }
         for (Particle particle:particleList) {
-            particle.update();
+            if(particle != null) {
+                particle.update();
+            }
         }
         for (LightBulb lightBulb: lightBulbArray){
             lightBulb.update();
@@ -164,7 +166,9 @@ public class GameThread extends Thread implements Tick{
                         sweet.render(c);
                     }
                     for (Particle particle:particleList){
-                        particle.render(c);
+                        if(particle != null) {
+                            particle.render(c);
+                        }
                     }
                     for (Player player:playerArray){
                         player.render(c);
@@ -280,14 +284,20 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void addParticle(Particle newParticle){
+        // if particleList has too few indexes, add nulls until it has enough to save the newParticle at its right place
+        for(int i = particleList.size()-1; i < newParticle.getID(); ++i){
+            particleList.add(null);
+        }
         particleList.add(newParticle.getID(), newParticle);
     }
 
     public static void removeParticle(int ID){
-        for (Particle particle:particleList){
-            if (particle.getID() == ID){
-                particleList.remove(particle);
-                break;
+        for (Particle particle:particleList) {
+            if (particle != null) {
+                if (particle.getID() == ID) {
+                    particleList.remove(particle);
+                    break;
+                }
             }
         }
         freeParticleIDs.add(ID, ID);

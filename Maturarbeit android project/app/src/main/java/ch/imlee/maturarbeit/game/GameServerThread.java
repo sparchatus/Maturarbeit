@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetSpawnEvent;
+import ch.imlee.maturarbeit.game.map.Map;
 
 /**
  * Created by Sandro on 14.08.2015.
@@ -35,17 +36,19 @@ public class GameServerThread extends GameThread{
         }
 
         for (Particle particle:particleList) {
-            // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
-            if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())){
-                particlesToRemove.add(particle);
-            }
-            for (Player player:playerArray) {
-                if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
-                        Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.getPlayerRadius()) {
-                    new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
-                    player.particleHit();
+            if(particle != null) {
+                // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
+                if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.MAP_HEIGHT || (int) particle.getXCoordinate() >= map.MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
                     particlesToRemove.add(particle);
-                    break;
+                }
+                for (Player player : playerArray) {
+                    if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
+                            Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.getPlayerRadius()) {
+                        new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
+                        player.particleHit();
+                        particlesToRemove.add(particle);
+                        break;
+                    }
                 }
             }
         }

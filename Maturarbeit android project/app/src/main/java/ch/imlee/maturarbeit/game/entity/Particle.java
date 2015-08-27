@@ -19,7 +19,7 @@ public class Particle extends Entity {
     public final int RENDER_RADIUS = (int) (GameSurface.getSurfaceHeight() / 2 / MapDimensions.TILES_IN_SCREEN_HEIGHT * PARTICLE_RADIUS);
     private final float SPEED;
     private final Paint color;
-    public static int TEAM;
+    public byte TEAM;
     private float xSpeed;
     private float ySpeed;
     private final int ID;

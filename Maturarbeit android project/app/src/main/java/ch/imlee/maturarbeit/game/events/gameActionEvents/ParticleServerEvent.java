@@ -12,9 +12,9 @@ public class ParticleServerEvent extends GameActionEvent{
     private final byte TEAM;
     private final float X_COORDINATE, Y_COORDINATE;
     private final double ANGLE;
-    private final int SPAWN_TICK;
+    private final double SPAWN_TICK;
 
-    public ParticleServerEvent(User user, int spawnTick){
+    public ParticleServerEvent(User user, double spawnTick){
         super(user.getID());
         TEAM = user.TEAM;
         SPAWN_TICK = spawnTick;
@@ -28,7 +28,7 @@ public class ParticleServerEvent extends GameActionEvent{
         Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("t")));
         TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
         ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
-        SPAWN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("i")));
+        SPAWN_TICK = Double.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("i")));
     }
 
     public String toString(){
@@ -57,7 +57,7 @@ public class ParticleServerEvent extends GameActionEvent{
         return Y_COORDINATE;
     }
 
-    public int getSPAW_TICK() {
+    public double getSPAWN_TICK() {
         return SPAWN_TICK;
     }
 }

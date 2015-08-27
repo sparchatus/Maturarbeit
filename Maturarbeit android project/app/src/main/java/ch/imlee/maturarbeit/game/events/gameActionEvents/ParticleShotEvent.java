@@ -11,7 +11,7 @@ public class ParticleShotEvent extends GameActionEvent {
     private final byte TEAM;
     private final float X_COORDINATE, Y_COORDINATE;
     private final double ANGLE;
-    private final int SPAWN_TICK;
+    private final double SPAWN_TICK;
     private final int PARTICLE_ID;
 
     public ParticleShotEvent(String eventString){
@@ -28,9 +28,9 @@ public class ParticleShotEvent extends GameActionEvent {
         super(particleServerEvent.getSenderID());
         TEAM = particleServerEvent.getTEAM();
         X_COORDINATE = particleServerEvent.getX_COORDINATE();
-        Y_COORDINATE = particleServerEvent.getX_COORDINATE();
+        Y_COORDINATE = particleServerEvent.getY_COORDINATE();
         ANGLE = particleServerEvent.getANGLE();
-        SPAWN_TICK = particleServerEvent.getSPAW_TICK();
+        SPAWN_TICK = particleServerEvent.getSPAWN_TICK();
         PARTICLE_ID = particleID;
     }
 

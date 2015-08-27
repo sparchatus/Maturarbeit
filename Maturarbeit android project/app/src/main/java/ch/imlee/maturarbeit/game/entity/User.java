@@ -83,7 +83,7 @@ public class User extends Player {
         }
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned){
             if (StartActivity.deviceType == DeviceType.CLIENT){
-                new ParticleServerEvent(this, (int)GameThread.getSynchronizedTick()).send();
+                new ParticleServerEvent(this, GameThread.getSynchronizedTick()).send();
             }else{
                 ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
                 particleShotEvent.send();

@@ -27,7 +27,7 @@ public class User extends Player {
     protected final Paint SKILL_BAR_COLOR;
     protected final Paint PICK_UP_BAR_COLOR;
     protected final int MAX_MANA = 1000;
-    protected final float MAX_SPEED = 2f / Tick.TICK;
+    protected final float MAX_SPEED = 4f / Tick.TICK;
     protected final int PARTICLE_COOL_DOWN = 500 / TIME_PER_TICK;
     protected final int PICK_UP_RANGE = 2;
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;

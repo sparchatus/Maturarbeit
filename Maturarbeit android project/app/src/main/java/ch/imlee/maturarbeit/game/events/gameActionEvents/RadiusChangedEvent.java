@@ -20,7 +20,7 @@ public class RadiusChangedEvent extends GameActionEvent {
         return super.toString() + 'R' + RADIUS + 'i' + senderID;
     }
     @Override
-    public void apply(){
+    public void apply(GameThread gameThread){
         GameThread.getPlayerArray()[senderID].setPlayerRadius(RADIUS);
     }
 }

@@ -25,7 +25,7 @@ public class StunEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply() {
+    public void apply(GameThread gameThread) {
         GameThread.getPlayerArray()[senderID].stun(stunTick);
     }
 }

@@ -50,7 +50,7 @@ public class ParticleShotEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply() {
-        GameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, PARTICLE_ID));
+    public void apply(GameThread gameThread) {
+        gameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, PARTICLE_ID));
     }
 }

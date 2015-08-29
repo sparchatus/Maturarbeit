@@ -29,8 +29,8 @@ public class ParticleHitEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply() {
-        GameThread.removeParticle(PARTICLE_ID);
-        GameThread.playerHit(PLAYER_HIT_ID);
+    public void apply(GameThread gameThread) {
+        gameThread.playerHit(PLAYER_HIT_ID);
+        gameThread.removeParticle(PARTICLE_ID);
     }
 }

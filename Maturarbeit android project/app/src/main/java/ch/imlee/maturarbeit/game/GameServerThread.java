@@ -18,7 +18,6 @@ import ch.imlee.maturarbeit.game.map.Map;
  */
 public class GameServerThread extends GameThread{
 
-    private ArrayList<Particle> particlesToRemove = new ArrayList<>();
     private static int currentParticleID = 0;
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 10;
     private static int lastSweetSpawn = 0;
@@ -34,29 +33,22 @@ public class GameServerThread extends GameThread{
         if(lastSweetSpawn + SWEET_SPAWN_RATE <= getSynchronizedTick()){
             spawnSweet();
         }
-
         for (Particle particle:particleList) {
             if(particle != null) {
                 // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
                 if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.MAP_HEIGHT || (int) particle.getXCoordinate() >= map.MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
-                    particlesToRemove.add(particle);
+                    removeParticle(particle.getID());
+                   continue;
                 }
                 for (Player player : playerArray) {
-                    if (player.TEAM != particle.TEAM && Math.sqrt(Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
-                            Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2)) <= player.getPlayerRadius()) {
+                    if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
+                            Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
                         new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
                         player.particleHit();
-                        particlesToRemove.add(particle);
+                        //remove
                         break;
                     }
                 }
-            }
-        }
-        if (particlesToRemove.size() != 0){
-            for (Particle particle:particlesToRemove) {
-                new ParticleHitEvent(particle.getID(), (byte) -1, user.getID()).send();
-                particleList.remove(particle);
-                new ParticleCollisionSound().start();
             }
         }
     }
@@ -69,6 +61,12 @@ public class GameServerThread extends GameThread{
         }
         currentParticleID++;
         return currentParticleID - 1;
+    }
+
+    @Override
+    public void removeParticle(int ID) {
+        super.removeParticle(ID);
+        freeParticleIDs.add(ID);
     }
 
     public static void spawnSweet(){

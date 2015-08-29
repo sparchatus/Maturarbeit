@@ -43,7 +43,7 @@ public class LightBulbEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply() {
+    public void apply(GameThread gameThread) {
         if (PICKED_UP) {
             GameThread.getPlayerArray()[senderID].bulbReceived(LIGHT_BULB_ID);
         }else {

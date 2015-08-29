@@ -35,10 +35,10 @@ public class ParticleServerEvent extends GameActionEvent{
         return super.toString() + 'Q' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + "i" + senderID;
     }
 
-    public void apply(){
+    public void apply(GameThread gameThread){
         int particleID = GameServerThread.getCurrentParticleID();
         new ParticleShotEvent(this, particleID).send();
-        GameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, particleID));
+        gameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, particleID));
     }
 
     public byte getTEAM(){

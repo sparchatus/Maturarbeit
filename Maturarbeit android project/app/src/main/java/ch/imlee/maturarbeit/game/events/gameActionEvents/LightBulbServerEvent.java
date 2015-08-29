@@ -25,7 +25,7 @@ public class LightBulbServerEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply() {
+    public void apply(GameThread gameThread) {
         new LightBulbEvent(this).send();
         GameThread.getPlayerArray()[senderID].bulbReceived(LIGHT_BULB_ID);
     }

@@ -39,7 +39,7 @@ public class SlimeEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply() {
+    public void apply(GameThread gameThread) {
         GameThread.getPlayerArray()[senderID].setSlimy(slimy);
         if(slimy){
             GameThread.getPlayerArray()[senderID].getSlimeSound().start();

@@ -118,7 +118,7 @@ public class GameThread extends Thread implements Tick{
     protected void update(){
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
-                eventQueue.remove().apply();
+                eventQueue.remove().apply(this);
             }
         }
         for(int i = 0; i < sweets.size(); ++i){
@@ -283,27 +283,16 @@ public class GameThread extends Thread implements Tick{
         skillButton.setUser(user);
     }
 
-    public static void addParticle(Particle newParticle){
+    public void addParticle(Particle newParticle){
         // if particleList has too few indexes, add nulls until it has enough to save the newParticle at its right place
-        for(int i = particleList.size()-1; i < newParticle.getID(); ++i){
-            particleList.add(null);
-        }
         particleList.add(newParticle.getID(), newParticle);
     }
 
-    public static void removeParticle(int ID){
-        for (Particle particle:particleList) {
-            if (particle != null) {
-                if (particle.getID() == ID) {
-                    particleList.remove(particle);
-                    break;
-                }
-            }
-        }
-        freeParticleIDs.add(ID, ID);
+    public void removeParticle(int ID){
+        particleList.set(ID, null);
     }
 
-    public static void playerHit(byte playerID){
+    public void playerHit(byte playerID){
         if (playerID < 0)return;
         playerArray[playerID].particleHit();
     }

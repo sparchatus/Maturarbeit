@@ -5,6 +5,7 @@ import android.util.Log;
 import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.GameActionEvent;
 import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStateEvent;
 import ch.imlee.maturarbeit.main.DeviceType;
@@ -29,7 +30,7 @@ public class Event {
         return invalidEvent;
     }
 
-    public void apply(){
+    public void apply(GameThread gameThread){
         // the events get applied in the subclasses
     }
 

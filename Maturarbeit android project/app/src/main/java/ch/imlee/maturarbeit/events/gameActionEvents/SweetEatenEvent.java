@@ -21,7 +21,7 @@ public class SweetEatenEvent extends GameActionEvent {
         return super.toString() + 'E' + ID + 'i' + senderID;
     }
     @Override
-    public void apply(GameThread gameThread){
+    public void apply(){
         GameThread.sweetsToRemove.add(ID);
     }
 }

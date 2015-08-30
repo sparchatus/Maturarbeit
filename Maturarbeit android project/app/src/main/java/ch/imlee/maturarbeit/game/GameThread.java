@@ -119,7 +119,7 @@ public class GameThread extends Thread implements Tick{
     protected void update(){
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
-                eventQueue.remove().apply(this);
+                eventQueue.remove().apply();
             }
         }
         for(int i = 0; i < sweets.size(); ++i){

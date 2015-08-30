@@ -42,6 +42,6 @@ public class Slime extends User {
             slimy = false;
         }
         slimeEvent.send();
-        slimeEvent.apply(GameClient.getGameThread());
+        slimeEvent.apply();
     }
 }

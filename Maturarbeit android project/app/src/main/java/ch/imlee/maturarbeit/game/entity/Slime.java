@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.entity;
 
+import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeEvent;
 
@@ -18,7 +19,7 @@ public class Slime extends User {
     @Override
     public void update() {
         super.update();
-        if (slimy){
+        if (slimy){ 
             if (mana <= 0){
                 skillActivation();
             }else {
@@ -41,6 +42,6 @@ public class Slime extends User {
             slimy = false;
         }
         slimeEvent.send();
-        slimeEvent.apply();
+        slimeEvent.apply(GameClient.getGameThread());
     }
 }

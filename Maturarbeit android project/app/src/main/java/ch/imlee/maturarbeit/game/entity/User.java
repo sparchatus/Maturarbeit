@@ -87,7 +87,7 @@ public class User extends Player {
             }else{
                 ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
                 particleShotEvent.send();
-                particleShotEvent.apply();
+                particleShotEvent.apply(GameClient.getGameThread());
             }
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
         }
@@ -179,7 +179,7 @@ public class User extends Player {
         radiusChangedEvent.send();
         SweetEatenEvent sweetEatenEvent = new SweetEatenEvent(sweet);
         sweetEatenEvent.send();
-        sweetEatenEvent.apply();
+        sweetEatenEvent.apply(GameClient.getGameThread());
     }
 
     public void skillActivation(){

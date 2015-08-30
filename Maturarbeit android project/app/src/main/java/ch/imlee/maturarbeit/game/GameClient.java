@@ -79,4 +79,8 @@ public class GameClient extends Activity {
     public static Context getContext(){
         return context;
     }
+
+    public static GameThread getGameThread(){
+        return gameThread;
+    }
 }

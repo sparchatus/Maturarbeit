@@ -20,9 +20,9 @@ public class ParticleShotEvent extends GameActionEvent {
         X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
         Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("t")));
         TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
-        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
+        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf("s")));
         SPAWN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("p")));
-        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1), eventString.indexOf('i'));
+        PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1), eventString.indexOf("i"));
     }
 
     public ParticleShotEvent(ParticleServerEvent particleServerEvent, int particleID){
@@ -47,7 +47,7 @@ public class ParticleShotEvent extends GameActionEvent {
 
     @Override
     public String toString() {
-        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + 'p' + PARTICLE_ID + "i" + senderID;
+        return super.toString() + 'P' + 'x' + X_COORDINATE + 'y' + Y_COORDINATE + 't' + TEAM + 'a' + ANGLE + 's' + SPAWN_TICK + 'p' + PARTICLE_ID + 'i' + senderID;
     }
 
     @Override

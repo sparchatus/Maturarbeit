@@ -59,6 +59,9 @@ public class JoystickController{
                         angle *= -1;
                     }
                     user.setAngle(angle);
+                    if (user.getAngle() != angle){
+                        user.angleHasChanged();
+                    }
                 }
                 setPosChanged(false);
             }

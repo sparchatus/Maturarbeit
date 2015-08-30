@@ -46,10 +46,11 @@ public class User extends Player {
 
     protected double particleCoolDownTick;
 
+    protected boolean angleChanged;
     protected float mana;
 
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
-    protected float velocity, speed, oldAngle;
+    protected float velocity, speed;
     protected Map map;
 
     public User(PlayerType type, Map map, byte team, byte playerId) {
@@ -154,7 +155,7 @@ public class User extends Player {
             newYCoordinate = (int)newYCoordinate + 0.5f;
         }
         speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
-        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate ||oldAngle != angle) {
+        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate || angleChanged) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
             new PlayerMotionEvent(this).send();
@@ -198,5 +199,13 @@ public class User extends Player {
     public void bulbLost() {
         super.bulbLost();
         new LightBulbEvent(possessedLightBulb.getLIGHT_BULB_ID(), ID).send();
+    }
+
+    public void angleHasChanged(){
+        angleChanged = true;
+    }
+
+    public double getAngle(){
+        return angle;
     }
 }

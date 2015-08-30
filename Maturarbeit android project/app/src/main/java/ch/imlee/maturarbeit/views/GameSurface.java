@@ -34,8 +34,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.d("tag", "surface gets created");
-        //todo: only override when it is the host
+        Log.d("GameSurface", "surface gets created");
         if(StartActivity.deviceType == DeviceType.HOST) {
             gameThread = new GameServerThread(holder, getContext());
         }else{
@@ -53,8 +52,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         invalidate();
-        width = getWidth();
-        height = getHeight();
+        this.width = getWidth();
+        this.height = getHeight();
     }
 
     @Override

@@ -10,6 +10,7 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
+import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -40,6 +41,8 @@ public class Player extends Entity implements Tick {
 
     protected int reviveTick;
     protected int strength;
+    protected LightBulb lightBulb;
+
 
     protected double stunTick;
 
@@ -101,6 +104,15 @@ public class Player extends Entity implements Tick {
         if (dead && reviveTick <= GameThread.getSynchronizedTick()){
             dead = false;
         }
+        if (lightBulb != null){
+            strength ++;
+            if (strength >= MAX_STRENGTH){
+                strength = MAX_STRENGTH;
+            }
+            if (strength <= 0) {
+                bulbLost();
+            }
+        }
         if(slimy) {
             if (GameThread.getSynchronizedTick() - SLIME_EJECTION_RATE >= lastSlimeEjection) {
                 lastSlimeEjection = GameThread.getSynchronizedTick();
@@ -158,17 +170,21 @@ public class Player extends Entity implements Tick {
         return TYPE;
     }
 
-    public void bulbReceived(int lightBulbID){
-        possessedLightBulb = GameThread.getLightBulbArray()[lightBulbID];
-        possessedLightBulb.setPossessor(this);
+    public void bulbReceived(int bulbID){
         strength = MAX_STRENGTH;
-        flagPossessed = true;
+        lightBulb = GameThread.getLightBulbArray() [bulbID];
+        lightBulb.setPossessor(this);
     }
 
-    public void bulbLost(){
-        possessedLightBulb.setPossessor(null);
-        possessedLightBulb = null;
-        flagPossessed = false;
+    protected void bulbLost(){
+        //todo;send lost event to server
+        lightBulb.fallOnFloor();
+        lightBulb = null;
+    }
+
+    protected void putOnLightBulbStand(LightBulbStand lightBulbStand){
+        lightBulb.putOnLightBulbStand(lightBulbStand);
+        lightBulb = null;
     }
 
     public void particleHit(){

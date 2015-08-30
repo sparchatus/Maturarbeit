@@ -1,0 +1,8 @@
+0x000000 void
+0xff0000 wall
+0x00ff00 green base wall
+0x0000ff blue base wall
+0xffff00 lightBulbStand Team blue
+0xffff01 lightBulbStand Team green
+0x00ffff spawn blue
+0x01ffff spawn green

@@ -39,8 +39,8 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         invalidate();
-        width = getWidth();
-        height = getHeight();
+        this.width = getWidth();
+        this.height = getHeight();
     }
 
     @Override

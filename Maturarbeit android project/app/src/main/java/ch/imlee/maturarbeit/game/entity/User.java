@@ -98,7 +98,7 @@ public class User extends Player {
                 pickUpTickCount = 0;
                 pickUpBulb = null;
             } else if (pickUpTickCount >= PICK_UP_TICKS){
-                new LightBulbServerEvent(this, pickUpBulb.getLIGHT_BULB_ID()).send();
+                new LightBulbServerEvent(this, pickUpBulb.ID).send();
                 pickUpBulb = null;
                 pickUpTickCount = 0;
             }
@@ -198,7 +198,7 @@ public class User extends Player {
     @Override
     public void bulbLost() {
         super.bulbLost();
-        new LightBulbEvent(possessedLightBulb.getLIGHT_BULB_ID(), ID).send();
+        new LightBulbEvent(possessedLightBulb.ID, ID).send();
     }
 
     public void angleHasChanged(){

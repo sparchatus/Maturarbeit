@@ -7,12 +7,10 @@ import android.graphics.Bitmap;
  */
 public class Tile {
     public final boolean SOLID;
-    private boolean slimy;
     public final Bitmap BMP;
 
     public Tile (Bitmap bmp, boolean solid){
         SOLID = solid;
-        slimy = false;
         BMP = bmp;
     }
 }

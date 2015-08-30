@@ -33,7 +33,7 @@ public class Fluffy extends User {
             mana = MAX_MANA;
         }
         if (focusedPlayer != null){
-            if (Math.sqrt(Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) + Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2)) > MAX_RANGE){
+            if (Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) + Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2) > Math.pow(MAX_RANGE, 2)){
                 focusedPlayer = null;
             }
 

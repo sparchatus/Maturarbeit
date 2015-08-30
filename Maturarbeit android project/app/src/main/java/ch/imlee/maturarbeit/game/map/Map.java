@@ -1,10 +1,13 @@
 package ch.imlee.maturarbeit.game.map;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -16,11 +19,6 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class Map implements MapDimensions {
     public static int TILE_SIDE;
-    public final float MAP_WIDTH, MAP_HEIGHT;
-    //todo: why is map with and height static?
-    private static float TEAM_1_START_X, TEAM_1_START_Y, TEAM_2_START_X, TEAM_2_START_Y;
-
-
     private final int MINIMAP_WIDTH = GameSurface.getSurfaceWidth()/4;
     private final int MINIMAP_HEIGHT = (int)(((float)MINIMAP_WIDTH/(float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT))*
             (float)(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getHeight()-2*BORDER_TILES_TOP));
@@ -31,41 +29,70 @@ public class Map implements MapDimensions {
     final float MINIMAP_SCALE = MINIMAP_BITMAP.getWidth()/(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.test_map_2).getWidth()-2*BORDER_TILES_RIGHT);
     private static Paint minimapPaint = new Paint();
     private static final int MINIMAP_ALPHA = 0xaa;
-
+    private static float[][] playerStartCoordinates = new float[8][2];
+    private static int blueCoordinateDistributionIndex;
+    private static int greenCoordinateDistributionIndex;
     private final Tile[][]TILE_MAP;
+    private Tile voidTile;
+    private Tile groundTile;
+    private Tile wallTile;
+    private Tile greenBaseTile;
+    private Tile blueBaseTile;
+    private Tile spawnTile;
+    private static LightBulbStand[] blueLightBulbStandArray = new LightBulbStand[2];
+    private static LightBulbStand[] greenLightBulbStandArray = new LightBulbStand[2];
+
     public Map(Resources rec, int pixelMapID) {
         minimapPaint.setAlpha(0xCC);
         TILE_SIDE = GameSurface.getSurfaceHeight() / TILES_IN_SCREEN_HEIGHT;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        Bitmap pixelMap = BitmapFactory.decodeResource(rec, pixelMapID, options);
-        MAP_WIDTH = pixelMap.getWidth();
-        MAP_HEIGHT = pixelMap.getHeight();
-        TEAM_1_START_X = 8.5f;
-        TEAM_1_START_Y = 5.5f;
-        TEAM_2_START_X = MAP_WIDTH - 8.5f;
-        TEAM_2_START_Y = MAP_HEIGHT - 5.5f;
-        Tile voidTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.void_tile), TILE_SIDE, TILE_SIDE, false), false);
-        Tile groundTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.ground_tile), TILE_SIDE, TILE_SIDE, false), false);
-        Tile wallTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.wall_tile), TILE_SIDE, TILE_SIDE, false), true);
-        Tile greenBaseTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.green_base_tile), TILE_SIDE, TILE_SIDE, false), true);
-        Tile blueBaseTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.blue_base_tile), TILE_SIDE, TILE_SIDE, false), true);
+        Bitmap pixelMap = BitmapFactory.decodeResource(rec, pixelMapID);
+        voidTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.void_tile), TILE_SIDE, TILE_SIDE, false), false);
+        groundTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.ground_tile), TILE_SIDE, TILE_SIDE, false), false);
+        wallTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.wall_tile), TILE_SIDE, TILE_SIDE, false), true);
+        greenBaseTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.green_base_tile), TILE_SIDE, TILE_SIDE, false), true);
+        blueBaseTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.blue_base_tile), TILE_SIDE, TILE_SIDE, false), true);
+        spawnTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.spawn_tile), TILE_SIDE, TILE_SIDE, false), false);
+        Bitmap blueLightBulbTileBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.light_bulb_tile_team_blue), TILE_SIDE, TILE_SIDE, false);
+        Bitmap greenLightBulbTileBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.light_bulb_tile_team_green), TILE_SIDE, TILE_SIDE, false);
         TILE_MAP = new Tile[pixelMap.getWidth()][pixelMap.getHeight()];
-        for(int i = 0; i < pixelMap.getHeight(); i++){
-            for (int j = 0; j < pixelMap.getWidth(); j++){
-                if(pixelMap.getPixel(j, i) == 0xffffffff) {
-                    TILE_MAP[j][i] = groundTile;
-                }else if(pixelMap.getPixel(j, i) == 0xffff0000) {
-                    TILE_MAP[j][i] = wallTile;
-                }else if (pixelMap.getPixel(j, i) == 0xff00ff00){
-                    TILE_MAP[j][i] = greenBaseTile;
-                }else if (pixelMap.getPixel(j, i) == 0xff0000ff){
-                    TILE_MAP[j][i] = blueBaseTile;
+        int blueLightBulbStandDistributionIndex = 0;
+        int greenLightBulbStandDistributionIndex = 0;
+        for(int y = 0; y < pixelMap.getHeight(); y++){
+            for (int x = 0; x < pixelMap.getWidth(); x++){
+                if(pixelMap.getPixel(x, y) == 0xffffffff) {
+                    TILE_MAP[x][y] = groundTile;
+                }else if(pixelMap.getPixel(x, y) == 0xffff0000) {
+                    TILE_MAP[x][y] = wallTile;
+                }else if (pixelMap.getPixel(x, y) == 0xff00ff00){
+                    TILE_MAP[x][y] = greenBaseTile;
+                }else if (pixelMap.getPixel(x, y) == 0xff0000ff){
+                    TILE_MAP[x][y] = blueBaseTile;
+                }else if (pixelMap.getPixel(x, y) == 0xff00ffff){
+                    TILE_MAP[x][y] = spawnTile;
+                    playerStartCoordinates[blueCoordinateDistributionIndex][0] = x + 0.5f;
+                    playerStartCoordinates[blueCoordinateDistributionIndex][1] = y + 0.5f;
+                    blueCoordinateDistributionIndex++;
+                }else if (pixelMap.getPixel(x, y) == 0xff01ffff){
+                    TILE_MAP[x][y] = spawnTile;
+                    playerStartCoordinates[greenCoordinateDistributionIndex + 4][0] = x + 0.5f;
+                    playerStartCoordinates[greenCoordinateDistributionIndex + 4][1] = y + 0.5f;
+                    greenCoordinateDistributionIndex++;
+                }else if (pixelMap.getPixel(x, y) == 0xffffff00){
+                    TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, true, (byte) 0);
+                    blueLightBulbStandArray[blueLightBulbStandDistributionIndex] = (LightBulbStand)TILE_MAP[x][y];
+                    blueLightBulbStandDistributionIndex++;
+                }else if (pixelMap.getPixel(x, y) == 0xffffff01){
+                    TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, true, (byte) 1);
+                    greenLightBulbStandArray[greenLightBulbStandDistributionIndex] = (LightBulbStand) TILE_MAP[x][y];
+                    greenLightBulbStandDistributionIndex++;
                 }else{
-                    TILE_MAP[j][i] = voidTile;
+                    TILE_MAP[x][y] = voidTile;
                 }
             }
         }
+        //minus one because the ++ in the coordinate distribution function has to be before the return
+        blueCoordinateDistributionIndex = -1;
+        greenCoordinateDistributionIndex = -1;
     }
 
     public void render(Canvas canvas, User user){
@@ -102,17 +129,41 @@ public class Map implements MapDimensions {
 
     public static float getStartX(byte team) {
         if (team == 0){
-            return TEAM_1_START_X;
+            blueCoordinateDistributionIndex++;
+            return playerStartCoordinates[blueCoordinateDistributionIndex][0];
         }else {
-            return TEAM_2_START_X;
+            greenCoordinateDistributionIndex++;
+            return playerStartCoordinates[greenCoordinateDistributionIndex + 4][0];
         }
     }
 
     public static float getStartY(byte team) {
         if (team == 0){
-            return TEAM_1_START_Y;
+            return playerStartCoordinates[blueCoordinateDistributionIndex][1];
         }else {
-            return TEAM_2_START_Y;
+            return playerStartCoordinates[greenCoordinateDistributionIndex + 4][1];
+        }
+    }
+
+    public class MiniMapSurface extends SurfaceView {
+        public MiniMapSurface(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+    }
+
+    public static LightBulbStand[] getFriendlyLightBulbStands(byte team){
+        if (team == 0){
+            return blueLightBulbStandArray;
+        }else {
+            return greenLightBulbStandArray;
+        }
+    }
+
+    public static LightBulbStand[] getHostileLightBulbStands(byte team){
+        if (team == 1){
+            return blueLightBulbStandArray;
+        }else {
+            return greenLightBulbStandArray;
         }
     }
 }

@@ -90,9 +90,7 @@ public class JoystickController{
             }
             moving = true;
             xFingerDistance = event.getX() - xJoystickCoordinate;
-            Log.d("JoystickC onTouch x", String.valueOf(xFingerDistance));
             yFingerDistance = event.getY() - yJoystickCoordinate;
-            Log.d("JoystickC onTouch y", String.valueOf(yFingerDistance));
         }
         setPosChanged(true);
         return true;

@@ -3,15 +3,11 @@ package ch.imlee.maturarbeit.game;
 import android.content.Context;
 import android.view.SurfaceHolder;
 
-import java.util.ArrayList;
-
-import ch.imlee.maturarbeit.game.Sound.ParticleCollisionSound;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleHitEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetSpawnEvent;
-import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 
 /**
  * Created by Sandro on 14.08.2015.

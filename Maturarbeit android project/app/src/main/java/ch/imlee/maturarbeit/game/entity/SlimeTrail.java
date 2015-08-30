@@ -6,11 +6,10 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.map.Map;
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Lukas on 21.08.2015.

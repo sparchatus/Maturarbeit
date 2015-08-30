@@ -7,10 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Sandro on 04.06.2015.

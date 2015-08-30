@@ -14,6 +14,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
 import ch.imlee.maturarbeit.game.Controller.JoystickController;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
@@ -26,17 +27,17 @@ import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.SlimeTrail;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.game.entity.User;
-import ch.imlee.maturarbeit.game.events.Event;
-import ch.imlee.maturarbeit.game.events.EventReceiver;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.GameLoadedEvent;
-import ch.imlee.maturarbeit.game.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.events.Event;
+import ch.imlee.maturarbeit.events.EventReceiver;
+import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
+import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
-import ch.imlee.maturarbeit.game.views.GameSurface;
-import ch.imlee.maturarbeit.game.views.JoystickSurface;
-import ch.imlee.maturarbeit.game.views.ParticleButton;
-import ch.imlee.maturarbeit.game.views.SkillButton;
-import ch.imlee.maturarbeit.main.DeviceType;
-import ch.imlee.maturarbeit.main.StartActivity;
+import ch.imlee.maturarbeit.views.GameSurface;
+import ch.imlee.maturarbeit.views.JoystickSurface;
+import ch.imlee.maturarbeit.views.ParticleButton;
+import ch.imlee.maturarbeit.views.SkillButton;
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
 
 /**
  * Created by Sandro on 04.07.2015.

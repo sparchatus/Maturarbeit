@@ -3,12 +3,11 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.map.MapDimensions;
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Sandro on 09.06.2015.

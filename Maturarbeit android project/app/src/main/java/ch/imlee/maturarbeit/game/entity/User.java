@@ -3,21 +3,21 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.LightBulbServerEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleServerEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.ParticleShotEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.RadiusChangedEvent;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.SweetEatenEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbServerEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleServerEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.PlayerMotionEvent;
-import ch.imlee.maturarbeit.game.views.GameSurface;
-import ch.imlee.maturarbeit.main.DeviceType;
-import ch.imlee.maturarbeit.main.StartActivity;
+import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.views.GameSurface;
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
 
 /**
  * Created by Sandro on 06.06.2015.

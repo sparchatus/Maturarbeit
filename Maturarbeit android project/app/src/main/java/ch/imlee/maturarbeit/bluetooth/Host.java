@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import ch.imlee.maturarbeit.main.StartActivity;
+import ch.imlee.maturarbeit.activities.StartActivity;
 
 public class Host implements Runnable {
 

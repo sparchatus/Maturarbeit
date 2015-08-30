@@ -5,10 +5,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.game.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Sandro on 29.06.2015.

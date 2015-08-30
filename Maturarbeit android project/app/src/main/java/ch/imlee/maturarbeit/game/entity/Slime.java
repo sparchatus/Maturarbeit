@@ -1,8 +1,8 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import ch.imlee.maturarbeit.game.GameClient;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.map.Map;
-import ch.imlee.maturarbeit.game.events.gameActionEvents.SlimeEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.SlimeEvent;
 
 /**
  * Created by Sandro on 11.06.2015.
@@ -19,7 +19,7 @@ public class Slime extends User {
     @Override
     public void update() {
         super.update();
-        if (slimy){ 
+        if (slimy){
             if (mana <= 0){
                 skillActivation();
             }else {

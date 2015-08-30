@@ -10,8 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import ch.imlee.maturarbeit.game.events.Event;
-import ch.imlee.maturarbeit.game.events.EventHandler;
+import ch.imlee.maturarbeit.events.Event;
+import ch.imlee.maturarbeit.events.EventHandler;
 
 public class Util{
     public static BluetoothAdapter ba;

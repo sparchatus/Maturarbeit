@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.entity.User;
-import ch.imlee.maturarbeit.game.views.GameSurface;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Sandro on 23.08.2015.

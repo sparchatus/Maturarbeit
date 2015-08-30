@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.User;
@@ -50,7 +51,7 @@ public class ParticleShotEvent extends GameActionEvent {
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, PARTICLE_ID));
+    public void apply() {
+        GameClient.getGameThread().addParticle(new Particle(X_COORDINATE, Y_COORDINATE, TEAM, ANGLE, SPAWN_TICK, PARTICLE_ID));
     }
 }

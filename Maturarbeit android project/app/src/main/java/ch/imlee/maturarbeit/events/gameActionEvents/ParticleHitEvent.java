@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /**
@@ -29,8 +30,8 @@ public class ParticleHitEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.playerHit(PLAYER_HIT_ID);
-        gameThread.removeParticle(PARTICLE_ID);
+    public void apply() {
+        GameClient.getGameThread().playerHit(PLAYER_HIT_ID);
+        GameClient.getGameThread().removeParticle(PARTICLE_ID);
     }
 }

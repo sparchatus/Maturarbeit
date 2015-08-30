@@ -30,7 +30,7 @@ public class Event {
         return invalidEvent;
     }
 
-    public void apply(GameThread gameThread){
+    public void apply(){
         // the events get applied in the subclasses
     }
 

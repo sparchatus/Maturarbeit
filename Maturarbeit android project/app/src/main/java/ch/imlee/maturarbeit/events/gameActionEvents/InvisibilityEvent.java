@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
+import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /**
@@ -33,7 +35,7 @@ public class InvisibilityEvent extends GameActionEvent{
     }
 
     @Override
-    public void apply(GameThread gameThread) {
-        gameThread.getPlayerArray()[senderID].setInvisible(INVISIBLE);
+    public void apply() {
+        GameClient.getGameThread().getPlayerArray()[senderID].setInvisible(INVISIBLE);
     }
 }

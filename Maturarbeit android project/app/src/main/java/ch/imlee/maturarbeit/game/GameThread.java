@@ -286,6 +286,10 @@ public class GameThread extends Thread implements Tick{
 
     public void addParticle(Particle newParticle){
         // if particleList has too few indexes, add nulls until it has enough to save the newParticle at its right place
+        if(newParticle.getID() == particleList.size()){
+            particleList.add(newParticle);
+            return;
+        }
         particleList.set(newParticle.getID(), newParticle);
     }
 

@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import ch.imlee.maturarbeit.game.entity.Particle;
@@ -53,8 +54,11 @@ public class GameServerThread extends GameThread{
         if (!freeParticleIDs.isEmpty()){
             int currentID = freeParticleIDs.get(0);
             freeParticleIDs.remove(0);
+            Log.v("particle", "particle id: " + currentID);
             return currentID;
         }
+
+        Log.v("particle", "particle id: " + currentParticleID);
         currentParticleID++;
         return currentParticleID - 1;
     }

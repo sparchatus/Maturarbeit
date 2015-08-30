@@ -18,6 +18,10 @@ public class EventHandler extends Thread {
 
     @Override
     public void run(){
+        if(event == null){
+            Log.w("event", "event is null, ignoring it...");
+            return;
+        }
         if(StartActivity.deviceType == DeviceType.HOST){
             event.send();
         }

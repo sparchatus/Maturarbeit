@@ -178,6 +178,7 @@ public class GameThread extends Thread implements Tick{
                     for (LightBulb lightBulb:lightBulbArray){
                         lightBulb.render(c);
                     }
+                    joystickController.render(c);
                     map.renderMinimap(c);
                     //todo:display pause button
                 }
@@ -265,8 +266,8 @@ public class GameThread extends Thread implements Tick{
             }
          }
          lightBulbArray = new LightBulb[2];
-         lightBulbArray[0] = new LightBulb((byte) 0, map, (byte) 0);
-         lightBulbArray[1] = new LightBulb((byte) 1, map, (byte) 1);
+         lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
+         lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
          //todo: remove when created a new controller
          joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
          gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());

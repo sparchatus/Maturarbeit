@@ -24,7 +24,7 @@
         android:layout_marginBottom="70dp" />
 
     <ch.imlee.maturarbeit.views.JoystickSurface
-        android:layout_width="140dp"
+        android:layout_width="170dp"
         android:layout_height="fill_parent"
         class="com.example.sandro.gametestapp.game.Controller.JoystickController"
         android:id="@+id/joystick"

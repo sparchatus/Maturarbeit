@@ -34,7 +34,7 @@ public class Ghost extends User {
                 mana -= MANA_CONSUMPTION;
             }
         }
-        mana += 2;
+        mana += 5;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }
@@ -56,7 +56,7 @@ public class Ghost extends User {
     public void skillActivation() {
         if(invisible){
             setInvisible(false);
-        }else if (mana >= MAX_MANA / 2){
+        }else{
             setInvisible(true);
         }
     }

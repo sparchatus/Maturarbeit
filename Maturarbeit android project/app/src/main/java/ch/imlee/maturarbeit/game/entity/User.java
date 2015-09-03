@@ -197,8 +197,8 @@ public class User extends Player {
 
     @Override
     public void bulbLost() {
-        super.bulbLost();
         new LightBulbEvent(possessedLightBulb.ID, ID).send();
+        super.bulbLost();
     }
 
     public void angleHasChanged(){

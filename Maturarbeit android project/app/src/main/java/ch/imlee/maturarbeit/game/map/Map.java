@@ -96,11 +96,11 @@ public class Map implements MapDimensions {
     }
 
     public void render(Canvas canvas, User user){
-        for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
-            for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
-                canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameSurface.getSurfaceWidth() / 2 + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * TILE_SIDE, GameSurface.getSurfaceHeight() / 2+ (((int) user.getYCoordinate()) + i - user.getYCoordinate())* TILE_SIDE, null);
+            for (int i = - BORDER_TILES_TOP; i <= BORDER_TILES_TOP; i++){
+                for (int j = - BORDER_TILES_RIGHT; j <= BORDER_TILES_RIGHT; j++){
+                    canvas.drawBitmap(TILE_MAP[((int) user.getXCoordinate()) + j][((int) user.getYCoordinate()) + i].BMP, GameSurface.getSurfaceWidth() / 2 + (((int) user.getXCoordinate()) + j - user.getXCoordinate()) * TILE_SIDE, GameSurface.getSurfaceHeight() / 2+ (((int) user.getYCoordinate()) + i - user.getYCoordinate())* TILE_SIDE, null);
+                }
             }
-        }
     }
     public void renderMinimap(Canvas canvas){
         minimapPaint.setAlpha(MINIMAP_ALPHA);

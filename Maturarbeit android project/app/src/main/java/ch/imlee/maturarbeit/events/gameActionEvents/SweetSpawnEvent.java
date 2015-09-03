@@ -21,7 +21,7 @@ public class SweetSpawnEvent extends GameActionEvent{
     public String toString(){
         return super.toString() + "Wx" + X + 'y' + Y + 'i' + ID;
     }
-    public void apply(GameThread gameThread){
+    public void apply(){
         GameThread.sweets.add(new Sweet(X, Y, ID));
     }
 }

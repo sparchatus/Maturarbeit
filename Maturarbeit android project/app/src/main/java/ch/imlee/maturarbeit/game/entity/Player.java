@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
@@ -52,7 +53,7 @@ public class Player extends Entity implements Tick {
     protected User user;
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
-    protected final Bitmap PLAYER_BMP;
+    protected Bitmap PLAYER_BMP;
     protected final Bitmap STUN_BMP;
 
     public Player(PlayerType type, Map map, byte team, byte playerId) {
@@ -88,7 +89,7 @@ public class Player extends Entity implements Tick {
         if (!invisible) {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-            Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, PLAYER_BMP.getWidth(), PLAYER_BMP.getHeight(), matrix, true);
+            Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, (int) (Map.TILE_SIDE * 2 * playerRadius), (int) (Map.TILE_SIDE * 2 * playerRadius), matrix, true);
             canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2  - rotated.getHeight() / 2f, null);
         }
         if (stunned){
@@ -176,8 +177,7 @@ public class Player extends Entity implements Tick {
         lightBulb.setPossessor(this);
     }
 
-    protected void bulbLost(){
-        //todo;send lost event to server
+    public void bulbLost(){
         lightBulb.fallOnFloor();
         lightBulb = null;
     }

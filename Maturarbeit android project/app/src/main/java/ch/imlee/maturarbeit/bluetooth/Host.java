@@ -90,7 +90,9 @@ public class Host implements Runnable {
                 c.sendBroadcast(new Intent("finished"));
             } catch (Exception e) {
                 e.printStackTrace();
-                if(e instanceof IOException) break;
+                if(e.getMessage().equals("Operation Cancelled")) break;
+                // "Operation Cancelled" gets thrown when the Host clicks "Start Game", that's normal and doesn't have to be handled.
+                //for other Exceptions, just try again
 
                 //System.exit(1);
             }

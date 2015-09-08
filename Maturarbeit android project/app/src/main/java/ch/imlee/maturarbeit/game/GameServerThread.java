@@ -32,8 +32,7 @@ public class GameServerThread extends GameThread{
         }
         for (Particle particle:particleList) {
             if(particle != null) {
-                // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
-                if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.MAP_HEIGHT || (int) particle.getXCoordinate() >= map.MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
+                if (map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
                     removeParticle(particle.getID());
                    continue;
                 }
@@ -74,8 +73,9 @@ public class GameServerThread extends GameThread{
         Sweet tempSweet;
         boolean possible;
         do{
-            tempX = (int)(Math.random() * (map.MAP_WIDTH-map.BORDER_TILES_RIGHT*2)+map.BORDER_TILES_RIGHT);
-            tempY = (int)(Math.random() * (map.MAP_HEIGHT-map.BORDER_TILES_TOP*2)+map.BORDER_TILES_TOP);
+            // 50 for now, change later
+            tempX = (int)(Math.random() * (50-map.BORDER_TILES_RIGHT*2)+map.BORDER_TILES_RIGHT);
+            tempY = (int)(Math.random() * (50-map.BORDER_TILES_TOP*2)+map.BORDER_TILES_TOP);
             possible = !map.getSolid(tempX, tempY);
         }while(!possible);
         tempSweet = new Sweet(tempX, tempY, currentSweetId);

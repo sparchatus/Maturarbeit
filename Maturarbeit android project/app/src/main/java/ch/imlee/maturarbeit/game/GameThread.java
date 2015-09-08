@@ -191,12 +191,14 @@ public class GameThread extends Thread implements Tick{
     }
 
     private void displayLoadingScreen(){
-        Bitmap loadingScreen0, loadingScreen1,loadingScreen2,loadingScreen3;
-        loadingScreen0 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_0);
-        loadingScreen1 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_1);
-        loadingScreen2 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_2);
-        loadingScreen3 = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.loading_screen_3);
-        int i = 0;
+        int i = 3;
+        int halfSurfaceHeight = GameSurface.getSurfaceHeight() / 2;
+        int thirdSurfaceWidth = GameSurface.getSurfaceWidth() / 3;
+        int ninthSurfaceWidth = thirdSurfaceWidth / 3;
+        Bitmap fluffy, slime, ghost;
+        fluffy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), ninthSurfaceWidth, ninthSurfaceWidth, false);
+        slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
+        ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
         while(loading) {
             Canvas c = null;
             try {
@@ -206,17 +208,13 @@ public class GameThread extends Thread implements Tick{
                         c.drawColor(Color.BLACK);
                         switch (i) {
                             case 0:
-                                c.drawBitmap(loadingScreen0, 0, 0, null);
-                                break;
+                                c.drawBitmap(fluffy, thirdSurfaceWidth + 2 * ninthSurfaceWidth, halfSurfaceHeight, null);
                             case 1:
-                                c.drawBitmap(loadingScreen1, 0, 0, null);
-                                break;
+                                c.drawBitmap(slime, thirdSurfaceWidth + ninthSurfaceWidth, halfSurfaceHeight, null);
                             case 2:
-                                c.drawBitmap(loadingScreen2, 0, 0, null);
-                                break;
-                            case 3:
-                                c.drawBitmap(loadingScreen3, 0, 0, null);
-                                break;
+                                c.drawBitmap(ghost, thirdSurfaceWidth, halfSurfaceHeight, null);
+                            default:
+                                c.drawText("Loading...", 0, 0, null);
                         }
                     }
                 }

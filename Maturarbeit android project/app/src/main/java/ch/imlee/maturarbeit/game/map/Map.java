@@ -32,7 +32,9 @@ public class Map implements MapDimensions {
     private static float[][] playerStartCoordinates = new float[8][2];
     private static int blueCoordinateDistributionIndex;
     private static int greenCoordinateDistributionIndex;
-    private final Tile[][]TILE_MAP;
+    private static Tile[][]TILE_MAP;
+    public final int TILES_IN_WIDTH;
+    public final int TILES_IN_HEIGHT;
     private Tile voidTile;
     private Tile groundTile;
     private Tile wallTile;
@@ -46,6 +48,8 @@ public class Map implements MapDimensions {
         minimapPaint.setAlpha(0xCC);
         TILE_SIDE = GameSurface.getSurfaceHeight() / TILES_IN_SCREEN_HEIGHT;
         Bitmap pixelMap = BitmapFactory.decodeResource(rec, pixelMapID);
+        TILES_IN_WIDTH = pixelMap.getWidth();
+        TILES_IN_HEIGHT = pixelMap.getHeight();
         voidTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.void_tile), TILE_SIDE, TILE_SIDE, false), false);
         groundTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.ground_tile), TILE_SIDE, TILE_SIDE, false), false);
         wallTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.wall_tile), TILE_SIDE, TILE_SIDE, false), true);
@@ -123,7 +127,7 @@ public class Map implements MapDimensions {
 
     }
 
-    public boolean getSolid(int xTileCoordinate, int yTileCoordinate){
+    public static boolean getSolid(int xTileCoordinate, int yTileCoordinate){
         return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }
 

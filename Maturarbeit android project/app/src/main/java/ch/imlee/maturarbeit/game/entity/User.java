@@ -148,11 +148,17 @@ public class User extends Player {
         }
         float newXCoordinate = (float) (xCoordinate + Math.cos(angle) * velocity * MAX_SPEED);
         float newYCoordinate = (float) (yCoordinate + Math.sin(angle) * velocity * MAX_SPEED);
-        if(map.getSolid((int)(newXCoordinate - 0.5), (int)newYCoordinate) || map.getSolid((int)(newXCoordinate + 0.5), (int)newYCoordinate)){
-            newXCoordinate = (int)newXCoordinate + 0.5f;
+        if (Map.getSolid((int)(newXCoordinate) + (int)(playerRadius), (int)newYCoordinate)){
+            newXCoordinate -= playerRadius ;
         }
-        if(map.getSolid((int)newXCoordinate, (int)(newYCoordinate - 0.5)) || map.getSolid((int)newXCoordinate, (int)(newYCoordinate + 0.5))){
-            newYCoordinate = (int)newYCoordinate + 0.5f;
+        if (Map.getSolid((int)(newXCoordinate) - (int)(playerRadius), (int)newYCoordinate)){
+            newXCoordinate += playerRadius + 1;
+        }
+        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate + playerRadius))){
+            newXCoordinate -= playerRadius ;
+        }
+        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate - playerRadius))){
+            newXCoordinate += playerRadius + 1;
         }
         speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
         if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate || angleChanged) {

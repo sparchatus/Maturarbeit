@@ -51,16 +51,17 @@ public class Host implements Runnable {
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
-        try {
-            tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+        while (true) {
+            try {
+                tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (e.getMessage().equals("Operation Cancelled")){
+                    break;
+                }
+            }
         }
         serverSocket = tempServerSocket;
-
-
         IntentFilter filter = new IntentFilter("finished");
         c.registerReceiver(this.threadFinishedReceiver, filter);
 

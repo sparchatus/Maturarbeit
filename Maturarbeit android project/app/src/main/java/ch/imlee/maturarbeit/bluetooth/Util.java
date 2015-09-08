@@ -39,6 +39,12 @@ public class Util{
         }
         else {
             //to close all current connections, restart the adapter
+            ba.disable();
+            while(ba.getState() != BluetoothAdapter.STATE_OFF){
+                try{
+                    Thread.sleep(10);
+                }catch (Exception e){}
+            }
             ba.enable();
         }
     }

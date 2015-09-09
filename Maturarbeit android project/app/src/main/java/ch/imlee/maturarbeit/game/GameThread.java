@@ -159,29 +159,38 @@ public class GameThread extends Thread implements Tick{
             c = holder.lockCanvas(null);
             synchronized (holder) {
                 if(c!=null) {
-                    c.drawColor(Color.BLACK);
-                    map.render(c);
-                    for(SlimeTrail slimeTrail:slimeTrailList){
-                        slimeTrail.render(c);
-                    }
-                    for(Sweet sweet:sweets){
-                        sweet.render(c);
-                    }
-                    for (Particle particle:particleList){
-                        if(particle != null) {
-                            particle.render(c);
+                    if(!getUser().getDead()) {
+                        c.drawColor(Color.BLACK);
+                        map.render(c);
+                        for (SlimeTrail slimeTrail : slimeTrailList) {
+                            slimeTrail.render(c);
                         }
-                    }
-                    for (Player player:playerArray){
-                        player.render(c);
-                    }
+                        for (Sweet sweet : sweets) {
+                            sweet.render(c);
+                        }
+                        for (Particle particle : particleList) {
+                            if (particle != null) {
+                                particle.render(c);
+                            }
+                        }
+                        for (Player player : playerArray) {
+                            player.render(c);
+                        }
 
-                    for (LightBulb lightBulb:lightBulbArray){
-                        lightBulb.render(c);
+                        for (LightBulb lightBulb : lightBulbArray) {
+                            lightBulb.render(c);
+                        }
+                        joystickController.render(c);
+                        miniMap.render(c);
+                        //todo:display pause button
+                    } else{
+                        Paint textPaint = new Paint();
+                        textPaint.setTextSize(64);
+                        textPaint.setColor(0xffffffff);
+                        c.drawText("YOU ARE DEAD", 20, 20, textPaint);
+                        textPaint.setTextSize(20);
+                        c.drawText("Respawn in " + (int)(getUser().reviveTick - getSynchronizedTick())/TICK + " seconds", 20, 100, textPaint);
                     }
-                    joystickController.render(c);
-                    miniMap.render(c);
-                    //todo:display pause button
                 }
             }
         } finally {

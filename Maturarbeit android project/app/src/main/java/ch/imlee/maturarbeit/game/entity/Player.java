@@ -7,7 +7,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
@@ -25,7 +27,8 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
-    public float playerRadius = 0.4f;
+    public static final float startRadius = 0.4f;
+    public float playerRadius;
     protected final int MAX_STRENGTH = 100;
     private final int DEATH_TIME = 5 * Tick.TICK;
 
@@ -40,7 +43,7 @@ public class Player extends Entity implements Tick {
     protected double lastSlimeEjection = 0;
     protected SlimeSound slimeSound = new SlimeSound();
 
-    protected int reviveTick;
+    public int reviveTick;
     protected int strength;
     protected LightBulb lightBulb;
 
@@ -90,7 +93,7 @@ public class Player extends Entity implements Tick {
     }
 
     public Canvas render(Canvas canvas){
-        if (!invisible) {
+        if (!invisible && !dead) {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
@@ -105,9 +108,6 @@ public class Player extends Entity implements Tick {
     public void update(){
         if (stunned && stunTick <= GameThread.getSynchronizedTick()){
             stunned = false;
-        }
-        if (dead && reviveTick <= GameThread.getSynchronizedTick()){
-            dead = false;
         }
         if (lightBulb != null){
             strength ++;
@@ -128,10 +128,13 @@ public class Player extends Entity implements Tick {
     }
 
     protected void death(){
+        new DeathEvent(true).send();
         setCoordinates(Map.getStartX(TEAM), Map.getStartY(TEAM));
         dead = true;
         reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
-        bulbLost();
+        if(possessedLightBulb != null) bulbLost();
+        setPlayerRadius(startRadius);
+        new RadiusChangedEvent(startRadius).send();
     }
 
     public void stun(double stunTick){
@@ -192,6 +195,14 @@ public class Player extends Entity implements Tick {
         lightBulb = null;
     }
 
+    public void setDead(boolean dead){
+        this.dead = dead;
+    }
+
+    public boolean getDead(){
+        return dead;
+    }
+
     public void particleHit(){
         strength -=10;
     }
@@ -207,9 +218,5 @@ public class Player extends Entity implements Tick {
             scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
         } catch (IllegalArgumentException e){
             // this means the radius is 0, this happens when falling
-            scaledPlayerBmp.setWidth(0);
-            scaledPlayerBmp.setHeight(0);
-            scaledStunBmp.setWidth(0);
-            scaledStunBmp.setHeight(0);
         }
     }}

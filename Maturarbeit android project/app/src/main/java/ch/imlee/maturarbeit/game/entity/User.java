@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
@@ -147,6 +148,9 @@ public class User extends Player {
                     falling = false;
                 }
             }
+        } else if(GameThread.getSynchronizedTick() >= reviveTick){
+            dead = false;
+            new DeathEvent(false).send();
         }
     }
 

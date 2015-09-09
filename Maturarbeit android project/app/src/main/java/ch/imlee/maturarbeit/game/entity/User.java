@@ -80,12 +80,13 @@ public class User extends Player {
         super.update();
         move();
         if(GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss){
-            //loseWeight();
+            loseWeight();
             lastWeightLoss = GameThread.getSynchronizedTick();
         }
         for(Sweet sweet:GameThread.sweets){
             if(Math.sqrt(Math.pow((double)(sweet.getXCoordinate()-this.getXCoordinate()), 2) + Math.pow((double)(sweet.getYCoordinate()-this.getYCoordinate()), 2)) < getPlayerRadius()){
                 eatSweet(sweet);
+                lastWeightLoss = GameThread.getSynchronizedTick();
             }
         }
         if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned){
@@ -184,7 +185,7 @@ public class User extends Player {
         if(getPlayerRadius() < MIN_RADIUS){
             setPlayerRadius(MIN_RADIUS);
         }
-        // send SetRadiusEvent
+        new RadiusChangedEvent(getPlayerRadius()).send();
     }
 
     public void eatSweet(Sweet sweet){

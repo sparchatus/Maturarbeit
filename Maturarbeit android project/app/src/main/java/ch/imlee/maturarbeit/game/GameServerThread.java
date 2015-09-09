@@ -16,8 +16,8 @@ import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 public class GameServerThread extends GameThread{
 
     private static int currentParticleID = 0;
-    private static final int SWEET_SPAWN_RATE = Tick.TICK * 10;
-    private static int lastSweetSpawn = 0;
+    private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;
+    private static double lastSweetSpawn = 0;
     private static int currentSweetId = 0;
 
     public GameServerThread(SurfaceHolder holder, Context context) {
@@ -29,6 +29,7 @@ public class GameServerThread extends GameThread{
         super.update();
         if(lastSweetSpawn + SWEET_SPAWN_RATE <= getSynchronizedTick()){
             spawnSweet();
+            lastSweetSpawn = getSynchronizedTick();
         }
         for (Particle particle:particleList) {
             if(particle != null) {

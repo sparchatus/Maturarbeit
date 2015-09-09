@@ -90,7 +90,6 @@ public class GameThread extends Thread implements Tick{
         backgroundMusic.start();
         miniMap = GameClient.getMiniMap();
         displayLoadingScreen();
-        miniMap.setup();
         while(running){
             update();
             render();
@@ -193,6 +192,7 @@ public class GameThread extends Thread implements Tick{
     }
 
     private void displayLoadingScreen(){
+        String loadingText = "Loading...";
         int i = 3;
         int halfSurfaceHeight = GameSurface.getSurfaceHeight() / 2;
         int thirdSurfaceWidth = GameSurface.getSurfaceWidth() / 3;
@@ -200,6 +200,14 @@ public class GameThread extends Thread implements Tick{
         Bitmap fluffy, slime, ghost;
         Paint textPaint = new Paint();
         textPaint.setColor(0xffffffff);
+        int textSize = 64;
+        textPaint.setTextSize(textSize);
+        float[] textWidths = new float[loadingText.length()];
+        textPaint.getTextWidths(loadingText, textWidths);
+        float textWidth = 0;
+        for(int j = 0; j < loadingText.length(); ++j){
+            textWidth += textWidths[i];
+        }
         fluffy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), ninthSurfaceWidth, ninthSurfaceWidth, false);
         slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
         ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
@@ -218,7 +226,7 @@ public class GameThread extends Thread implements Tick{
                             case 2:
                                 c.drawBitmap(ghost, thirdSurfaceWidth, halfSurfaceHeight, null);
                             default:
-                                c.drawText("Loading...", 0, 0, textPaint);
+                                c.drawText(loadingText, GameSurface.getSurfaceWidth()/2-textWidth/2, halfSurfaceHeight - textSize, textPaint);
                         }
                     }
                 }

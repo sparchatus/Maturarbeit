@@ -38,7 +38,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     private final int BIG_ALPHA = 0xd0;
     private int smallPlayerRadius, bigPlayerRadius;
     private Paint miniMapPlayerPaint;
-    private boolean isSmall;
+    private boolean isSmall = true;
     private float TILE_SIDE_SMALL_MINI_MAP;
     private float TILE_SIDE_BIG_MINI_MAP;
     private int SMALL_MINI_MAP_ORIGIN_X;
@@ -57,7 +57,6 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     }
 
     public void setup() {
-        isSmall = true;
         TILE_SIDE_SMALL_MINI_MAP = width / Map.TILES_IN_SCREEN_WIDTH;
         TILE_SIDE_BIG_MINI_MAP = gameSurfaceHeight / Map.TILES_IN_SCREEN_WIDTH;
         gameSurfaceHeight = GameSurface.getSurfaceHeight();

@@ -93,7 +93,7 @@ public class Util{
         char c;
         try {
             // if string.length != 0 but there is nothing available, wait for the event to be sent completely before returning
-            while(inputStream.available()>0 || string.length() != 0) {
+            while(inputStream.available() > 0 || string.length() != 0) {
                 c = (char) inputStream.read();
                 if(c == '|'){
                     Log.v("events", "Event received: " + string);

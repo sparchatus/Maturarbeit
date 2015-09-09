@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.activities.StartActivity;
 
-public class Host implements Runnable {
+public class Host extends StartActivity implements Runnable {
 
     private static Context c;
 
@@ -37,8 +37,7 @@ public class Host implements Runnable {
 
     public Host(Context context) {
         c = context;
-        // to make the host identifiable
-        Util.ba.setName(StartActivity.usernameEditText.getText().toString() + "_HOST");
+        Util.ba.setName(StartActivity.usernameEditText.getText().toString());
 
 
         // TODO: put this in a thread which often checks whether the device is still discoverable, no need to put it here
@@ -112,7 +111,6 @@ public class Host implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-
         refreshConnectedDevices();
     }
 
@@ -135,19 +133,8 @@ public class Host implements Runnable {
     };
 
     public static void disconnect(){
-        try{
-            for(int i = 0; i < inputStreams.size(); ++i){
-                inputStreams.get(i).close();
-                outputStreams.get(i).close();
-                sockets.get(i).close();
-            }
-            inputStreams.clear();
-            outputStreams.clear();
-            sockets.clear();
-            deviceNames.clear();
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
+        for(int i = 0; i < sockets.size(); ++i){
+            removeDevice(i);
         }
     }
 
@@ -177,7 +164,6 @@ public class Host implements Runnable {
         outputStreams.remove(i);
         inputStreams.remove(i);
         deviceNames.remove(i);
-        adapter.notifyDataSetChanged();
     }
 
 }

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,8 +20,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class Client implements Runnable{
+public class Client extends StartActivity implements Runnable {
     private static Context c;
 
     private static ArrayList<BluetoothDevice> devices;
@@ -43,21 +45,19 @@ public class Client implements Runnable{
 
     public Client(Context context){
         c = context;
+/*
+        hostButton.setVisibility(View.VISIBLE);
+        joinButton.setVisibility(View.VISIBLE);
+        usernameTextView.setVisibility(View.VISIBLE);
+        usernameEditText.setVisibility(View.VISIBLE);
 
-        // name isn't allowed to end with "_HOST", because that's how a host is identified
-        if(StartActivity.usernameEditText.getText().toString().endsWith("_HOST")){
-            Toast.makeText(c, "Invalid Username", Toast.LENGTH_LONG).show();
-            StartActivity.hostButton.setVisibility(View.VISIBLE);
-            StartActivity.joinButton.setVisibility(View.VISIBLE);
-            StartActivity.usernameTextView.setVisibility(View.VISIBLE);
-            StartActivity.usernameEditText.setVisibility(View.VISIBLE);
+        statusText.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
 
-            StartActivity.statusText.setVisibility(View.INVISIBLE);
-            StartActivity.listView.setVisibility(View.INVISIBLE);
-            StartActivity.progressBar.setVisibility(View.INVISIBLE);
+        */
 
-        }
-        Util.ba.setName(StartActivity.usernameEditText.getText().toString());
+        Util.ba.setName(usernameEditText.getText().toString());
         findDevices();
     }
 
@@ -69,10 +69,10 @@ public class Client implements Runnable{
         deviceNames = new ArrayList<>();
         // the adapter puts the found devices into the ListView using the deviceNames ArrayList
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
-        StartActivity.listView.setAdapter(adapter);
+        listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        StartActivity.listView.setOnItemClickListener(new OnItemClickListener() {
+        listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -80,8 +80,8 @@ public class Client implements Runnable{
                     discoveryCancelled = true;
                     Util.ba.cancelDiscovery();
                 }
-                StartActivity.progressBar.setVisibility(View.VISIBLE);
-                StartActivity.statusText.setText("connecting to " + deviceNames.get(position));
+                progressBar.setVisibility(View.VISIBLE);
+                statusText.setText("connecting to " + deviceNames.get(position));
                 connectToDevice(devices.get(position));
             }
         });
@@ -116,8 +116,6 @@ public class Client implements Runnable{
             // probably already registered
         }
         connecting = true;
-        // to allow Toasts in this Thread
-        Looper.prepare();
         try{
             socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
 
@@ -128,24 +126,33 @@ public class Client implements Runnable{
             System.exit(1);
         }
 
-        System.out.println("...");
-        System.out.println("attempting to connect...");
-        System.out.println("...");
+        Log.d("bluetooth", "attempting to connect");
 
         // because the connection doesn't always work at the first try
-        while(true)
+        final int MAX_ATTEMPTS = 5;
+        boolean connectionSuccessful = false;
+        for(int i = 0; i < MAX_ATTEMPTS; ++i) {
             try {
                 socket.connect();
+                connectionSuccessful = true;
                 break;
             } catch (Exception e) {
-                Toast.makeText(c, "connection failed", Toast.LENGTH_SHORT).show();
+                Log.d("bluetooth", "connection attempt " + (i+1) + '/' + MAX_ATTEMPTS + " failed");
                 e.printStackTrace();
                 //try again
             }
-
-        System.out.println("...");
-        System.out.println("connection successful");
-        System.out.println("...");
+        }
+        if(!connectionSuccessful){
+            Client.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    onBackPressed();
+                    Toast.makeText(c, "can't connect to that device :(", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+        }
+        Log.d("bluetooth", "connection successful");
 
         connecting = false;
         c.sendBroadcast(new Intent("connectionFinished"));
@@ -160,24 +167,22 @@ public class Client implements Runnable{
             if (BluetoothDevice.ACTION_FOUND.equals(action)){
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(device.getName().endsWith("_HOST")){
-                    if(!devices.contains(device)) {
-                        devices.add(device);
-                        deviceNames.add(device.getName().substring(0, device.getName().length() - 5));
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size() - 1), Toast.LENGTH_SHORT).show();
-                    }
+                if(!devices.contains(device)) {
+                    devices.add(device);
+                    deviceNames.add(device.getName());
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size() - 1), Toast.LENGTH_SHORT).show();
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
-                StartActivity.statusText.setText("discovering devices...");
+                statusText.setText("discovering devices...");
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 if(!discoveryCancelled) {
-                    StartActivity.statusText.setText("discovery finished. " + devices.size() + " devices found.");
-                    StartActivity.progressBar.setVisibility(View.GONE);
+                    statusText.setText("discovery finished. " + devices.size() + " devices found.");
+                    progressBar.setVisibility(View.GONE);
                 }
             } else if("connectionFinished".equals(action)){
-                StartActivity.statusText.setText("connected to " + device.getName().substring(0, device.getName().length()-5));
-                StartActivity.progressBar.setVisibility(View.GONE);
+                statusText.setText("connected to " + device.getName());
+                progressBar.setVisibility(View.GONE);
                 manageConnection();
             }
         }
@@ -194,10 +199,10 @@ public class Client implements Runnable{
             outputStream = socket.getOutputStream();
         }catch(Exception e){
             e.printStackTrace();
-            System.exit(1);
+
         }
 
-        Toast.makeText(c, "connected to " + device.getName().substring(0,device.getName().length()-5), Toast.LENGTH_SHORT).show();
+        Toast.makeText(c, "connected to " + device.getName(), Toast.LENGTH_SHORT).show();
 
         listen();
     }
@@ -206,14 +211,15 @@ public class Client implements Runnable{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // to be able to print toasts in this thread
                 Looper.prepare();
                 String receivedString;
                 while(true){
                     if(inputStream != null){
                         receivedString = Util.receiveString(inputStream);
                         if(receivedString.indexOf(0)>=0){
-                            StartActivity.startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            c.startActivity(StartActivity.startChooseActivity);
+                            startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            c.startActivity(startChooseActivity);
                             c.sendBroadcast(new Intent("finish"));
                             break;
                         }

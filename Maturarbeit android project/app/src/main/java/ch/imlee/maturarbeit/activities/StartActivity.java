@@ -234,13 +234,4 @@ public class StartActivity extends AppCompatActivity {
             // ignore, probably already unregistered
         }
     }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        // remove the "_HOST" ending of the BluetoothAdapter
-        if(Util.ba.getName().endsWith("_HOST")){
-            Util.ba.setName(Util.ba.getName().substring(0,Util.ba.getName().length()-5));
-        }
-    }
 }

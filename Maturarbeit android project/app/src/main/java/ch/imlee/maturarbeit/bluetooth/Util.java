@@ -60,7 +60,8 @@ public class Util{
         }
         return null;
         */
-        return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        return UUID.fromString("2053c9be-5702-11e5-885d-feff819cdc9f");
+        //return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
     public static synchronized void sendString(OutputStream outputStream, String text){

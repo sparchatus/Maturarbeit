@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -26,7 +27,6 @@ public class Host implements Runnable {
     public static ArrayAdapter<String> adapter;
 
     private static BluetoothServerSocket serverSocket;
-    private static BluetoothServerSocket tempServerSocket;
     public static ArrayList<BluetoothSocket> sockets = new ArrayList<>();
     public static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
@@ -40,6 +40,7 @@ public class Host implements Runnable {
         // to make the host identifiable
         Util.ba.setName(StartActivity.usernameEditText.getText().toString() + "_HOST");
 
+
         // TODO: put this in a thread which often checks whether the device is still discoverable, no need to put it here
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -48,20 +49,19 @@ public class Host implements Runnable {
         c.startActivity(discoverableIntent);
         // endTODO:
 
+
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        while (true) {
+
+        // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
+        while(serverSocket == null) {
             try {
-                tempServerSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
+                serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
             } catch (Exception e) {
                 e.printStackTrace();
-                if (e.getMessage().equals("Operation Cancelled")){
-                    break;
-                }
             }
         }
-        serverSocket = tempServerSocket;
         IntentFilter filter = new IntentFilter("finished");
         c.registerReceiver(this.threadFinishedReceiver, filter);
 
@@ -90,11 +90,11 @@ public class Host implements Runnable {
                 c.sendBroadcast(new Intent("finished"));
             } catch (Exception e) {
                 e.printStackTrace();
-                if(e.getMessage().equals("Operation Cancelled")) break;
-                // "Operation Cancelled" gets thrown when the Host clicks "Start Game", that's normal and doesn't have to be handled.
-                //for other Exceptions, just try again
-
-                //System.exit(1);
+                // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button
+                if(e.getMessage().equals("Operation Canceled")) {
+                    Log.i("acceptThread", "acceptThread canceled");
+                    break;
+                }
             }
         }
 

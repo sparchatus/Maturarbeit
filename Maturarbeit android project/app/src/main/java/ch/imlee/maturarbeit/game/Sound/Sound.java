@@ -15,14 +15,14 @@ public class Sound {
     protected static Context context = GameClient.getContext();
 
     public void start(){
-        mediaPlayer.start();
+//        mediaPlayer.start();
     }
 
     public void start(final long TIME){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mediaPlayer.start();
+//                mediaPlayer.start();
                 try {
                     Thread.sleep(TIME);
                 } catch (Exception e){
@@ -38,7 +38,7 @@ public class Sound {
     }
 
     public void stop(){
-        mediaPlayer.stop();
-        mediaPlayer.release();
+//        mediaPlayer.stop();
+//        mediaPlayer.release();
     }
 }

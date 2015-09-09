@@ -15,6 +15,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.game.map.VoidTile;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
@@ -41,6 +42,9 @@ public class User extends Player {
     private final float RADIUS_CHANGE = 0.2f;
     private double lastWeightLoss = 0;
     private int weightLossCooldown = Tick.TICK * 3;
+
+    private boolean falling = false;
+    private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
 
     protected boolean shooting;
 
@@ -78,52 +82,70 @@ public class User extends Player {
     @Override
     public void update() {
         super.update();
-        move();
-        if(GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss){
-            loseWeight();
-            lastWeightLoss = GameThread.getSynchronizedTick();
-        }
-        for(Sweet sweet:GameThread.sweets){
-            if(Math.sqrt(Math.pow((double)(sweet.getXCoordinate()-this.getXCoordinate()), 2) + Math.pow((double)(sweet.getYCoordinate()-this.getYCoordinate()), 2)) < getPlayerRadius()){
-                eatSweet(sweet);
-                lastWeightLoss = GameThread.getSynchronizedTick();
-            }
-        }
-        if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned){
-            if (StartActivity.deviceType == DeviceType.CLIENT){
-                new ParticleServerEvent(this, GameThread.getSynchronizedTick()).send();
-            }else{
-                ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int)GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
-                particleShotEvent.send();
-                particleShotEvent.apply();
-            }
-            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
-        }
-        if (pickUpBulb != null){
-            pickUpTickCount++;
-            if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
-                pickUpTickCount = 0;
-                pickUpBulb = null;
-            } else if (pickUpTickCount >= PICK_UP_TICKS){
-                new LightBulbServerEvent(this, pickUpBulb.ID).send();
-                pickUpBulb = null;
-                pickUpTickCount = 0;
-            }
-        } else {
-            for (LightBulb lightBulb:GameThread.getLightBulbArray()) {
-                if (lightBulb.isPickable() && lightBulb.getLightBulbStandTeam() != TEAM && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE){
-                    pickUpBulb = lightBulb;
-                    break;
+        if(!dead) {
+            if (!falling) {
+                move();
+                if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()] instanceof VoidTile) {
+                    //// TODO: 09.09.2015 if there is a 2*2 field (or bigger) of void tiles, you should be able to fall down if you have a radius >0.5 
+                    if (xCoordinate % 1 >= playerRadius && xCoordinate + playerRadius <= (int) xCoordinate + 1 &&
+                            yCoordinate % 1 >= playerRadius && yCoordinate + playerRadius <= (int) yCoordinate + 1) {
+                        falling = true;
+                    }
                 }
-            }
-        }
-        if (flagPossessed){
-            strength ++;
-            if (strength >= MAX_STRENGTH){
-                strength = MAX_STRENGTH;
-            }
-            if (strength <= 0) {
-                bulbLost();
+                if (GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss) {
+                    loseWeight();
+                    lastWeightLoss = GameThread.getSynchronizedTick();
+                }
+                for (Sweet sweet : GameThread.sweets) {
+                    if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
+                        eatSweet(sweet);
+                        lastWeightLoss = GameThread.getSynchronizedTick();
+                    }
+                }
+                if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned) {
+                    if (StartActivity.deviceType == DeviceType.CLIENT) {
+                        new ParticleServerEvent(this, GameThread.getSynchronizedTick()).send();
+                    } else {
+                        ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int) GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
+                        particleShotEvent.send();
+                        particleShotEvent.apply();
+                    }
+                    particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+                }
+                if (pickUpBulb != null) {
+                    pickUpTickCount++;
+                    if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
+                        pickUpTickCount = 0;
+                        pickUpBulb = null;
+                    } else if (pickUpTickCount >= PICK_UP_TICKS) {
+                        new LightBulbServerEvent(this, pickUpBulb.ID).send();
+                        pickUpBulb = null;
+                        pickUpTickCount = 0;
+                    }
+                } else {
+                    for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
+                        if (lightBulb.isPickable() && lightBulb.getLightBulbStandTeam() != TEAM && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE) {
+                            pickUpBulb = lightBulb;
+                            break;
+                        }
+                    }
+                }
+                if (flagPossessed) {
+                    strength++;
+                    if (strength >= MAX_STRENGTH) {
+                        strength = MAX_STRENGTH;
+                    }
+                    if (strength <= 0) {
+                        bulbLost();
+                    }
+                }
+            } else {
+                setPlayerRadius(playerRadius - FALLING_RADIUS_DECREASE);
+                new RadiusChangedEvent(playerRadius).send();
+                if (playerRadius <= 0) {
+                    death();
+                    falling = false;
+                }
             }
         }
     }
@@ -181,11 +203,12 @@ public class User extends Player {
     }
 
     private void loseWeight(){
+        float oldRadius = playerRadius;
         setPlayerRadius(getPlayerRadius()-RADIUS_CHANGE);
         if(getPlayerRadius() < MIN_RADIUS){
             setPlayerRadius(MIN_RADIUS);
         }
-        new RadiusChangedEvent(getPlayerRadius()).send();
+        if(playerRadius != oldRadius) new RadiusChangedEvent(getPlayerRadius()).send();
     }
 
     public void eatSweet(Sweet sweet){

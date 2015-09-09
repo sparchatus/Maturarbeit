@@ -25,7 +25,7 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
-    public float playerRadius = 0.5f;
+    public float playerRadius = 0.4f;
     protected final int MAX_STRENGTH = 100;
     private final int DEATH_TIME = 5 * Tick.TICK;
 
@@ -131,6 +131,7 @@ public class Player extends Entity implements Tick {
         setCoordinates(Map.getStartX(TEAM), Map.getStartY(TEAM));
         dead = true;
         reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
+        bulbLost();
     }
 
     public void stun(double stunTick){
@@ -201,6 +202,14 @@ public class Player extends Entity implements Tick {
 
     public void setPlayerRadius(float radius){
         playerRadius = radius;
-        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
-        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+        try {
+            scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+            scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+        } catch (IllegalArgumentException e){
+            // this means the radius is 0, this happens when falling
+            scaledPlayerBmp.setWidth(0);
+            scaledPlayerBmp.setHeight(0);
+            scaledStunBmp.setWidth(0);
+            scaledStunBmp.setHeight(0);
+        }
     }}

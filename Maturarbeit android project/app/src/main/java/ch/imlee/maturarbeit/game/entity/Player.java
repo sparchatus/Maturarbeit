@@ -25,7 +25,7 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
-    public float playerRadius = 0.3f;
+    public float playerRadius = 0.5f;
     protected final int MAX_STRENGTH = 100;
     private final int DEATH_TIME = 5 * Tick.TICK;
 
@@ -54,21 +54,25 @@ public class Player extends Entity implements Tick {
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
     protected Bitmap PLAYER_BMP;
+    protected Bitmap scaledPlayerBmp;
     protected final Bitmap STUN_BMP;
+    protected  Bitmap scaledStunBmp;
 
     public Player(PlayerType type, Map map, byte team, byte playerId) {
         super(map.getStartX(team), map.getStartY(team));
         TYPE = type;
         if (type == PlayerType.FLUFFY){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), Map.TILE_SIDE, Map.TILE_SIDE, false);
+            PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy);
         }else if (type == PlayerType.SLIME){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), Map.TILE_SIDE, Map.TILE_SIDE, false);
+            PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime);
         }else if (type == PlayerType.GHOST){
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), Map.TILE_SIDE, Map.TILE_SIDE, false);
+            PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost);
         }else {
-            PLAYER_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher), Map.TILE_SIDE, Map.TILE_SIDE, false);
+            PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher);
         }
-        STUN_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay), Map.TILE_SIDE, Map.TILE_SIDE, false);
+        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, Map.TILE_SIDE, Map.TILE_SIDE, false);
+        STUN_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay);
+        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, Map.TILE_SIDE,Map.TILE_SIDE, false);
         TEAM = team;
         BAR_HEIGHT = Map.TILE_SIDE / 5;
         BAR_BACKGROUND_COLOR = new Paint();
@@ -89,11 +93,11 @@ public class Player extends Entity implements Tick {
         if (!invisible) {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-            Bitmap rotated = Bitmap.createBitmap(PLAYER_BMP, 0, 0, (int) (Map.TILE_SIDE * 2 * playerRadius), (int) (Map.TILE_SIDE * 2 * playerRadius), matrix, true);
+            Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
             canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2  - rotated.getHeight() / 2f, null);
         }
         if (stunned){
-            canvas.drawBitmap(STUN_BMP, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
+            canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
         }
         return canvas;
     }
@@ -197,5 +201,6 @@ public class Player extends Entity implements Tick {
 
     public void setPlayerRadius(float radius){
         playerRadius = radius;
-    }
-}
+        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+    }}

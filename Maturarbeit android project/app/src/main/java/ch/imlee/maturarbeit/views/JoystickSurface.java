@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.game.Controller.JoystickController;
+import ch.imlee.maturarbeit.game.GameThread;
 
 /**
  * Created by Sandro on 23.08.2015.
@@ -29,11 +30,10 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        Log.i("JoystickSurface", "creating surface");
         invalidate();
         width = getWidth();
         height = getHeight();
-        Log.d("js width", String.valueOf(getWidth()));
-        Log.d("js height", String.valueOf(getHeight()));
     }
 
     @Override
@@ -50,6 +50,9 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (GameThread.getLoading()){
+            return false;
+        }
         return JoystickController.onTouchEvent(event);
     }
 

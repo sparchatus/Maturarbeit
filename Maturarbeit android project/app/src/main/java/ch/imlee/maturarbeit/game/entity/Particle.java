@@ -14,9 +14,9 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class Particle extends Entity {
 
-    public final float PARTICLE_RADIUS = 1 / 10f;
-    public final int RENDER_RADIUS = (int) (GameSurface.getSurfaceHeight() / 2 / MapDimensions.TILES_IN_SCREEN_HEIGHT * PARTICLE_RADIUS);
-    private final float SPEED;
+    public final float PARTICLE_RADIUS = 0.1f;
+    public final int RENDER_RADIUS = (int) (Map.TILE_SIDE * PARTICLE_RADIUS);
+    private final float SPEED = 8f / Tick.TICK;
     private final Paint color;
     public byte TEAM;
     private float xSpeed;
@@ -32,7 +32,6 @@ public class Particle extends Entity {
         }else {
             color.setColor(0xFFFF0000);
         }
-        SPEED = 6f / Tick.TICK;
         xSpeed = (float) (Math.cos(angle) * SPEED);
         ySpeed = (float) (Math.sin(angle) * SPEED);
         this.xCoordinate += (GameThread.getSynchronizedTick() - spawnTick) * xSpeed;

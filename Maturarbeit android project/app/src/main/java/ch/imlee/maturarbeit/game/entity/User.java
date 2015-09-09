@@ -24,18 +24,20 @@ import ch.imlee.maturarbeit.activities.StartActivity;
  */
 public class User extends Player {
 
+    protected final float START_X;
+    protected final float START_Y;
+
     protected final Paint SKILL_BAR_COLOR;
     protected final Paint PICK_UP_BAR_COLOR;
     protected final int MAX_MANA = 1000;
-    protected final float MAX_SPEED = 4f / Tick.TICK;
-    protected final int PARTICLE_COOL_DOWN = 500 / TIME_PER_TICK;
+    protected final int PARTICLE_COOL_DOWN = 1000 / TIME_PER_TICK;
     protected final int PICK_UP_RANGE = 2;
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
     protected final float SLOW_AMOUNT = 1 / 2f;
     protected LightBulb pickUpBulb = null;
 
-    private final float MIN_RADIUS = getPlayerRadius();
-    private final float MAX_RADIUS = getPlayerRadius()*3;
+    private final float MIN_RADIUS = playerRadius;
+    private final float MAX_RADIUS = playerRadius *3;
     private final float RADIUS_CHANGE = 0.2f;
     private double lastWeightLoss = 0;
     private int weightLossCooldown = Tick.TICK * 3;
@@ -43,6 +45,8 @@ public class User extends Player {
     protected boolean shooting;
 
     protected int pickUpTickCount;
+    private float newXCoordinate, newYCoordinate;
+    protected float maxSpeed = 4f / Tick.TICK;
 
     protected double particleCoolDownTick;
 
@@ -55,6 +59,8 @@ public class User extends Player {
 
     public User(PlayerType type, Map map, byte team, byte playerId) {
         super(type, map, team, playerId);
+        START_X = xCoordinate;
+        START_Y = yCoordinate;
         user = this;
         SKILL_BAR_COLOR = new Paint();
         PICK_UP_BAR_COLOR = new Paint();
@@ -104,7 +110,7 @@ public class User extends Player {
             }
         } else {
             for (LightBulb lightBulb:GameThread.getLightBulbArray()) {
-                if (lightBulb.getPossessor() == null && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE){
+                if (lightBulb.isPickable() && lightBulb.getLightBulbStandTeam() != TEAM && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE){
                     pickUpBulb = lightBulb;
                     break;
                 }
@@ -146,26 +152,31 @@ public class User extends Player {
             speed = 0;
             return;
         }
-        float newXCoordinate = (float) (xCoordinate + Math.cos(angle) * velocity * MAX_SPEED);
-        float newYCoordinate = (float) (yCoordinate + Math.sin(angle) * velocity * MAX_SPEED);
-        if (Map.getSolid((int)(newXCoordinate) + (int)(playerRadius), (int)newYCoordinate)){
-            newXCoordinate -= playerRadius ;
-        }
-        if (Map.getSolid((int)(newXCoordinate) - (int)(playerRadius), (int)newYCoordinate)){
-            newXCoordinate += playerRadius + 1;
-        }
-        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate + playerRadius))){
-            newXCoordinate -= playerRadius ;
-        }
-        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate - playerRadius))){
-            newXCoordinate += playerRadius + 1;
-        }
-        speed = (float) Math.sqrt(Math.pow((newXCoordinate - xCoordinate) / MAX_SPEED, 2) + Math.pow((newYCoordinate - yCoordinate) / MAX_SPEED, 2));
-        if(xCoordinate != newXCoordinate || yCoordinate != newYCoordinate || angleChanged) {
+        newXCoordinate = (float) (xCoordinate + Math.cos(angle) * velocity * maxSpeed);
+        newYCoordinate = (float) (yCoordinate + Math.sin(angle) * velocity * maxSpeed);
+        physicEngine();
+        speed = (float) Math.sqrt(Math.pow(newXCoordinate - xCoordinate, 2) + Math.pow(newYCoordinate - yCoordinate, 2));
+        if (xCoordinate != newXCoordinate || yCoordinate != newYCoordinate) {
             xCoordinate = newXCoordinate;
             yCoordinate = newYCoordinate;
             new PlayerMotionEvent(this).send();
         }
+    }
+
+    private void physicEngine(){
+        if (Map.getSolid((int)(newXCoordinate + playerRadius), (int)newYCoordinate)){
+            newXCoordinate = (int)(newXCoordinate) - playerRadius + 1;
+        }
+        if (Map.getSolid((int)(newXCoordinate - playerRadius), (int)newYCoordinate)){
+            newXCoordinate = (int)(newXCoordinate) + playerRadius;
+        }
+        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate + playerRadius))){
+            newYCoordinate = (int)(newYCoordinate) - playerRadius + 1;
+        }
+        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate - playerRadius))){
+            newYCoordinate = (int)(newYCoordinate) + playerRadius;
+        }
+
     }
 
     private void loseWeight(){

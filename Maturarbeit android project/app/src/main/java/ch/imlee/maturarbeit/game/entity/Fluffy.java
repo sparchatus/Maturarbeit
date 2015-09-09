@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.StunEvent;
@@ -16,36 +17,29 @@ import ch.imlee.maturarbeit.views.GameSurface;
 public class Fluffy extends User {
 
     private Player focusedPlayer = null;
-    private int MAX_RANGE = 5;
     private int MANA_CONSUMPTION = MAX_MANA;
-    private final Bitmap FOCUS_BMP;
+    private final float MAX_FOCUS_RANGE = 4.0f;
 
     public Fluffy(Map map, byte team, byte playerId) {
         super(PlayerType.FLUFFY, map, team, playerId);
-        FOCUS_BMP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.focus_overlay), Map.TILE_SIDE, Map.TILE_SIDE, false);
     }
 
     @Override
     public void update() {
         super.update();
-        mana += speed / MAX_SPEED;
+        mana += speed / maxSpeed;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }
-        if (focusedPlayer != null){
-            if (Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) + Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2) > Math.pow(MAX_RANGE, 2)){
-                focusedPlayer = null;
-            }
-
+        if (focusedPlayer != null && Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) +  Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2) > Math.pow(MAX_FOCUS_RANGE, 2)){
+            focusedPlayer = null;
+            FluffyGameSurfaceController.focusedPlayerNull();
         }
     }
 
     @Override
     public Canvas render(Canvas canvas) {
         canvas =  super.render(canvas);
-        if (focusedPlayer != null) {
-            canvas.drawBitmap(FOCUS_BMP, (focusedPlayer.getXCoordinate() - xCoordinate - getPlayerRadius()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (focusedPlayer.getYCoordinate() - yCoordinate - getPlayerRadius()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
-        }
         return canvas;
     }
 
@@ -54,11 +48,15 @@ public class Fluffy extends User {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             focusedPlayer = null;
+            FluffyGameSurfaceController.focusedPlayerNull();
             mana -= MANA_CONSUMPTION;
         }
     }
 
     public void setFocusedPlayer(Player focusedPlayer){
         this.focusedPlayer = focusedPlayer;
+    }
+    public Player getFocusedPlayer(){
+        return focusedPlayer;
     }
 }

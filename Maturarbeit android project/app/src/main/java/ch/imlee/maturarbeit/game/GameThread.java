@@ -34,6 +34,7 @@ import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
+import ch.imlee.maturarbeit.views.MiniMap;
 import ch.imlee.maturarbeit.views.ParticleButton;
 import ch.imlee.maturarbeit.views.SkillButton;
 import ch.imlee.maturarbeit.activities.DeviceType;
@@ -69,13 +70,12 @@ public class GameThread extends Thread implements Tick{
     private static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
-    private static Context context;
     private static JoystickController joystickController;
     private static GameSurfaceController gameSurfaceController;
+    private static MiniMap miniMap;
 
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
-        this.context = context;
     }
     /**
      * The method called when the gameThread is started. It contains the main game loop.
@@ -86,8 +86,9 @@ public class GameThread extends Thread implements Tick{
         particleButton = GameClient.getParticleButton();
         skillButton = GameClient.getSkillButton();
         backgroundMusic = new BackgroundMusic();
-        displayLoadingScreen();
         backgroundMusic.start();
+        miniMap = GameClient.getMiniMap();
+        displayLoadingScreen();
         while(running){
             update();
             render();
@@ -102,7 +103,6 @@ public class GameThread extends Thread implements Tick{
                 synchronizedTick -= timeLeft / TIME_PER_TICK;
                 predictedDelay -= timeLeft;
                 if(predictedDelay >= 0.5){
-                    Log.d("main loop", "lag occurred");
                     //todo: request a fresh synchronizedTick
                     //todo: on receiving a new Tick, the old Data has to be reviewed
                 }
@@ -159,7 +159,7 @@ public class GameThread extends Thread implements Tick{
             synchronized (holder) {
                 if(c!=null) {
                     c.drawColor(Color.BLACK);
-                    map.render(c, user);
+                    map.render(c);
                     for(SlimeTrail slimeTrail:slimeTrailList){
                         slimeTrail.render(c);
                     }
@@ -179,7 +179,7 @@ public class GameThread extends Thread implements Tick{
                         lightBulb.render(c);
                     }
                     joystickController.render(c);
-                    map.renderMinimap(c);
+                    miniMap.render(c);
                     //todo:display pause button
                 }
             }
@@ -341,5 +341,9 @@ public class GameThread extends Thread implements Tick{
 
     public static ArrayList<SlimeTrail> getSlimeTrailList(){
         return slimeTrailList;
+    }
+
+    public static  boolean getLoading(){
+        return  loading;
     }
 }

@@ -1,5 +1,6 @@
 package ch.imlee.maturarbeit.game.Controller;
 
+import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.game.GameThread;
@@ -12,11 +13,13 @@ import ch.imlee.maturarbeit.game.map.Map;
  */
 public class GameSurfaceController {
 
-    private static User user;
-    private static double halfSurfaceWidth, halfSurfaceHeight;
-    private static ControllerState controllerState = ControllerState.NULL;
+    protected static User user;
+    protected static double halfSurfaceWidth, halfSurfaceHeight;
+    protected static ControllerState controllerState = ControllerState.NULL;
     private static boolean posChanged;
     private static double xFingerDistance, yFingerDistance;
+    protected static Player focusedPlayer;
+    protected static boolean focusChanged = false;
 
     public GameSurfaceController(User user, int surfaceWidth, int surfaceHeight) {
         this.user = user;
@@ -40,12 +43,18 @@ public class GameSurfaceController {
         }
     }
 
+    public void render(Canvas canvas){
+
+    }
+
     public static boolean onTouchEvent(MotionEvent event){
         synchronized (controllerState) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 for (Player player : GameThread.getPlayerArray()) {
                     if (Math.sqrt(Math.pow((user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE) - player.getXCoordinate(), 2) + Math.pow((user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE) - player.getYCoordinate(), 2)) < user.getPlayerRadius()) {
                         controllerState = ControllerState.FOCUS;
+                        focusedPlayer = player;
+                        focusChanged = true;
                         return false;
                     }
                 }

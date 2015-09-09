@@ -33,7 +33,7 @@ public class GameServerThread extends GameThread{
         for (Particle particle:particleList) {
             if(particle != null) {
                 // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
-                if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
+                if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_MAP_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
                     removeParticle(particle.getID());
                    continue;
                 }
@@ -42,7 +42,6 @@ public class GameServerThread extends GameThread{
                             Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
                         new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
                         player.particleHit();
-                        //remove
                         break;
                     }
                 }
@@ -74,8 +73,8 @@ public class GameServerThread extends GameThread{
         Sweet tempSweet;
         boolean possible;
         do{
-            tempX = (int)(Math.random() * (map.TILES_IN_WIDTH-map.BORDER_TILES_RIGHT*2)+map.BORDER_TILES_RIGHT);
-            tempY = (int)(Math.random() * (map.TILES_IN_HEIGHT-map.BORDER_TILES_TOP*2)+map.BORDER_TILES_TOP);
+            tempX = (int)(Math.random() * map.TILES_IN_MAP_WIDTH);
+            tempY = (int)(Math.random() * map.TILES_IN_MAP_HEIGHT);
             possible = !map.getSolid(tempX, tempY);
         }while(!possible);
         tempSweet = new Sweet(tempX, tempY, currentSweetId);

@@ -11,26 +11,27 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.views.GameSurface;
+import ch.imlee.maturarbeit.views.MiniMap;
 import ch.imlee.maturarbeit.views.ParticleButton;
 import ch.imlee.maturarbeit.views.SkillButton;
 
 public class GameClient extends Activity {
 
     private static boolean surfaceCreated = false;
-
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
     private static GameThread gameThread;
+    private static MiniMap miniMap;
     private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        Display display = getWindowManager().getDefaultDisplay();
         particleButton = (ParticleButton) findViewById(R.id.button_particle);
         skillButton = (SkillButton) findViewById(R.id.button_skill);
+        miniMap = (MiniMap) findViewById(R.id.mini_map_surface);
         context = getApplicationContext();
     }
 
@@ -76,11 +77,16 @@ public class GameClient extends Activity {
     public static ParticleButton getParticleButton() {
         return particleButton;
     }
-    public static Context getContext(){
-        return context;
-    }
 
     public static GameThread getGameThread(){
         return gameThread;
+    }
+
+    public static MiniMap getMiniMap(){
+        return miniMap;
+    }
+
+    public static Context getContext(){
+        return  context;
     }
 }

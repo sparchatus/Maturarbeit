@@ -30,7 +30,6 @@ public class JoystickController{
         halfJoystickWidth = surfaceWidth / 2;
         halfJoystickHeight = surfaceHeight / 2;
         joystickRadius = halfJoystickWidth / 3 * 2;
-        Log.i("joystickRadius", String.valueOf(joystickRadius));
         middle = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.joystick_button_middle), joystickRadius * 2, joystickRadius * 2, false);
         ring = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.joystick_button_ring), joystickRadius * 2, joystickRadius * 2, false);
     }

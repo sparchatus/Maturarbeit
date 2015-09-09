@@ -26,7 +26,12 @@
     <ch.imlee.maturarbeit.views.JoystickSurface
         android:layout_width="170dp"
         android:layout_height="fill_parent"
-        class="com.example.sandro.gametestapp.game.Controller.JoystickController"
         android:id="@+id/joystick"
         android:layout_gravity="left|bottom" />
+
+    <ch.imlee.maturarbeit.views.MiniMap
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right|top"
+        android:id="@+id/mini_map_surface"/>
 </FrameLayout>

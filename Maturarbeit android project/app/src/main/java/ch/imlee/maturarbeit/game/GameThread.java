@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -214,7 +215,7 @@ public class GameThread extends Thread implements Tick{
                             case 2:
                                 c.drawBitmap(ghost, thirdSurfaceWidth, halfSurfaceHeight, null);
                             default:
-                                c.drawText("Loading...", 0, 0, null);
+                                c.drawText("Loading...", 0, 0, new Paint());
                         }
                     }
                 }
@@ -269,6 +270,7 @@ public class GameThread extends Thread implements Tick{
          //todo: remove when created a new controller
          joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
          gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());
+         MiniMap.setup();
          if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
          } else {

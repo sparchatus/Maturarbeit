@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.User;
@@ -23,28 +25,29 @@ import ch.imlee.maturarbeit.game.map.MapDimensions;
  */
 public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapDimensions {
 
-    private int USER_COLOR = 0xffffff00;
-    private int ALLY_COLOR;
-    private int ENEMY_COLOR;
-    private SurfaceHolder holder;
-    private int width;
-    private int height;
-    private int gameSurfaceHeight;
-    private Paint miniMapPaint;
-    private Bitmap SMALL_MINI_MAP;
-    private Bitmap BIG_MINI_MAP;
-    private Bitmap CROSS;
-    private final int SMALL_ALPHA = 0xaa;
-    private final int BIG_ALPHA = 0xd0;
-    private int smallPlayerRadius, bigPlayerRadius;
-    private Paint miniMapPlayerPaint;
-    private boolean isSmall;
-    private float TILE_SIDE_SMALL_MINI_MAP;
-    private float TILE_SIDE_BIG_MINI_MAP;
-    private int SMALL_MINI_MAP_ORIGIN_X;
-    private int SMALL_MINI_MAP_ORIGIN_Y = 0;
-    private int BIG_MINI_MAP_ORIGIN_X;
-    private int BIG_MINI_MAP_ORIGIN_Y = 0;
+    private static int USER_COLOR = 0xffffff00;
+    private static int ALLY_COLOR;
+    private static int ENEMY_COLOR;
+    private static SurfaceHolder holder;
+    private static int width;
+    private static int height;
+    private static int gameSurfaceHeight;
+    private static Paint miniMapPaint;
+    private static Bitmap SMALL_MINI_MAP;
+    private static Bitmap BIG_MINI_MAP;
+    private static Bitmap CROSS;
+    private static final int SMALL_ALPHA = 0xaa;
+    private static final int BIG_ALPHA = 0xd0;
+    private static int smallPlayerRadius, bigPlayerRadius;
+    private static Paint miniMapPlayerPaint;
+    private static boolean isSmall;
+    private static float TILE_SIDE_SMALL_MINI_MAP;
+    private static float TILE_SIDE_BIG_MINI_MAP;
+    private static int SMALL_MINI_MAP_ORIGIN_X;
+    private static int SMALL_MINI_MAP_ORIGIN_Y = 0;
+    private static int BIG_MINI_MAP_ORIGIN_X;
+    private static int BIG_MINI_MAP_ORIGIN_Y = 0;
+    private static Resources resources;
 
     public MiniMap(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,14 +59,14 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         miniMapPlayerPaint.setAlpha(SMALL_ALPHA);
     }
 
-    public void setup() {
+    public static void setup() {
         isSmall = true;
         TILE_SIDE_SMALL_MINI_MAP = width / Map.TILES_IN_SCREEN_WIDTH;
         TILE_SIDE_BIG_MINI_MAP = gameSurfaceHeight / Map.TILES_IN_SCREEN_WIDTH;
         gameSurfaceHeight = GameSurface.getSurfaceHeight();
         SMALL_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), width, height, false);
         BIG_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), gameSurfaceHeight, gameSurfaceHeight, false);
-        CROSS = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cross), 1, 1, false);
+        CROSS = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.cross), 1, 1, false);
         if (GameThread.getUser().TEAM == 0) {
             ALLY_COLOR = 0xff0000ff;
             ENEMY_COLOR = 0xff00ff00;
@@ -83,6 +86,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         invalidate();
         width = getWidth();
         height = getHeight();
+        resources = getResources();
     }
 
     @Override
@@ -131,7 +135,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         }
     }
 
-    public void makeBIg() {
+    public void makeBig() {
         isSmall = false;
         miniMapPlayerPaint.setAlpha(BIG_ALPHA);
         miniMapPaint.setAlpha(BIG_ALPHA);
@@ -149,7 +153,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
             return false;
         }
         if (isSmall) {
-            makeBIg();
+            makeBig();
         } else {
             makeSmall();
         }

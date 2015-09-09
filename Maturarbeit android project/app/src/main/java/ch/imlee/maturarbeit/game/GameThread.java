@@ -90,6 +90,7 @@ public class GameThread extends Thread implements Tick{
         backgroundMusic.start();
         miniMap = GameClient.getMiniMap();
         displayLoadingScreen();
+        miniMap.setup();
         while(running){
             update();
             render();
@@ -197,6 +198,8 @@ public class GameThread extends Thread implements Tick{
         int thirdSurfaceWidth = GameSurface.getSurfaceWidth() / 3;
         int ninthSurfaceWidth = thirdSurfaceWidth / 3;
         Bitmap fluffy, slime, ghost;
+        Paint textPaint = new Paint();
+        textPaint.setColor(0xffffffff);
         fluffy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), ninthSurfaceWidth, ninthSurfaceWidth, false);
         slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
         ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
@@ -215,7 +218,7 @@ public class GameThread extends Thread implements Tick{
                             case 2:
                                 c.drawBitmap(ghost, thirdSurfaceWidth, halfSurfaceHeight, null);
                             default:
-                                c.drawText("Loading...", 0, 0, new Paint());
+                                c.drawText("Loading...", 0, 0, textPaint);
                         }
                     }
                 }

@@ -201,7 +201,6 @@ public class User extends Player {
         if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate - playerRadius))){
             newYCoordinate = (int)(newYCoordinate) + playerRadius;
         }
-
     }
 
     private void loseWeight(){

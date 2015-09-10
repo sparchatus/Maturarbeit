@@ -109,11 +109,11 @@ public class Map implements MapDimensions {
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][1] = y + 0.5f;
                     greenCoordinateDistributionIndex++;
                 }else if (pixelMap.getPixel(x, y) == 0xffffff00){
-                    TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, true, (byte) 0);
+                    TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, (byte) 0);
                     blueLightBulbStandArray[blueLightBulbStandDistributionIndex] = (LightBulbStand)TILE_MAP[x][y];
                     blueLightBulbStandDistributionIndex++;
                 }else if (pixelMap.getPixel(x, y) == 0xffffff01){
-                    TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, true, (byte) 1);
+                    TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, (byte) 1);
                     greenLightBulbStandArray[greenLightBulbStandDistributionIndex] = (LightBulbStand) TILE_MAP[x][y];
                     greenLightBulbStandDistributionIndex++;
                 }else{

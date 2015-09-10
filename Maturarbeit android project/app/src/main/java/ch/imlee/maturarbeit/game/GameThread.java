@@ -184,12 +184,13 @@ public class GameThread extends Thread implements Tick{
                         miniMap.render(c);
                         //todo:display pause button
                     } else{
+                        c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());
                         Paint textPaint = new Paint();
                         textPaint.setTextSize(64);
                         textPaint.setColor(0xffffffff);
-                        c.drawText("YOU ARE DEAD", 20, 20, textPaint);
+                        c.drawText("YOU ARE DEAD", 20, 120, textPaint);
                         textPaint.setTextSize(20);
-                        c.drawText("Respawn in " + (int)(getUser().reviveTick - getSynchronizedTick())/TICK + " seconds", 20, 100, textPaint);
+                        c.drawText("Respawn in " + (int)(getUser().reviveTick - getSynchronizedTick())/TICK + " seconds", 20, 200, textPaint);
                     }
                 }
             }

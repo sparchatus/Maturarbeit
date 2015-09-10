@@ -17,6 +17,7 @@ public class GameActionEvent extends Event {
         switch(eventString.charAt(1)){
             case 'B': return new LightBulbEvent(eventString);
             case 'C': return new LightBulbServerEvent(eventString);
+            case 'D': return new DeathEvent(eventString);
             case 'H': return new ParticleHitEvent(eventString);
             case 'I': return new InvisibilityEvent(eventString);
             case 'L': return new SlimeEvent(eventString);

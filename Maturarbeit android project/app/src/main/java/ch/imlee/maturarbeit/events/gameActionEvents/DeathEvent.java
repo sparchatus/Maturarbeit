@@ -14,13 +14,13 @@ public class DeathEvent extends GameActionEvent {
         DEAD = dead;
     }
     public DeathEvent(String eventString){
-        DEAD = 0 == (Integer.parseInt(eventString.substring(2,3)));
+        DEAD = 0 == (Integer.parseInt(eventString.substring(3,4)));
         senderID = Byte.parseByte(eventString.substring(eventString.indexOf('i')));
     }
 
     @Override
     public String toString(){
-        return super.toString() + ((DEAD) ? 1 : 0) + 'i' + senderID;
+        return super.toString()+ 'D' + ((DEAD) ? 1 : 0) + 'i' + senderID;
     }
     @Override
     public void apply(){

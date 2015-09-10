@@ -38,8 +38,8 @@ public class User extends Player {
     protected final float SLOW_AMOUNT = 1 / 2f;
     protected LightBulb pickUpBulb = null;
 
-    private final float MIN_RADIUS = playerRadius;
-    private final float MAX_RADIUS = playerRadius *3;
+    private final float MIN_RADIUS = startRadius;
+    private final float MAX_RADIUS = startRadius *3;
     private final float RADIUS_CHANGE = 0.2f;
     private double lastWeightLoss = 0;
     private int weightLossCooldown = Tick.TICK * 3;
@@ -88,8 +88,8 @@ public class User extends Player {
                 move();
                 if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()] instanceof VoidTile) {
                     //// TODO: 09.09.2015 if there is a 2*2 field (or bigger) of void tiles, you should be able to fall down if you have a radius >0.5 
-                    if (xCoordinate % 1 >= playerRadius && xCoordinate + playerRadius <= (int) xCoordinate + 1 &&
-                            yCoordinate % 1 >= playerRadius && yCoordinate + playerRadius <= (int) yCoordinate + 1) {
+                    if (xCoordinate % 1 >= 0.8f * playerRadius && xCoordinate + 0.8f * playerRadius <= (int) xCoordinate + 1 &&
+                            yCoordinate % 1 >= 0.8f * playerRadius && yCoordinate + 0.8f * playerRadius <= (int) yCoordinate + 1) {
                         falling = true;
                     }
                 }

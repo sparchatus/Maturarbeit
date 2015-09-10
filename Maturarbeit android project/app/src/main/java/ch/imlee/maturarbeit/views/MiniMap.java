@@ -26,8 +26,8 @@ import ch.imlee.maturarbeit.game.map.MapDimensions;
 public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapDimensions {
 
     private static int USER_COLOR = 0xffffff00;
-    private static int ALLY_COLOR;
-    private static int ENEMY_COLOR;
+    private static int ALLY_COLOR = 0xff0000ff;
+    private static int ENEMY_COLOR = 0xff00ff00;
     private static SurfaceHolder holder;
     private static int width;
     private static int height;
@@ -66,7 +66,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         gameSurfaceHeight = GameSurface.getSurfaceHeight();
         SMALL_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), width, height, false);
         BIG_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), gameSurfaceHeight, gameSurfaceHeight, false);
-        CROSS = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.cross), 1, 1, false);
+        CROSS = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.cross), width, height, false);
         if (GameThread.getUser().TEAM == 0) {
             ALLY_COLOR = 0xff0000ff;
             ENEMY_COLOR = 0xff00ff00;
@@ -93,8 +93,8 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("MiniMapSurface", "Surface changed.");
         invalidate();
-        this.width = getWidth();
-        this.height = getHeight();
+        width = getWidth();
+        height = getHeight();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
                     if (player.getInvisible()) break;
                     miniMapPlayerPaint.setColor(ENEMY_COLOR);
                 }
-                canvas.drawCircle(BIG_MINI_MAP_ORIGIN_X, BIG_MINI_MAP_ORIGIN_Y, bigPlayerRadius, miniMapPlayerPaint);
+                canvas.drawCircle(BIG_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_BIG_MINI_MAP, BIG_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_BIG_MINI_MAP, bigPlayerRadius, miniMapPlayerPaint);
             }
         }
     }

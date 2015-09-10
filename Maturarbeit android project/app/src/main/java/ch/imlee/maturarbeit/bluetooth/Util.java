@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.events.Event;
 import ch.imlee.maturarbeit.events.EventHandler;
 
@@ -36,8 +37,12 @@ public class Util{
                     .create()
                     .show();
 
-        }
-        else {
+        } else {
+            try {
+                StartActivity.usernameEditText.setText(Util.ba.getName());
+            } catch(Exception e){
+                e.printStackTrace();
+            }
             //to close all current connections, restart the adapter
             ba.disable();
             while(ba.getState() != BluetoothAdapter.STATE_OFF){
@@ -68,7 +73,6 @@ public class Util{
         try {
             outputStream.write(text.getBytes());
             //outputStream.flush();
-            Log.v("bluetooth", "sent String: " + text);
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);

@@ -81,7 +81,6 @@ public class StartActivity extends AppCompatActivity {
         registerReceiver(finishReceiver, new IntentFilter("finish"));
 
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
-        Util.initBluetooth(StartActivity.this);
         // making objects of the Views from activity_test.xml to manipulate them
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         listView = (ListView) this.findViewById(R.id.listView);
@@ -96,11 +95,8 @@ public class StartActivity extends AppCompatActivity {
         usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
         usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
         // this is needed because the AlertDialog from the Util.initBluetooth() method is shown in a new thread, so it's possible that Util.ba is null
-        try {
-            usernameEditText.setText(Util.ba.getName());
-        } catch(Exception e){
-            e.printStackTrace();
-        }
+
+        Util.initBluetooth(StartActivity.this);
 
         // used in the onBackPressed() method
         //buttonPressed = true;

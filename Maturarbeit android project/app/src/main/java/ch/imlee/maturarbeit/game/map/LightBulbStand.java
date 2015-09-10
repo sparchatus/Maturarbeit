@@ -11,8 +11,8 @@ public class LightBulbStand extends Tile {
 
     private boolean isFree;
 
-    public LightBulbStand(int xCoordinate, int yCoordinate, Bitmap bmp, boolean solid, byte team) {
-        super(bmp, solid);
+    public LightBulbStand(int xCoordinate, int yCoordinate, Bitmap bmp, byte team) {
+        super(bmp, true, false);
         TEAM = team;
         CENTER_X = xCoordinate + 0.5f;
         CENTER_Y = yCoordinate + 0.5f;

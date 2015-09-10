@@ -3,7 +3,6 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -16,7 +15,6 @@ import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
-import ch.imlee.maturarbeit.game.map.VoidTile;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
@@ -86,7 +84,7 @@ public class User extends Player {
         if(!dead) {
             if (!falling) {
                 move();
-                if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()] instanceof VoidTile) {
+                if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()].FALL_THROUGH) {
                     //// TODO: 09.09.2015 if there is a 2*2 field (or bigger) of void tiles, you should be able to fall down if you have a radius >0.5 
                     if (xCoordinate % 1 >= 0.8f * playerRadius && xCoordinate + 0.8f * playerRadius <= (int) xCoordinate + 1 &&
                             yCoordinate % 1 >= 0.8f * playerRadius && yCoordinate + 0.8f * playerRadius <= (int) yCoordinate + 1) {

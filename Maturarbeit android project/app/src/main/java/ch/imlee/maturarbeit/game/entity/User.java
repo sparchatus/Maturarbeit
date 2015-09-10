@@ -58,7 +58,7 @@ public class User extends Player {
     protected boolean angleChanged;
     protected float mana;
 
-    //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update, angle os the angle from the last update
+    //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update
     protected float velocity, speed;
     protected Map map;
 

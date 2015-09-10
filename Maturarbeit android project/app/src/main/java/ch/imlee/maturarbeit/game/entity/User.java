@@ -15,6 +15,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.utils.Vector2D;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
@@ -48,7 +49,7 @@ public class User extends Player {
     protected boolean shooting;
 
     protected int pickUpTickCount;
-    private float newXCoordinate, newYCoordinate;
+    protected Vector2D newPosition;
     protected float maxSpeed = 4f / Tick.TICK;
 
     protected double particleCoolDownTick;
@@ -177,29 +178,177 @@ public class User extends Player {
             speed = 0;
             return;
         }
-        newXCoordinate = (float) (xCoordinate + Math.cos(angle) * velocity * maxSpeed);
-        newYCoordinate = (float) (yCoordinate + Math.sin(angle) * velocity * maxSpeed);
+        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * velocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * velocity * maxSpeed));
         physicEngine();
-        speed = (float) Math.sqrt(Math.pow(newXCoordinate - xCoordinate, 2) + Math.pow(newYCoordinate - yCoordinate, 2));
-        if (xCoordinate != newXCoordinate || yCoordinate != newYCoordinate) {
-            xCoordinate = newXCoordinate;
-            yCoordinate = newYCoordinate;
-            new PlayerMotionEvent(this).send();
+        if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
+            xCoordinate = newPosition.x;
+            yCoordinate = newPosition.y;
+            //todo:send player motion event
         }
     }
 
     private void physicEngine(){
-        if (Map.getSolid((int)(newXCoordinate + playerRadius), (int)newYCoordinate)){
-            newXCoordinate = (int)(newXCoordinate) - playerRadius + 1;
+        if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
+            newPosition.x = (int) (newPosition.x) - playerRadius + 1;
         }
-        if (Map.getSolid((int)(newXCoordinate - playerRadius), (int)newYCoordinate)){
-            newXCoordinate = (int)(newXCoordinate) + playerRadius;
+        if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
+            newPosition.x = newPosition.xIntPos() + playerRadius;
         }
-        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate + playerRadius))){
-            newYCoordinate = (int)(newYCoordinate) - playerRadius + 1;
+        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
+            newPosition.y = newPosition.yIntPos() - playerRadius + 1;
         }
-        if (Map.getSolid((int)newXCoordinate, (int)(newYCoordinate - playerRadius))){
-            newYCoordinate = (int)(newYCoordinate) + playerRadius;
+        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
+            newPosition.y = newPosition.yIntPos() + playerRadius;
+        }
+        Vector2D tempVec;
+        float l;
+        //bottom right quadrant
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() + 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() + 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        //top right quadrant
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() - 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() - 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        //top left quadrant
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() - 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() - 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        //bottom left quadrant
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() + 1)) {
+            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
+        }
+        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() + 2)) {
+            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
+            l = (float) tempVec.getLength();
+            if (l < playerRadius) {
+                tempVec.scaleTo(playerRadius - l);
+                newPosition.x += tempVec.x;
+                newPosition.y += tempVec.y;
+            }
         }
     }
 

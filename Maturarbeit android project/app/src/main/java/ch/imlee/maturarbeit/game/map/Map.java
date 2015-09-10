@@ -19,7 +19,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class Map implements MapDimensions {
     public static int TILE_SIDE;
-    public final int TILES_IN_MAP_WIDTH, TILES_IN_MAP_HEIGHT;
+    public static int TILES_IN_MAP_WIDTH, TILES_IN_MAP_HEIGHT;
     private static float[][] playerStartCoordinates = new float[8][2];
     private static int blueCoordinateDistributionIndex;
     private static int greenCoordinateDistributionIndex;
@@ -124,7 +124,7 @@ public class Map implements MapDimensions {
     }
 
     public static boolean getSolid(int xTileCoordinate, int yTileCoordinate){
-        if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILES_IN_SCREEN_WIDTH|| yTileCoordinate >= TILES_IN_SCREEN_HEIGHT) {
+        if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILES_IN_MAP_WIDTH|| yTileCoordinate >= TILES_IN_MAP_HEIGHT) {
             return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
         }
         return false;

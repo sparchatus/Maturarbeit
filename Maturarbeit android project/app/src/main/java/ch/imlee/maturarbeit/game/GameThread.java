@@ -326,7 +326,7 @@ public class GameThread extends Thread implements Tick{
 
     public static void addSlimeTrail(SlimeTrail slimeTrail){
         slimeTrailList.add(slimeTrail);
-        Log.d("slime", "SlimeTrail added");
+        Log.v("slime", "SlimeTrail added");
     }
 
     /**

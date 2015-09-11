@@ -36,12 +36,13 @@ public class GameServerThread extends GameThread{
                 // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
                 if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_MAP_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
                     removeParticle(particle.getID());
-                   continue;
+                    new ParticleHitEvent(particle.getID(), (byte)-1).send();
+                    continue;
                 }
                 for (Player player : playerArray) {
                     if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
                             Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
-                        new ParticleHitEvent(particle.getID(), player.getID(), user.getID()).send();
+                        new ParticleHitEvent(particle.getID(), player.getID()).send();
                         player.particleHit();
                         break;
                     }

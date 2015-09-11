@@ -18,8 +18,8 @@ public class ParticleHitEvent extends GameActionEvent{
         PLAYER_HIT_ID = Byte.valueOf(eventString.substring(eventString.indexOf("h") + 1, eventString.indexOf("i")));
     }
 
-    public ParticleHitEvent(int particleID, byte playerHitID, byte serverID){
-        super(serverID);
+    public ParticleHitEvent(int particleID, byte playerHitID){
+        super((byte)0);
         PARTICLE_ID = particleID;
         PLAYER_HIT_ID = playerHitID;
     }

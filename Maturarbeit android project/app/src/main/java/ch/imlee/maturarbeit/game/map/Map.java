@@ -124,10 +124,10 @@ public class Map implements MapDimensions {
     }
 
     public static boolean getSolid(int xTileCoordinate, int yTileCoordinate){
-        if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILES_IN_MAP_WIDTH|| yTileCoordinate >= TILES_IN_MAP_HEIGHT) {
-            return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
+        if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILE_MAP.length || yTileCoordinate >= TILE_MAP[0].length) {
+            return false;
         }
-        return false;
+        return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }
 
     public static float getStartX(byte team) {

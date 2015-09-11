@@ -25,11 +25,11 @@ public class ParticleServerEvent extends GameActionEvent{
     }
     public ParticleServerEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
-        X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("x") + 1, eventString.indexOf("y")));
-        Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf("y") + 1, eventString.indexOf("t")));
-        TEAM = Byte.valueOf(eventString.substring(eventString.indexOf("t") + 1, eventString.indexOf("a")));
-        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf("a") + 1, eventString.indexOf('s')));
-        SPAWN_TICK = Double.valueOf(eventString.substring(eventString.indexOf("s") + 1, eventString.indexOf("i")));
+        X_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf('x') + 1, eventString.indexOf('y')));
+        Y_COORDINATE = Float.valueOf(eventString.substring(eventString.indexOf('y') + 1, eventString.indexOf('t')));
+        TEAM = Byte.valueOf(eventString.substring(eventString.indexOf('t') + 1, eventString.indexOf('a')));
+        ANGLE = Float.valueOf(eventString.substring(eventString.indexOf('a') + 1, eventString.indexOf('s')));
+        SPAWN_TICK = Double.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
     }
 
     public String toString(){

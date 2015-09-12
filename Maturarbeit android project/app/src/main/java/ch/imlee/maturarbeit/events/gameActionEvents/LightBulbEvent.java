@@ -1,5 +1,12 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
+import java.io.OutputStream;
+
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.bluetooth.Client;
+import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /**
@@ -30,6 +37,18 @@ public class LightBulbEvent extends GameActionEvent{
         super(playerID);
         LIGHT_BULB_ID =lightBulbID;
         PICKED_UP = false;
+    }
+
+    @Override
+    public void send(){
+        // this has to be overwritten because the sender has to receive it again
+        if(StartActivity.deviceType == DeviceType.CLIENT){
+            Util.sendString(Client.outputStream, this.toString() + '|');
+        } else {
+            for(OutputStream outputStream : Host.outputStreams){
+                Util.sendString(outputStream, this.toString() + '|');
+            }
+        }
     }
 
     @Override

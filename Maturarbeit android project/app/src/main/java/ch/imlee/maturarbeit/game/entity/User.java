@@ -166,8 +166,6 @@ public class User extends Player {
     }
 
     private void move() {
-        //TODO better hit boxes with walls
-        //TODO players can fall out of the world
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
             if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= playerRadius + SlimeTrail.TRAIL_RADIUS){
                 velocity*= SLOW_AMOUNT;
@@ -183,7 +181,7 @@ public class User extends Player {
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
-            //todo:send player motion event
+            new PlayerMotionEvent(this).send();
         }
     }
 

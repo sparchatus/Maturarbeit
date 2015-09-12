@@ -32,6 +32,7 @@ import ch.imlee.maturarbeit.events.Event;
 import ch.imlee.maturarbeit.events.EventReceiver;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
@@ -69,6 +70,7 @@ public class GameThread extends Thread implements Tick{
     public static ArrayList<Sweet> sweets = new ArrayList<>();
     public static Set<Integer> sweetsToRemove = new HashSet<>();
     private static LightBulb[] lightBulbArray;
+    private static LightBulbStand[] lightBulbStandArray;
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
     private static JoystickController joystickController;
@@ -288,6 +290,7 @@ public class GameThread extends Thread implements Tick{
          lightBulbArray = new LightBulb[2];
          lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
          lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
+
          //todo: remove when created a new controller
          joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
          gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());

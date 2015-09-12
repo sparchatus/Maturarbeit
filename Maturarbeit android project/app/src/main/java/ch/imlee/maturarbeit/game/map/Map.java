@@ -29,8 +29,8 @@ public class Map implements MapDimensions {
     public static Tile[][] TILE_MAP;
     private Tile voidTile, groundTile, wallTile, greenBaseTile, blueBaseTile, spawnTile;
     private static Bitmap pixelMap;
-    private static LightBulbStand[] blueLightBulbStandArray = new LightBulbStand[2];
-    private static LightBulbStand[] greenLightBulbStandArray = new LightBulbStand[2];
+    public static LightBulbStand[] blueLightBulbStandArray = new LightBulbStand[2];
+    public static LightBulbStand[] greenLightBulbStandArray = new LightBulbStand[2];
     private Bitmap currentBmp;
 
     public Map(Resources rec, int pixelMapID) {

@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
@@ -13,6 +14,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
+import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.utils.Vector2D;
@@ -131,6 +133,10 @@ public class User extends Player {
                     }
                 }
                 if (flagPossessed) {
+                    if(GameThread.getLightBulbArray()[TEAM].getLightBulbStandTeam() == TEAM && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2) + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= PICK_UP_RANGE){
+                        new GameWinEvent(TEAM).send();
+                        new GameWinEvent(TEAM).apply();
+                    }
                     strength++;
                     if (strength >= MAX_STRENGTH) {
                         strength = MAX_STRENGTH;

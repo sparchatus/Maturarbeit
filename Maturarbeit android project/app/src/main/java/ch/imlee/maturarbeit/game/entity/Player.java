@@ -129,10 +129,8 @@ public class Player extends Entity implements Tick {
 
     protected void death(){
         new DeathEvent(true).send();
-        setCoordinates(Map.getStartX(TEAM), Map.getStartY(TEAM));
-        dead = true;
+        new DeathEvent(true).apply();
         reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
-        if(possessedLightBulb != null) bulbLost();
         setPlayerRadius(startRadius);
         new RadiusChangedEvent(startRadius).send();
     }
@@ -183,11 +181,15 @@ public class Player extends Entity implements Tick {
         strength = MAX_STRENGTH;
         lightBulb = GameThread.getLightBulbArray() [bulbID];
         lightBulb.setPossessor(this);
+        flagPossessed = true;
     }
 
     public void bulbLost(){
-        lightBulb.fallOnFloor();
-        lightBulb = null;
+        if(lightBulb != null) {
+            lightBulb.fallOnFloor();
+            lightBulb = null;
+            flagPossessed = false;
+        }
     }
 
     protected void putOnLightBulbStand(LightBulbStand lightBulbStand){

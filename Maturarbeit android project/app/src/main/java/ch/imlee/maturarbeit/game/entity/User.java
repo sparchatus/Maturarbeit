@@ -133,7 +133,9 @@ public class User extends Player {
                     }
                 }
                 if (flagPossessed) {
-                    if(GameThread.getLightBulbArray()[TEAM].getLightBulbStandTeam() == TEAM && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2) + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= PICK_UP_RANGE){
+                    if(GameThread.getLightBulbArray()[TEAM].getLightBulbStandTeam() == TEAM
+                            && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2)
+                            + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= Math.pow(PICK_UP_RANGE, 2)){
                         new GameWinEvent(TEAM).send();
                         new GameWinEvent(TEAM).apply();
                     }
@@ -358,7 +360,7 @@ public class User extends Player {
 
     private void loseWeight(){
         float oldRadius = playerRadius;
-        setPlayerRadius(getPlayerRadius()-RADIUS_CHANGE);
+        setPlayerRadius(getPlayerRadius() - RADIUS_CHANGE);
         if(getPlayerRadius() < MIN_RADIUS){
             setPlayerRadius(MIN_RADIUS);
         }
@@ -392,8 +394,10 @@ public class User extends Player {
 
     @Override
     public void bulbLost() {
-        new LightBulbEvent(possessedLightBulb.ID, ID).send();
-        super.bulbLost();
+        if(possessedLightBulb != null) {
+            new LightBulbEvent(possessedLightBulb.ID, ID).send();
+            super.bulbLost();
+        }
     }
 
     public void angleHasChanged(){

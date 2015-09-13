@@ -133,10 +133,10 @@ public class Map implements MapDimensions {
     public static float getStartX(byte team) {
         if (team == 0){
             blueCoordinateDistributionIndex++;
-            return playerStartCoordinates[blueCoordinateDistributionIndex][0];
+            return playerStartCoordinates[(blueCoordinateDistributionIndex) % 8][0];
         }else {
             greenCoordinateDistributionIndex++;
-            return playerStartCoordinates[greenCoordinateDistributionIndex + 4][0];
+            return playerStartCoordinates[(greenCoordinateDistributionIndex + 4) % 8][0];
         }
     }
 

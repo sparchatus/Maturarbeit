@@ -9,12 +9,13 @@ import ch.imlee.maturarbeit.game.map.Map;
  */
 public class DeathEvent extends GameActionEvent {
     private final boolean DEAD;
+
     public DeathEvent(boolean dead){
         super(GameThread.getUser().getID());
         DEAD = dead;
     }
     public DeathEvent(String eventString){
-        DEAD = 0 == (Integer.parseInt(eventString.substring(3,4)));
+        DEAD = (1 == (Integer.parseInt(eventString.substring(3,4))));
         senderID = Byte.parseByte(eventString.substring(eventString.indexOf('i')));
     }
 
@@ -28,6 +29,7 @@ public class DeathEvent extends GameActionEvent {
         player.setDead(DEAD);
         if(DEAD){
             player.setCoordinates(Map.getStartX(player.TEAM), Map.getStartY(player.TEAM));
+            player.bulbLost();
         }
     }
 }

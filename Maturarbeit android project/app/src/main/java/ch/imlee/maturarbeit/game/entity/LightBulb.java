@@ -66,7 +66,10 @@ public class LightBulb extends Entity{
     public void fallOnFloor(){
         pickable = true;
         possessor = null;
-        lightBulbStandTeam = -1;
+        lightBulbStandTeam = ID;
+        // TODO: maybe not optimal, lightbulb just gets teleported to stand that way
+        xCoordinate = Map.getFriendlyLightBulbStands(ID)[0].CENTER_X;
+        yCoordinate = Map.getFriendlyLightBulbStands(ID)[0].CENTER_Y;
         //todo:check if landed on a impossible location?
     }
 
@@ -94,7 +97,7 @@ public class LightBulb extends Entity{
         return pickable;
     }
 
-    public int getID(){
+    public byte getID(){
         return ID;
     }
 }

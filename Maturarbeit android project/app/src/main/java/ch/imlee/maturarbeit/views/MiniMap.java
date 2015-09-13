@@ -25,7 +25,7 @@ import ch.imlee.maturarbeit.game.map.MapDimensions;
  */
 public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapDimensions {
 
-    private static int USER_COLOR = 0xffffff00;
+    private static int USER_COLOR = 0xffff00ff;
     private static int ALLY_COLOR = 0xff0000ff;
     private static int ENEMY_COLOR = 0xff00ff00;
     private static SurfaceHolder holder;
@@ -36,9 +36,8 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     private static Bitmap SMALL_MINI_MAP;
     private static Bitmap BIG_MINI_MAP;
     private static Bitmap CROSS;
-    private static final int SMALL_ALPHA = 0xaa;
-    private static final int BIG_ALPHA = 0xd0;
-    private static int smallPlayerRadius, bigPlayerRadius;
+    private static final int SMALL_ALPHA = 0xcc;
+    private static final int BIG_ALPHA = 0xee;
     private static Paint miniMapPlayerPaint;
     private static boolean isSmall;
     private static float TILE_SIDE_SMALL_MINI_MAP;
@@ -56,14 +55,13 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         miniMapPaint = new Paint();
         miniMapPaint.setAlpha(SMALL_ALPHA);
         miniMapPlayerPaint = new Paint();
-        miniMapPlayerPaint.setAlpha(SMALL_ALPHA);
     }
 
     public static void setup() {
         isSmall = true;
-        TILE_SIDE_SMALL_MINI_MAP = width / Map.TILES_IN_SCREEN_WIDTH;
-        TILE_SIDE_BIG_MINI_MAP = gameSurfaceHeight / Map.TILES_IN_SCREEN_WIDTH;
         gameSurfaceHeight = GameSurface.getSurfaceHeight();
+        TILE_SIDE_SMALL_MINI_MAP = width / 1f / Map.TILES_IN_MAP_WIDTH;
+        TILE_SIDE_BIG_MINI_MAP = gameSurfaceHeight / 1f / Map.TILES_IN_MAP_WIDTH;
         SMALL_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), width, height, false);
         BIG_MINI_MAP = Bitmap.createScaledBitmap(Map.getPixelMap(), gameSurfaceHeight, gameSurfaceHeight, false);
         CROSS = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.cross), width, height, false);
@@ -76,8 +74,6 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
         }
         SMALL_MINI_MAP_ORIGIN_X = GameSurface.getSurfaceWidth() - width;
         BIG_MINI_MAP_ORIGIN_X = (GameSurface.getSurfaceWidth() - gameSurfaceHeight) / 2;
-        smallPlayerRadius = (int) (GameThread.getUser().getPlayerRadius() * TILE_SIDE_SMALL_MINI_MAP);
-        bigPlayerRadius = (int) (GameThread.getUser().getPlayerRadius() * TILE_SIDE_BIG_MINI_MAP);
     }
 
     @Override
@@ -93,8 +89,8 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.i("MiniMapSurface", "Surface changed.");
         invalidate();
-        width = getWidth();
-        height = getHeight();
+        this.width = getWidth();
+        this.height = getHeight();
     }
 
     @Override
@@ -103,7 +99,6 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
     }
 
     public void render(Canvas canvas) {
-        //Todo:make it look better, ad player render and touch event
         User user = GameThread.getUser();
         if (isSmall) {
             canvas.drawBitmap(SMALL_MINI_MAP, SMALL_MINI_MAP_ORIGIN_X, SMALL_MINI_MAP_ORIGIN_Y, miniMapPaint);
@@ -116,8 +111,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
                     if (player.getInvisible()) break;
                     miniMapPlayerPaint.setColor(ENEMY_COLOR);
                 }
-                canvas.drawCircle(SMALL_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_SMALL_MINI_MAP, SMALL_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_SMALL_MINI_MAP, smallPlayerRadius, miniMapPlayerPaint);
-            }
+                canvas.drawCircle(SMALL_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_SMALL_MINI_MAP, SMALL_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_SMALL_MINI_MAP, player.getPlayerRadius() * TILE_SIDE_SMALL_MINI_MAP, miniMapPlayerPaint);            }
         } else {
             canvas.drawBitmap(BIG_MINI_MAP, BIG_MINI_MAP_ORIGIN_X, BIG_MINI_MAP_ORIGIN_Y, miniMapPaint);
             canvas.drawBitmap(CROSS, SMALL_MINI_MAP_ORIGIN_X, SMALL_MINI_MAP_ORIGIN_Y, null);
@@ -130,7 +124,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback, MapD
                     if (player.getInvisible()) break;
                     miniMapPlayerPaint.setColor(ENEMY_COLOR);
                 }
-                canvas.drawCircle(BIG_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_BIG_MINI_MAP, BIG_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_BIG_MINI_MAP, bigPlayerRadius, miniMapPlayerPaint);
+                canvas.drawCircle(BIG_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_BIG_MINI_MAP, BIG_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_BIG_MINI_MAP, player.getPlayerRadius() * TILE_SIDE_BIG_MINI_MAP, miniMapPlayerPaint);
             }
         }
     }

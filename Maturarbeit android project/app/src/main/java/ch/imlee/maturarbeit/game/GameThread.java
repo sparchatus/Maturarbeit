@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,6 +60,8 @@ public class GameThread extends Thread implements Tick{
 
     private static double synchronizedTick;
     private static double predictedDelay;
+    private static boolean gameRunning = true;
+    private static byte winningTeam = -1;
 
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
@@ -161,38 +165,51 @@ public class GameThread extends Thread implements Tick{
             c = holder.lockCanvas(null);
             synchronized (holder) {
                 if(c!=null) {
-                    if(!getUser().getDead()) {
-                        c.drawColor(Color.BLACK);
-                        map.render(c);
-                        for (SlimeTrail slimeTrail : slimeTrailList) {
-                            slimeTrail.render(c);
-                        }
-                        for (Sweet sweet : sweets) {
-                            sweet.render(c);
-                        }
-                        for (Particle particle : particleList) {
-                            if (particle != null) {
-                                particle.render(c);
+                    if(gameRunning) {
+                        if (!getUser().getDead()) {
+                            c.drawColor(Color.BLACK);
+                            map.render(c);
+                            for (SlimeTrail slimeTrail : slimeTrailList) {
+                                slimeTrail.render(c);
                             }
-                        }
-                        for (Player player : playerArray) {
-                            player.render(c);
-                        }
+                            for (Sweet sweet : sweets) {
+                                sweet.render(c);
+                            }
+                            for (Particle particle : particleList) {
+                                if (particle != null) {
+                                    particle.render(c);
+                                }
+                            }
+                            for (Player player : playerArray) {
+                                player.render(c);
+                            }
 
-                        for (LightBulb lightBulb : lightBulbArray) {
-                            lightBulb.render(c);
+                            for (LightBulb lightBulb : lightBulbArray) {
+                                lightBulb.render(c);
+                            }
+                            joystickController.render(c);
+                            miniMap.render(c);
+                            //todo:display pause button
+                        } else {
+                            c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());
+                            Paint textPaint = new Paint();
+                            textPaint.setTextSize(64);
+                            textPaint.setColor(0xffffffff);
+                            c.drawText("YOU ARE DEAD", 20, 120, textPaint);
+                            textPaint.setTextSize(20);
+                            c.drawText("Respawn in " + (int) (getUser().reviveTick - getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
                         }
-                        joystickController.render(c);
-                        miniMap.render(c);
-                        //todo:display pause button
-                    } else{
+                    } else {
                         c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());
-                        Paint textPaint = new Paint();
-                        textPaint.setTextSize(64);
-                        textPaint.setColor(0xffffffff);
-                        c.drawText("YOU ARE DEAD", 20, 120, textPaint);
-                        textPaint.setTextSize(20);
-                        c.drawText("Respawn in " + (int)(getUser().reviveTick - getSynchronizedTick())/TICK + " seconds", 20, 200, textPaint);
+                        Paint paint = new Paint();
+                        paint.setTextSize(64);
+                        paint.setColor(0xffffffff);
+                        c.drawText("Game Finished!", 10, 10 + paint.getTextSize(), paint);
+                        if(winningTeam == 0){
+                            c.drawText("Team Green won!", 10, 20 + 2*paint.getTextSize(), paint);
+                        } else if(winningTeam == 1){
+                            c.drawText("Team Blue won!", 10, 20 + 2*paint.getTextSize(), paint);
+                        }
                     }
                 }
             }
@@ -327,7 +344,7 @@ public class GameThread extends Thread implements Tick{
         playerArray[playerID].particleHit();
     }
 
-    public static void addSlimeTrail(SlimeTrail slimeTrail){
+    public static void addSlimeTrail(SlimeTrail slimeTrail) {
         slimeTrailList.add(slimeTrail);
         Log.v("slime", "SlimeTrail added");
     }
@@ -371,5 +388,13 @@ public class GameThread extends Thread implements Tick{
 
     public static  boolean getLoading(){
         return  loading;
+    }
+
+    public static void setGameRunning(boolean gameRunning1){
+        gameRunning = gameRunning1;
+    }
+
+    public static void setWinningTeam(byte team){
+        winningTeam = team;
     }
 }

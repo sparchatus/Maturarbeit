@@ -1,7 +1,11 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import android.util.Log;
+import android.view.View;
 
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /**
@@ -24,5 +28,10 @@ public class GameWinEvent extends GameActionEvent {
     @Override
     public void apply(){
         Log.i("game ended", "Team " + TEAM + " won!");
+        GameThread.setGameRunning(false);
+        GameThread.setWinningTeam(TEAM);
+        if(StartActivity.deviceType == DeviceType.HOST){
+            GameServerThread.setEndGameLayoutVisibility(View.VISIBLE);
+        }
     }
 }

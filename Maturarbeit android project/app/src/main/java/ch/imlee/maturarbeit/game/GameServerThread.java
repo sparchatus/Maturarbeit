@@ -3,7 +3,13 @@ package ch.imlee.maturarbeit.game;
 import android.content.Context;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
+import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
@@ -20,8 +26,36 @@ public class GameServerThread extends GameThread{
     private static double lastSweetSpawn = 0;
     private static int currentSweetId = 0;
 
+
+    private static LinearLayout layout = new LinearLayout(GameClient.getContext());
+    private static LinearLayout.LayoutParams layoutParams;
+    private static Button restartButton = new Button(GameClient.getContext());
+    private static Button endButton = new Button(GameClient.getContext());
+
     public GameServerThread(SurfaceHolder holder, Context context) {
         super(holder, context);
+        layoutParams = new LinearLayout.LayoutParams(holder.getSurfaceFrame().width(), holder.getSurfaceFrame().height());
+        layoutParams.setMargins(10, 168, holder.getSurfaceFrame().width(), holder.getSurfaceFrame().height());
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new RestartGameEvent().send();
+                new RestartGameEvent().apply();
+            }
+        });
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GameCancelledEvent().send();
+                new GameCancelledEvent().apply();
+            }
+        });
+        restartButton.setText("restart Game");
+        endButton.setText("end Game");
+        layout.addView(restartButton);
+        layout.addView(endButton);
+        layout.setVisibility(View.GONE);
+        layout.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -83,5 +117,9 @@ public class GameServerThread extends GameThread{
         sweets.add(tempSweet);
         new SweetSpawnEvent(tempSweet).send();
         ++currentSweetId;
+    }
+
+    public static void setEndGameLayoutVisibility(int visibility){
+        layout.setVisibility(visibility);
     }
 }

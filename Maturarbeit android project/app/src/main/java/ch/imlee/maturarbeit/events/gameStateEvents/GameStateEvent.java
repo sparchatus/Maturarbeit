@@ -21,6 +21,7 @@ public class GameStateEvent extends Event {
             case 'P': return new GamePausedEvent(eventString);
             case 'S': return new GameStartEvent(eventString);
             case 's': return new PlayerStatsSelectedEvent(eventString);
+            case 'R': return new RestartGameEvent();
             default: return null;
         }
     }

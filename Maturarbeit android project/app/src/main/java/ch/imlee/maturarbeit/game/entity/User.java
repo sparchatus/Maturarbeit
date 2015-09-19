@@ -133,7 +133,7 @@ public class User extends Player {
                     }
                 }
                 if (flagPossessed) {
-                    if(GameThread.getLightBulbArray()[TEAM].getLightBulbStandTeam() == TEAM
+                    if(GameThread.getLightBulbArray()[this.getTeam()].getLightBulbStandTeam() == TEAM
                             && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2)
                             + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= Math.pow(PICK_UP_RANGE, 2)){
                         new GameWinEvent(TEAM).send();

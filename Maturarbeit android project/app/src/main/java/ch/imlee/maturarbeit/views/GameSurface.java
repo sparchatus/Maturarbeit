@@ -22,6 +22,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     private SurfaceHolder holder;
     private GameThread gameThread;
+    private static GameSurfaceController surfaceController;
     private static Resources rec;
     private static int width, height;
 
@@ -75,7 +76,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         if (GameThread.getLoading()){
             return false;
         }
-        return GameSurfaceController.onTouchEvent(event);
+        return surfaceController.onTouchEvent(event);
+    }
+
+    public static void setup(GameSurfaceController gameSurfaceController){
+        surfaceController = gameSurfaceController;
     }
 
     public GameThread getGameThread(){
@@ -92,5 +97,4 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public static int getSurfaceHeight(){
         return height;
     }
-
 }

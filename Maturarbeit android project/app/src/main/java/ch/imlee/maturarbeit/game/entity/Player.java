@@ -28,7 +28,7 @@ public class Player extends Entity implements Tick {
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
     public static final float startRadius = 0.4f;
-    public float playerRadius;
+    protected float playerRadius;
     protected final int MAX_STRENGTH = 100;
     private final int DEATH_TIME = 5 * Tick.TICK;
 

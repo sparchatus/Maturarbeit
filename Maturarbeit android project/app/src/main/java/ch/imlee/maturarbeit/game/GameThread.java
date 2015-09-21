@@ -312,6 +312,7 @@ public class GameThread extends Thread implements Tick{
          joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
          gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());
          MiniMap.setup();
+         GameSurface.setup(gameSurfaceController);
          if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
          } else {

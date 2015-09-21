@@ -1,15 +1,11 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
-import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.StunEvent;
-import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
  * Created by Sandro on 07.06.2015.
@@ -17,12 +13,9 @@ import ch.imlee.maturarbeit.views.GameSurface;
 public class Fluffy extends User {
 
     private int MANA_CONSUMPTION = MAX_MANA;
-    private final float MAX_FOCUS_RANGE = 4.0f;
-    private  final FluffyGameSurfaceController controller;
 
-    public Fluffy(Map map, byte team, byte playerId, FluffyGameSurfaceController controller) {
+    public Fluffy(Map map, byte team, byte playerId) {
         super(PlayerType.FLUFFY, map, team, playerId);
-        this.controller = controller;
     }
 
     @Override
@@ -41,19 +34,12 @@ public class Fluffy extends User {
     }
 
     public void skillActivation() {
-        if (mana == MAX_MANA && {
+        Player focusedPlayer = FluffyGameSurfaceController.getFocusedPlayer();
+        if (mana == MAX_MANA && focusedPlayer != null) {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
-            focusedPlayer = null;
-            FluffyGameSurfaceController.focusedPlayerNull();
+            FluffyGameSurfaceController.nullFocusedPlayer();
             mana -= MANA_CONSUMPTION;
         }
-    }
-
-    public void setFocusedPlayer(Player focusedPlayer){
-        this.focusedPlayer = focusedPlayer;
-    }
-    public Player getFocusedPlayer(){
-        return focusedPlayer;
     }
 }

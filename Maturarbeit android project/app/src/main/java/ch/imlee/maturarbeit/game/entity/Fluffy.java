@@ -16,12 +16,13 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class Fluffy extends User {
 
-    private Player focusedPlayer = null;
     private int MANA_CONSUMPTION = MAX_MANA;
     private final float MAX_FOCUS_RANGE = 4.0f;
+    private  final FluffyGameSurfaceController controller;
 
-    public Fluffy(Map map, byte team, byte playerId) {
+    public Fluffy(Map map, byte team, byte playerId, FluffyGameSurfaceController controller) {
         super(PlayerType.FLUFFY, map, team, playerId);
+        this.controller = controller;
     }
 
     @Override
@@ -30,10 +31,6 @@ public class Fluffy extends User {
         mana += speed / maxSpeed;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
-        }
-        if (focusedPlayer != null && Math.pow(xCoordinate - focusedPlayer.getXCoordinate(), 2) +  Math.pow(yCoordinate - focusedPlayer.getYCoordinate(), 2) > Math.pow(MAX_FOCUS_RANGE, 2)){
-            focusedPlayer = null;
-            FluffyGameSurfaceController.focusedPlayerNull();
         }
     }
 
@@ -44,7 +41,7 @@ public class Fluffy extends User {
     }
 
     public void skillActivation() {
-        if (mana == MAX_MANA && focusedPlayer != null){
+        if (mana == MAX_MANA && {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             focusedPlayer = null;

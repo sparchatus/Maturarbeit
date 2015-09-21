@@ -18,8 +18,6 @@ public class GameSurfaceController {
     protected static ControllerState controllerState = ControllerState.NULL;
     private static boolean posChanged;
     private static double xFingerDistance, yFingerDistance;
-    protected static Player focusedPlayer;
-    protected static boolean focusChanged = false;
 
     public GameSurfaceController(User user, int surfaceWidth, int surfaceHeight) {
         this.user = user;
@@ -29,7 +27,7 @@ public class GameSurfaceController {
 
     public void update(){
         synchronized (controllerState) {
-            if (posChanged && controllerState == ControllerState.AIMING) {
+            if (controllerState == ControllerState.AIMING && posChanged) {
                 double angle = Math.acos(xFingerDistance / Math.sqrt(Math.pow(xFingerDistance, 2) + Math.pow(yFingerDistance, 2)));
                 if (yFingerDistance <= 0) {
                     angle *= -1;
@@ -47,21 +45,13 @@ public class GameSurfaceController {
 
     }
 
-    public static boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event){
         synchronized (controllerState) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                for (Player player : GameThread.getPlayerArray()) {
-                    if (Math.sqrt(Math.pow((user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE) - player.getXCoordinate(), 2) + Math.pow((user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE) - player.getYCoordinate(), 2)) < user.getPlayerRadius()) {
-                        controllerState = ControllerState.FOCUS;
-                        focusedPlayer = player;
-                        focusChanged = true;
-                        return false;
-                    }
-                }
-                controllerState = ControllerState.AIMING;
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
                 controllerState = ControllerState.NULL;
                 return false;
+            }else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                controllerState = ControllerState.AIMING;
             }
             xFingerDistance = event.getX() - halfSurfaceWidth;
             yFingerDistance = event.getY() - halfSurfaceHeight;

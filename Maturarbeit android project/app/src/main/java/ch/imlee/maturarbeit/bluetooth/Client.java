@@ -22,52 +22,86 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Client extends StartActivity implements Runnable {
+public class Client extends StartActivity {
     private static Context c;
 
-    private static ArrayList<BluetoothDevice> devices;
-    private static ArrayList<String> deviceNames;
-    private static ArrayAdapter<String> adapter;
+    private static ArrayList<BluetoothDevice> devices; // the found devices are stored here
+    private static ArrayList<String> deviceNames; // here are the names of the found devices
+    private static ArrayAdapter<String> adapter; // the adapter links the deviceNames List with the ListView from the StartActivity
 
     private static boolean connecting = false;
-    private static BluetoothSocket socket;
-    private static BluetoothDevice device;
+    private static BluetoothSocket socket; // this socket is used to connect to a host
+    private static BluetoothDevice device; // the host device is stored here
 
-    public static InputStream inputStream;
-    public static OutputStream outputStream;
+    public static InputStream inputStream; // the hosts InputStream
+    public static OutputStream outputStream; // the hosts OutputStream
+
+    private IntentFilter filter = new IntentFilter(); // this filters what the BroadcastReceiver should listen to
+
+    private Thread connectThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                c.registerReceiver(mReceiver, filter);
+            } catch(Exception e){
+                // probably already registered
+            }
+            connecting = true;
+            try{
+                socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
+
+                // the generated UUID contains the version name and code, so only players with the same game version can play together.
+                // Todo: doesn't work anymore, workaround needed.
+            } catch (Exception e){
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            Log.d("bluetooth", "attempting to connect");
+
+            // because the connection doesn't always work at the first try
+            final int MAX_ATTEMPTS = 5;
+            boolean connectionSuccessful = false;
+            for(int i = 0; i < MAX_ATTEMPTS; ++i) {
+                try {
+                    socket.connect();
+                    connectionSuccessful = true;
+                    break;
+                } catch (Exception e) {
+                    Log.d("bluetooth", "connection attempt " + (i+1) + '/' + MAX_ATTEMPTS + " failed");
+                    e.printStackTrace();
+                    //try again
+                }
+            }
+            if(!connectionSuccessful){
+                Client.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                        Toast.makeText(c, "can't connect to that device :(", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return;
+            }
+            Log.d("bluetooth", "connection successful");
+
+            connecting = false;
+            c.sendBroadcast(new Intent("connectionFinished"));
+        }
+    });
+
+    // used to check whether device discovery finished automatically or was canceled
+    private static boolean discoveryCanceled = false;
 
 
-    private IntentFilter filter = new IntentFilter();
-    private Thread connectThread;
-
-    // used to check whether device discovery finished automatically or was cancelled
-    private static boolean discoveryCancelled = false;
 
     public Client(Context context){
         c = context;
-/*
-        hostButton.setVisibility(View.VISIBLE);
-        joinButton.setVisibility(View.VISIBLE);
-        usernameTextView.setVisibility(View.VISIBLE);
-        usernameEditText.setVisibility(View.VISIBLE);
-
-        statusText.setVisibility(View.INVISIBLE);
-        listView.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        */
 
         Util.ba.setName(usernameEditText.getText().toString());
-        findDevices();
-    }
 
-    private void findDevices() {
-        if(Util.ba.isDiscovering()){
-            Toast.makeText(c, "discovering", Toast.LENGTH_SHORT).show();
-        }
         devices = new ArrayList<>();
         deviceNames = new ArrayList<>();
-        // the adapter puts the found devices into the ListView using the deviceNames ArrayList
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -77,7 +111,7 @@ public class Client extends StartActivity implements Runnable {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 if (Util.ba.isDiscovering()) {
-                    discoveryCancelled = true;
+                    discoveryCanceled = true;
                     Util.ba.cancelDiscovery();
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -85,7 +119,6 @@ public class Client extends StartActivity implements Runnable {
                 connectToDevice(devices.get(position));
             }
         });
-
 
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -100,62 +133,16 @@ public class Client extends StartActivity implements Runnable {
     public void connectToDevice(BluetoothDevice btDevice){
         if(connecting) return;
         device = btDevice;
-        discoveryCancelled = true;
+        discoveryCanceled = true;
         Util.ba.cancelDiscovery();
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
-        connectThread = new Thread(this, "connectThread");
         connectThread.start();
     }
 
-    public void run(){
-        try {
-            c.registerReceiver(mReceiver, filter);
-        } catch(Exception e){
-            // probably already registered
-        }
-        connecting = true;
-        try{
-            socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
+    private void findDevices() {
 
-            // the generated UUID contains the version name and code, so only players with the same game version can play together.
-            // Todo: doesn't work anymore, workaround needed.
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        Log.d("bluetooth", "attempting to connect");
-
-        // because the connection doesn't always work at the first try
-        final int MAX_ATTEMPTS = 5;
-        boolean connectionSuccessful = false;
-        for(int i = 0; i < MAX_ATTEMPTS; ++i) {
-            try {
-                socket.connect();
-                connectionSuccessful = true;
-                break;
-            } catch (Exception e) {
-                Log.d("bluetooth", "connection attempt " + (i+1) + '/' + MAX_ATTEMPTS + " failed");
-                e.printStackTrace();
-                //try again
-            }
-        }
-        if(!connectionSuccessful){
-            Client.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    onBackPressed();
-                    Toast.makeText(c, "can't connect to that device :(", Toast.LENGTH_SHORT).show();
-                }
-            });
-            return;
-        }
-        Log.d("bluetooth", "connection successful");
-
-        connecting = false;
-        c.sendBroadcast(new Intent("connectionFinished"));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver(){
@@ -176,7 +163,7 @@ public class Client extends StartActivity implements Runnable {
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
                 statusText.setText("discovering devices...");
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                if(!discoveryCancelled) {
+                if(!discoveryCanceled) {
                     statusText.setText("discovery finished. " + devices.size() + " devices found.");
                     progressBar.setVisibility(View.GONE);
                 }
@@ -220,7 +207,7 @@ public class Client extends StartActivity implements Runnable {
                         if(receivedString.indexOf(0)>=0){
                             startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             c.startActivity(startChooseActivity);
-                            c.sendBroadcast(new Intent("finish"));
+                            finish();
                             break;
                         }
 

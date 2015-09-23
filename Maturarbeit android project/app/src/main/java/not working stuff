@@ -7,3 +7,7 @@
 - game crashes when client tries to pick up LightBulb
 - you can get bigger in illegal locations
 - invisible ghost bitmap is somehow not sharp, it gets smoothened
+
+btw my comments are like this
+// blabla
+beginning with a space and a small letter except when the first word is a class name or similar

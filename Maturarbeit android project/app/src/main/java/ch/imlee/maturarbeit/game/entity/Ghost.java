@@ -23,7 +23,7 @@ public class Ghost extends User {
     public Ghost(Map map, byte team, byte playerId) {
         super(PlayerType.GHOST, map, team, playerId);
         INVISIBLE_GHOST = Bitmap.createBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost_invisible));
-        scaledInvisibleGhostBmp = Bitmap.createScaledBitmap(INVISIBLE_GHOST, (int)(playerRadius * 2 * Map.TILE_SIDE), (int)(playerRadius * 2 * Map.TILE_SIDE), false);
+        scaledInvisibleGhostBmp = Bitmap.createScaledBitmap(INVISIBLE_GHOST, Map.TILE_SIDE, Map.TILE_SIDE, false);
     }
 
     @Override

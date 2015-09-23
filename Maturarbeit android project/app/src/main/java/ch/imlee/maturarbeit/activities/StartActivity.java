@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
@@ -42,6 +41,8 @@ public class StartActivity extends Activity {
     public static EditText usernameEditText;
     public static Intent startChooseActivity;
 
+    private Host host;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,47 +52,22 @@ public class StartActivity extends Activity {
         initialize();
     }
     private void initialize(){
-        //TODO: DEBUG
-     //   RelativeLayout layout = (RelativeLayout) findViewById(R.id.startLayout);
-
-        registerReceiver(finishReceiver, new IntentFilter("finish"));
-
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
-        // making objects of the Views from activity_test.xml to manipulate them
-        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
-        listView = (ListView) this.findViewById(R.id.listView);
-        listView.setBackgroundColor(Color.DKGRAY);
 
+        // making objects of the Views from activity_start.xml to manipulate them
+        progressBar = (ProgressBar) this.findViewById(R.id.progressBar); // this is a rotating indicator. It shows when your device is connecting to a host or when it's searching for hosts.
+        listView = (ListView) this.findViewById(R.id.listView); // the listView shows the available hosts or the connected clients, depending on your deviceType
+        listView.setBackgroundColor(Color.DKGRAY);
 
         statusText = (TextView) this.findViewById(R.id.statusText); // statusText is a TextView that displays the current status during the connection phase
 
         hostButton = (Button) this.findViewById(R.id.hostButton);
         joinButton = (Button) this.findViewById(R.id.joinButton);
-        startButton = (Button) this.findViewById(R.id.startButton);
+        startButton = (Button) this.findViewById(R.id.startButton); // this button is only visible to the host. It launches the ChooseActivity.
         usernameTextView = (TextView) this.findViewById(R.id.usernameTextView);
         usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
-        // this is needed because the AlertDialog from the Util.initBluetooth() method is shown in a new thread, so it's possible that Util.ba is null
 
-        Util.initBluetooth(StartActivity.this);
-
-        // used in the onBackPressed() method
-        //buttonPressed = true;
-    }
-    /*
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_test, menu);
-            return true;
-        }
-    */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+        Util.initBluetooth(this);
     }
 
     // this method is called when a button is clicked
@@ -111,47 +87,46 @@ public class StartActivity extends Activity {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(usernameEditText.getWindowToken(), 0);
 
-        if(view.getId()==R.id.hostButton){
+        if(view.getId() == R.id.hostButton){
             // host game
             deviceType = DeviceType.HOST;
             startButton.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
-            new Host(getApplicationContext());
-
-        }
-        else if(view.getId()==R.id.joinButton){
+            host = new Host(getApplicationContext());
+        } else if(view.getId() == R.id.joinButton){
             // join game as client
             deviceType = DeviceType.CLIENT;
-            statusText.setText("searching for hosts");
+            statusText.setText("looking for Hosts");
             new Client(getApplicationContext());
         } else{
-            // start the ChooseActivity
+            // startButton got pressed, start the ChooseActivity if possible
             if(Host.sockets.size() == 0){
                 Toast.makeText(getApplicationContext(), "at least one device must be connected", Toast.LENGTH_LONG).show();
             } else{
-                // notify others that they should start the ChooseActivity, this is done by simply sending the int 0
+                // notify others that they should start the ChooseActivity, this is done by simply sending the byte 0
                 for(int i = 0; i < Host.outputStreams.size(); ++i){
                     try {
                         Host.outputStreams.get(i).write(0);
                     } catch(Exception e){
                         e.printStackTrace();
                         if(e instanceof IOException){
+                            // an IOException when writing a byte means that the connection to that device is lost, so it gets removed
                             Toast.makeText(Util.c, "lost connection to " + Host.sockets.get(i).getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
                             Host.sockets.remove(i);
                             Host.inputStreams.remove(i);
                             Host.outputStreams.remove(i);
                             Host.deviceNames.remove(i);
                             Host.adapter.notifyDataSetChanged();
+                            // all elements in the outputStreams List got shifted to the left, so i gets decremented
                             --i;
                         }
                     }
                 }
-                // _HOST ending no longer needed, this gives the BluetoothAdapter the name which the user entered
                 Util.ba.setName(usernameEditText.getText().toString());
-                sendBroadcast(new Intent("cancelAccept"));
+                host.cancelAcceptReceiver();
                 // starts the ChooseActivity
-                if(Host.sockets.size()>0) {
+                // this has to be checked again
+                if(Host.sockets.size() > 0) {
                     startActivity(startChooseActivity);
                     finish();
                 }
@@ -159,17 +134,18 @@ public class StartActivity extends Activity {
         }
     }
 
+    @Override
     public void onBackPressed(){
-        //if connected to a host, disconnect
+        // this method automatically gets called when the back button is pressed
+        //if connected, disconnect
         Client.disconnect();
         Host.disconnect();
 
-
-        //if(buttonPressed){
         if(Util.ba.isDiscovering()) {
             Util.ba.cancelDiscovery();
         }
 
+        // toggle the views back
         hostButton.setVisibility(View.VISIBLE);
         joinButton.setVisibility(View.VISIBLE);
         startButton.setVisibility(View.GONE);
@@ -179,31 +155,5 @@ public class StartActivity extends Activity {
         statusText.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        //}
-        //buttonPressed = false;
-    }
-
-    // BroadcastReceiver to finish this Activity as soon as ChooseActivity launches, this is only needed if the Client starts the new Activity
-    BroadcastReceiver finishReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action.equals("finish")){
-                System.out.println("...");
-                System.out.println("finishing");
-                System.out.println("...");
-                finish();
-            }
-        }
-    };
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        try {
-            unregisterReceiver(finishReceiver);
-        } catch(Exception e){
-            // ignore, probably already unregistered
-        }
     }
 }

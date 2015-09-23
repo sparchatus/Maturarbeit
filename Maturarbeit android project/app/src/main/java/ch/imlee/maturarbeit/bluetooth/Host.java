@@ -3,51 +3,61 @@ package ch.imlee.maturarbeit.bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.activities.StartActivity;
 
-public class Host extends StartActivity implements Runnable {
+public class Host extends StartActivity {
 
     private static Context c;
 
     public static ArrayList<String> deviceNames = new ArrayList<>();
 
-    public static ArrayAdapter<String> adapter;
+    public static ArrayAdapter<String> adapter; // the ArrayAdapter links the deviceNames List with the ListView from the StartActivity
 
     private static BluetoothServerSocket serverSocket;
     public static ArrayList<BluetoothSocket> sockets = new ArrayList<>();
     public static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    private Thread acceptThread = new Thread(this, "acceptThread");
-
-
+    // the acceptThread accepts incoming connections as long as it's active
+    private Thread acceptThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    // this method blocks until the Thread gets interrupted or a client connects
+                    sockets.add(serverSocket.accept());
+                    manageConnection(sockets.get(sockets.size()-1));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button and the acceptThread gets interrupted
+                    if(e.getMessage().equals("Operation Canceled")) {
+                        Log.i("acceptThread", "acceptThread canceled");
+                        break;
+                    }
+                }
+            }
+        }
+    });
 
     public Host(Context context) {
         c = context;
         Util.ba.setName(StartActivity.usernameEditText.getText().toString());
 
-
-        // TODO: put this in a thread which often checks whether the device is still discoverable, no need to put it here
+        // this is the Intent used to start the ChooseActivity once the startButton is pressed
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-
         c.startActivity(discoverableIntent);
-        // endTODO:
-
 
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
@@ -56,89 +66,46 @@ public class Host extends StartActivity implements Runnable {
         // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
         while(serverSocket == null) {
             try {
+                // the serverSocket is used to listen for incoming connections
                 serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        IntentFilter filter = new IntentFilter("finished");
-        c.registerReceiver(this.threadFinishedReceiver, filter);
-
-        acceptConnections();
-    }
-
-    private final BroadcastReceiver threadFinishedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            manageConnection();
-        }
-    };
-
-    private void acceptConnections() {
-        c.registerReceiver(this.cancelAcceptReceiver, new IntentFilter("cancelAccept"));
 
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
-
         acceptThread.start();
     }
 
-    public void run() {
-        while(true) {
-            try {
-                sockets.add(serverSocket.accept());
-                c.sendBroadcast(new Intent("finished"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button
-                if(e.getMessage().equals("Operation Canceled")) {
-                    Log.i("acceptThread", "acceptThread canceled");
-                    break;
-                }
-            }
-        }
-
-    }
-
     // it's synchronized so connections won't interfere
-    private synchronized void manageConnection() {
-        deviceNames.add(sockets.get(sockets.size() - 1).getRemoteDevice().getName());
-        adapter.notifyDataSetChanged();
-
-        try {
-            inputStreams.add(sockets.get(sockets.size() -1).getInputStream());
-            outputStreams.add(sockets.get(sockets.size() -1).getOutputStream());
+    private synchronized void manageConnection(BluetoothSocket socket) {
+        // this method adds the socket and its attributes to the corresponding lists for easier access
+        deviceNames.add(socket.getRemoteDevice().getName());
+        // because only the UI Thread can call adapter.notifyDataSetChanged(), we have to call it this way
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+            try {
+            inputStreams.add(socket.getInputStream());
+            outputStreams.add(socket.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
         }
         refreshConnectedDevices();
     }
 
-    public BroadcastReceiver cancelAcceptReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action.equals("cancelAccept")) {
-                c.unregisterReceiver(cancelAcceptReceiver);
-                try {
-                    acceptThread.interrupt();
-                    serverSocket.close();
-                    c.unregisterReceiver(threadFinishedReceiver);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-            }
-        }
-    };
-
     public static void disconnect(){
-        for(int i = 0; i < sockets.size(); ++i){
-            removeDevice(i);
+        // this method disconnects the device from all clients
+        while(!sockets.isEmpty()){
+            removeDevice(0);
         }
     }
 
     private void refreshConnectedDevices(){
+        // this method checks weather all devices are still connected. If not, they get removed
         for(int i = 0; i < sockets.size(); ++i){
             try{
                 outputStreams.get(i).write(1);
@@ -159,7 +126,18 @@ public class Host extends StartActivity implements Runnable {
         }
     }
 
+    public void cancelAcceptReceiver(){
+        // this method stops the acceptThread from accepting more connections
+        try {
+            acceptThread.interrupt();
+            serverSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void removeDevice(int i){
+        // this method removes a specific client
         sockets.remove(i);
         outputStreams.remove(i);
         inputStreams.remove(i);

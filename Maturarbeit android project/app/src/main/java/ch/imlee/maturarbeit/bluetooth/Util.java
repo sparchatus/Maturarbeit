@@ -22,8 +22,8 @@ public class Util{
         c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
 
+        // BluetoothAdapter.getDefaultAdapter() returns null if the device doesn't support bluetooth. If this is the case, an info message will be displayed and the app exits when "OK" is clicked
         if (ba == null) {
-
             new AlertDialog.Builder(c)
                     .setTitle("Error")
                     .setMessage("Your Device doesn't support bluetooth, which is needed for this game. Sorry about that.")
@@ -38,12 +38,9 @@ public class Util{
                     .show();
 
         } else {
-            try {
-                StartActivity.usernameEditText.setText(Util.ba.getName());
-            } catch(Exception e){
-                e.printStackTrace();
-            }
-            //to close all current connections, restart the adapter
+            StartActivity.usernameEditText.setText(Util.ba.getName());
+            // to close all current connections, restart the adapter
+            // there is probably a better way to do this, but we've found it's the most consistent like this and it works on most devices this way
             ba.disable();
             while(ba.getState() != BluetoothAdapter.STATE_OFF){
                 try{
@@ -55,24 +52,14 @@ public class Util{
     }
 
     public static UUID generateUUID(){
-        //TODO: somehow make the UUID unique to the version number
-        /*
-        try {
-            return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode + ' ' +
-                    c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionName + ' ' + c.getPackageName();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-        */
+        // this is a randomly generated UUID, so only devices running this very app will be able to connect to each other
+        // if the app is released, we'll update the UUID with each new version, assuring that only devices running the same version of the game can play with each other
         return UUID.fromString("2053c9be-5702-11e5-885d-feff819cdc9f");
-        //return UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
     public static synchronized void sendString(OutputStream outputStream, String text){
         try {
             outputStream.write(text.getBytes());
-            //outputStream.flush();
         } catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -82,8 +69,9 @@ public class Util{
     public static String receiveString(InputStream inputStream){
         String text = "";
         try {
+            // to receive a String, we have to receive every single byte and chain them together
             for(int i = inputStream.available(); i > 0; --i) {
-                text = text + (char)inputStream.read();
+                text += (char) inputStream.read();
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -91,7 +79,6 @@ public class Util{
         return text;
     }
 
-    // if an EventString was not yet completely received by the time this method returns, store the unfinished String here
     public static void receiveEvents(InputStream inputStream, byte id){
         String string = "";
         char c;
@@ -100,6 +87,7 @@ public class Util{
             while(inputStream.available() > 0 || string.length() != 0) {
                 c = (char) inputStream.read();
                 if(c == '|'){
+                    // '|' is the terminating char of every Event
                     Log.v("events", "Event received: " + string);
                     new EventHandler(Event.fromString(string), id).start();
                     string = "";

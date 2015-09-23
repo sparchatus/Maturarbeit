@@ -18,6 +18,7 @@ import java.util.Set;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
 import ch.imlee.maturarbeit.game.Controller.JoystickController;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
@@ -325,6 +326,7 @@ public class GameThread extends Thread implements Tick{
         loading = false;
         particleButton.setUser(user);
         skillButton.setUser(user);
+        new PlayerMotionEvent(user).send();
     }
 
     public void addParticle(Particle newParticle){

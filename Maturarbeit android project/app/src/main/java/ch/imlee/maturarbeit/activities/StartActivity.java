@@ -5,6 +5,7 @@ import ch.imlee.maturarbeit.bluetooth.Client;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,14 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.io.IOException;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends Activity {
 
-    Host host;
     public static DeviceType deviceType;
 
     // those Views should be accessible from outside this class
@@ -53,30 +52,7 @@ public class StartActivity extends AppCompatActivity {
     }
     private void initialize(){
         //TODO: DEBUG
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.startLayout);
-        Button chooseButton = new Button(this);
-        /*
-        chooseButton.setText("choose");
-        chooseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(startChooseActivity);
-            }
-        });
-        layout.addView(chooseButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-    */
-        /*Button gameButton = new Button(this);
-        gameButton.setText("game");
-        final Intent startGameActivity = new Intent(getBaseContext(), GameClient.class);
-        gameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(startGameActivity);
-            }
-        });
-        layout.addView(gameButton, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        */
-        //TODO: end debug
+     //   RelativeLayout layout = (RelativeLayout) findViewById(R.id.startLayout);
 
         registerReceiver(finishReceiver, new IntentFilter("finish"));
 
@@ -141,7 +117,7 @@ public class StartActivity extends AppCompatActivity {
             startButton.setVisibility(View.VISIBLE);
             listView.setVisibility(View.VISIBLE);
             statusText.setText("waiting for Players");
-            host = new Host(getApplicationContext());
+            new Host(getApplicationContext());
 
         }
         else if(view.getId()==R.id.joinButton){

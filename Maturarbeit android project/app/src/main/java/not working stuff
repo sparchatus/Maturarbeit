@@ -2,8 +2,8 @@
 - when game is finished, you should be able to restart or end
 - parent of gameClient activity should be StartActivity
 - particleShotEvent not working
-- bitmap of invisible ghost should be scaled to radius
 - bitmap of SlimeTrail should be scaled to radius
 - slime should move faster on slime, not slower
-- game crashes when client tries to pick up lightbulb
+- game crashes when client tries to pick up LightBulb
 - you can get bigger in illegal locations
+- invisible ghost bitmap is somehow not sharp, it gets smoothened

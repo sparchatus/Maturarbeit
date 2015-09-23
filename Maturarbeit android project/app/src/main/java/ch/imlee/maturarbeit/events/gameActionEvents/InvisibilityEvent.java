@@ -12,11 +12,7 @@ public class InvisibilityEvent extends GameActionEvent{
 
     public InvisibilityEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
-        if (eventString.substring(eventString.indexOf('I'), eventString.indexOf('i')).equals('1')) {
-            INVISIBLE = true;
-        }else {
-            INVISIBLE = false;
-        }
+        INVISIBLE = (eventString.charAt(2) == '1');
     }
 
     public InvisibilityEvent(byte playerId, boolean invisible){
@@ -26,15 +22,13 @@ public class InvisibilityEvent extends GameActionEvent{
 
     @Override
     public String toString() {
-        if (INVISIBLE) {
-            return super.toString() + "I" + "1" + 'i' + senderID;
-        }else{
-            return super.toString() + "I" + "0" + 'i' + senderID;
-        }
+        char invisibleBit = '0';
+        if(INVISIBLE) invisibleBit = '1';
+        return super.toString() + 'I' + invisibleBit + 'i' + senderID;
     }
 
     @Override
     public void apply() {
-        GameClient.getGameThread().getPlayerArray()[senderID].setInvisible(INVISIBLE);
+        GameThread.getPlayerArray()[senderID].setInvisible(INVISIBLE);
     }
 }

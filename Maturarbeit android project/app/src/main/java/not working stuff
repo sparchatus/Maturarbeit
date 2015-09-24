@@ -4,7 +4,6 @@
 - particleShotEvent not working
 - bitmap of SlimeTrail should be scaled to radius
 - slime should move faster on slime, not slower
-- game crashes when client tries to pick up LightBulb
 - you can get bigger in illegal locations
 - invisible ghost bitmap is somehow not sharp, it gets smoothened
 

@@ -13,10 +13,12 @@ public class LightBulbServerEvent extends GameActionEvent {
     public LightBulbServerEvent(User user, byte lightBulbId){
         super(user.getID());
         LIGHT_BULB_ID = lightBulbId;
+        serverEvent = true;
     }
     public LightBulbServerEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         LIGHT_BULB_ID = Byte.valueOf(eventString.substring(eventString.indexOf("l") + 1, eventString.indexOf("i")));
+        serverEvent = true;
     }
 
     @Override

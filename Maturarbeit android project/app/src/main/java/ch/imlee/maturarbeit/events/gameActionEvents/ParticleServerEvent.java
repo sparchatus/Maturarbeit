@@ -22,6 +22,7 @@ public class ParticleServerEvent extends GameActionEvent{
         X_COORDINATE = user.getXCoordinate();
         Y_COORDINATE = user.getYCoordinate();
         ANGLE = user.getAngle();
+        serverEvent = true;
     }
     public ParticleServerEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
@@ -30,6 +31,7 @@ public class ParticleServerEvent extends GameActionEvent{
         TEAM = Byte.valueOf(eventString.substring(eventString.indexOf('t') + 1, eventString.indexOf('a')));
         ANGLE = Float.valueOf(eventString.substring(eventString.indexOf('a') + 1, eventString.indexOf('s')));
         SPAWN_TICK = Double.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
+        serverEvent = true;
     }
 
     public String toString(){

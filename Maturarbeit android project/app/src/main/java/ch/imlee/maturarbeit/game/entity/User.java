@@ -2,7 +2,6 @@ package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
@@ -15,7 +14,6 @@ import ch.imlee.maturarbeit.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
-import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.utils.Vector2D;
@@ -59,6 +57,8 @@ public class User extends Player {
 
     protected boolean angleChanged;
     protected float mana;
+
+    private boolean bulbRequestSent;
 
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update
     protected float velocity, speed;
@@ -115,26 +115,30 @@ public class User extends Player {
                     }
                     particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
                 }
-                if (pickUpBulb != null) {
+                if (bulbRequestSent && lightBulb != null){
+                    pickUpBulb = null;
+                    pickUpTickCount = 0;
+                }  else if (pickUpBulb != null) {
                     pickUpTickCount++;
                     if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
                         pickUpTickCount = 0;
                         pickUpBulb = null;
                     } else if (pickUpTickCount >= PICK_UP_TICKS) {
                         new LightBulbServerEvent(this, pickUpBulb.ID).send();
-                        pickUpBulb = null;
-                        pickUpTickCount = 0;
+                        bulbRequestSent = true;
                     }
                 } else {
-                    for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
-                        if (lightBulb.isPickable() && lightBulb.getLightBulbStandTeam() != TEAM && Math.sqrt(Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2)) <= PICK_UP_RANGE) {
-                            pickUpBulb = lightBulb;
-                            break;
+                    if (lightBulb == null) {
+                        for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
+                            if ((lightBulb.isPickable() || lightBulb.getLightBulbStandTeam() != TEAM) && Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
+                                pickUpBulb = lightBulb;
+                                break;
+                            }
                         }
                     }
                 }
-                if (flagPossessed) {
-                    if(GameThread.getLightBulbArray()[TEAM].getLightBulbStandTeam() == TEAM
+                if (lightBulb != null) {
+                    if(GameThread.getLightBulbArray()[this.getTeam()].getLightBulbStandTeam() == TEAM
                             && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2)
                             + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= Math.pow(PICK_UP_RANGE, 2)){
                         new GameWinEvent(TEAM).send();
@@ -175,23 +179,27 @@ public class User extends Player {
     }
 
     private void move() {
-        for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
-            if (Math.sqrt(Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2)) <= playerRadius + SlimeTrail.TRAIL_RADIUS){
-                velocity*= SLOW_AMOUNT;
-                break;
-            }
-        }
-        if (stunned || velocity == 0) {
+        float tempVelocity = processedVelocity();
+        if (stunned || tempVelocity == 0) {
             speed = 0;
             return;
         }
-        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * velocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * velocity * maxSpeed));
+        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * tempVelocity * maxSpeed));
         physicEngine();
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
             new PlayerMotionEvent(this).send();
         }
+    }
+
+    protected float processedVelocity(){
+        for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
+            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + SlimeTrail.TRAIL_RADIUS, 2)){
+                return velocity * SLOW_AMOUNT;
+            }
+        }
+        return velocity;
     }
 
     private void physicEngine(){
@@ -395,10 +403,8 @@ public class User extends Player {
 
     @Override
     public void bulbLost() {
-        if(possessedLightBulb != null) {
-            new LightBulbEvent(possessedLightBulb.ID, ID).send();
-            super.bulbLost();
-        }
+        new LightBulbEvent(lightBulb.ID, ID).send();
+        super.bulbLost();
     }
 
     public void angleHasChanged(){

@@ -6,9 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
-import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
@@ -36,9 +34,6 @@ public class Player extends Entity implements Tick {
     protected boolean invisible;
     protected boolean slimy;
     protected boolean dead;
-    protected boolean flagPossessed = false;
-    protected LightBulb possessedLightBulb = null;
-
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     protected double lastSlimeEjection = 0;
     protected SlimeSound slimeSound = new SlimeSound();
@@ -179,16 +174,12 @@ public class Player extends Entity implements Tick {
     public void bulbReceived(int bulbID){
         strength = MAX_STRENGTH;
         lightBulb = GameThread.getLightBulbArray() [bulbID];
-        lightBulb.setPossessor(this);
-        flagPossessed = true;
+        lightBulb.pickUp(this);
     }
 
     public void bulbLost(){
-        if(lightBulb != null) {
-            lightBulb.fallOnFloor();
-            lightBulb = null;
-            flagPossessed = false;
-        }
+        lightBulb.fallOnFloor();
+        lightBulb = null;
     }
 
     public void setDead(boolean dead){

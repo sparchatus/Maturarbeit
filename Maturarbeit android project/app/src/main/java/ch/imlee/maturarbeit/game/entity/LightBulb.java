@@ -53,7 +53,7 @@ public class LightBulb extends Entity{
         return canvas;
     }
 
-    public void setPossessor(Player possessor){
+    public void pickUp(Player possessor){
         this.possessor = possessor;
         if (possessor!= null){
             xCoordinate = possessor.getXCoordinate();

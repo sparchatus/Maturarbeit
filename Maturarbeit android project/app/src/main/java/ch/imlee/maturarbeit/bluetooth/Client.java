@@ -41,6 +41,7 @@ public class Client extends StartActivity {
     private Thread connectThread = new Thread(new Runnable() {
         @Override
         public void run() {
+            // we need a BroadcastReceiver to catch the Intents sent when the bluetooth discovery starts and finishes, when a device is discovered and when the connection is successful
             try {
                 c.registerReceiver(mReceiver, filter);
             } catch(Exception e){
@@ -49,14 +50,10 @@ public class Client extends StartActivity {
             connecting = true;
             try{
                 socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
-
                 // the generated UUID contains the version name and code, so only players with the same game version can play together.
-                // Todo: doesn't work anymore, workaround needed.
             } catch (Exception e){
                 e.printStackTrace();
-                System.exit(1);
             }
-
             Log.d("bluetooth", "attempting to connect");
 
             // because the connection doesn't always work at the first try
@@ -73,6 +70,7 @@ public class Client extends StartActivity {
                     //try again
                 }
             }
+            connecting = false;
             if(!connectionSuccessful){
                 Client.this.runOnUiThread(new Runnable() {
                     @Override
@@ -85,7 +83,6 @@ public class Client extends StartActivity {
             }
             Log.d("bluetooth", "connection successful");
 
-            connecting = false;
             c.sendBroadcast(new Intent("connectionFinished"));
         }
     });
@@ -109,7 +106,6 @@ public class Client extends StartActivity {
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 if (Util.ba.isDiscovering()) {
                     discoveryCanceled = true;
                     Util.ba.cancelDiscovery();
@@ -120,29 +116,30 @@ public class Client extends StartActivity {
             }
         });
 
+        // adding the actions to which the BroadcastReceiver should listen to
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction("connectionFinished");
 
-        c.registerReceiver(this.mReceiver, filter); // Don't forget to unregister during onDestroy
+        // activate the BroadcastReceiver
+        c.registerReceiver(this.mReceiver, filter);
 
+        // let the BluetoothAdapter discover devices
         Util.ba.startDiscovery();
     }
 
     public void connectToDevice(BluetoothDevice btDevice){
         if(connecting) return;
         device = btDevice;
+
+        // cancel the discovery of more devices
         discoveryCanceled = true;
         Util.ba.cancelDiscovery();
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
         connectThread.start();
-    }
-
-    private void findDevices() {
-
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver(){
@@ -155,19 +152,23 @@ public class Client extends StartActivity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(!devices.contains(device)) {
+                    // add the device to the list
                     devices.add(device);
                     deviceNames.add(device.getName());
                     adapter.notifyDataSetChanged();
                     Toast.makeText(c, "host found: " + deviceNames.get(deviceNames.size() - 1), Toast.LENGTH_SHORT).show();
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+                // bluetooth discovery started
                 statusText.setText("discovering devices...");
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                // bluetooth discovery finished or was canceled
                 if(!discoveryCanceled) {
                     statusText.setText("discovery finished. " + devices.size() + " devices found.");
                     progressBar.setVisibility(View.GONE);
                 }
             } else if("connectionFinished".equals(action)){
+                // connected to the host successfully
                 statusText.setText("connected to " + device.getName());
                 progressBar.setVisibility(View.GONE);
                 manageConnection();
@@ -176,6 +177,7 @@ public class Client extends StartActivity {
     };
 
     private void manageConnection(){
+        // this method is called when you are connected to a host
         try {
             c.unregisterReceiver(mReceiver);
         } catch (Exception e) {
@@ -186,7 +188,6 @@ public class Client extends StartActivity {
             outputStream = socket.getOutputStream();
         }catch(Exception e){
             e.printStackTrace();
-
         }
 
         Toast.makeText(c, "connected to " + device.getName(), Toast.LENGTH_SHORT).show();
@@ -195,6 +196,7 @@ public class Client extends StartActivity {
     }
 
     public void listen(){
+        // this method waits for the host to send the character '0', which means you should proceed to the ChooseActivity. The host also sends '1's to check if you're still connected
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -204,7 +206,8 @@ public class Client extends StartActivity {
                 while(true){
                     if(inputStream != null){
                         receivedString = Util.receiveString(inputStream);
-                        if(receivedString.indexOf(0)>=0){
+                        if(receivedString.indexOf(0) >= 0){
+                            // if you receive a '0', proceed to the ChooseActivity
                             startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             c.startActivity(startChooseActivity);
                             finish();
@@ -212,8 +215,10 @@ public class Client extends StartActivity {
                         }
 
                     } else{
+                        // the inputStream is null, so the connection to the host is lost
                         disconnect();
                         Toast.makeText(Util.c, "An error occurred", Toast.LENGTH_SHORT).show();
+                        // try to reconnect
                         connectToDevice(device);
                         break;
                     }
@@ -223,6 +228,7 @@ public class Client extends StartActivity {
     }
 
     public static void disconnect(){
+        // this method disconnects you from the host if connected
         try{
             inputStream.close();
             inputStream = null;

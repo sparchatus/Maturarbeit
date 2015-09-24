@@ -49,7 +49,7 @@ public class GameStartEvent extends GameStateEvent {
         eventString = eventString.substring(2);
         while(eventString.charAt(0) != 'i'){
             types.add(PlayerType.values()[Integer.parseInt(Character.toString(eventString.charAt(0)))]);
-            teams.add((byte) eventString.charAt(1));
+            teams.add(Byte.parseByte(Character.toString(eventString.charAt(1))));
             eventString = eventString.substring(2);
         }
         userID = Byte.parseByte(Character.toString(eventString.charAt(1)));

@@ -20,7 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Client extends StartActivity {
     private static Context c;
@@ -139,7 +138,11 @@ public class Client extends StartActivity {
 
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
-        connectThread.start();
+        if(!connecting) {
+            connectThread.start();
+        } else{
+            Toast.makeText(this, "device is aready connecting", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver(){

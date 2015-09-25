@@ -65,8 +65,9 @@ public class Ghost extends User {
 
     @Override
     public void setPlayerRadius(float radius) {
+        if (radius <= 0)return;
         super.setPlayerRadius(radius);
-        scaledInvisibleGhostBmp = Bitmap.createScaledBitmap(INVISIBLE_GHOST, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+        scaledInvisibleGhostBmp = Bitmap.createScaledBitmap(INVISIBLE_GHOST, (int) (radius * 2 * Map.TILE_SIDE), (int) (radius * 2 * Map.TILE_SIDE), false);
     }
 
     @Override

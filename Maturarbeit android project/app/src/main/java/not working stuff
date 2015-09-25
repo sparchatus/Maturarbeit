@@ -6,6 +6,7 @@
 - slime should move faster on slime, not slower
 - you can get bigger in illegal locations
 - invisible ghost bitmap is somehow not sharp, it gets smoothened
+- connect thread
 
 btw my comments are like this
 // blabla

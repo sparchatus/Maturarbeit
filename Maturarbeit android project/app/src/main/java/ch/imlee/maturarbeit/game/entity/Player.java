@@ -97,9 +97,9 @@ public class Player extends Entity implements Tick {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
-            canvas.drawBitmap(rotated, (float)((xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2.0 - rotated.getWidth() / 2.0), (float)((yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2.0 - rotated.getHeight() / 2.0), null);        }
+            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f - rotated.getHeight() / 2f, null);        }
         if (stunned){
-            canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2, null);
+            canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
         }
         return canvas;
     }
@@ -189,11 +189,6 @@ public class Player extends Entity implements Tick {
             lightBulb = null;
             flagPossessed = false;
         }
-    }
-
-    protected void putOnLightBulbStand(LightBulbStand lightBulbStand){
-        lightBulb.putOnLightBulbStand(lightBulbStand);
-        lightBulb = null;
     }
 
     public void setDead(boolean dead){

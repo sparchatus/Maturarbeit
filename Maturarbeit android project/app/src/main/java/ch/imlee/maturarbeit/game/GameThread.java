@@ -310,10 +310,14 @@ public class GameThread extends Thread implements Tick{
          lightBulbArray = new LightBulb[2];
          lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
          lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
-
-         //todo: remove when created a new controller
          joystickController = new JoystickController(user, JoystickSurface.getJoystickSurfaceWidth(), JoystickSurface.getJoystickSurfaceHeight());
-         gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());
+         if (user.getType() == PlayerType.FLUFFY){
+             gameSurfaceController = new FluffyGameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), GameSurface.getRec());
+             Log.i("GameThread", "FluffySurfaceController initialized.");
+         } else {
+             gameSurfaceController = new GameSurfaceController(user, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight());
+             Log.i("GameThread", "SurfaceController initialized.");
+         }
          MiniMap.setup();
          GameSurface.setup(gameSurfaceController);
          if(StartActivity.deviceType == DeviceType.CLIENT) {

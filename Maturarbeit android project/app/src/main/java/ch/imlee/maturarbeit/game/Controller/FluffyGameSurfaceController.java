@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import ch.imlee.maturarbeit.R;
@@ -32,7 +33,7 @@ public class FluffyGameSurfaceController extends GameSurfaceController{
     @Override
     public void update() {
         super.update();
-        if (Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE){
+        if (focusedPlayer!= null && Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE){
             focusedPlayer = null;
         }
     }
@@ -41,10 +42,10 @@ public class FluffyGameSurfaceController extends GameSurfaceController{
     public void render(Canvas canvas) {
         if (focusedPlayer != null){
             if (lastPlayerRadius != focusedPlayer.getPlayerRadius()) {
-                scaledFocusBmp = Bitmap.createScaledBitmap(FOCUS_BMP, (int) (focusedPlayer.getPlayerRadius() * Map.TILE_SIDE * 2), (int) (focusedPlayer.getPlayerRadius() * Map.TILE_SIDE * 2), false);
                 lastPlayerRadius = focusedPlayer.getPlayerRadius();
+                scaledFocusBmp = Bitmap.createScaledBitmap(FOCUS_BMP, (int) (lastPlayerRadius * Map.TILE_SIDE * 2), (int) (lastPlayerRadius * Map.TILE_SIDE * 2), false);
             }
-            canvas.drawBitmap(scaledFocusBmp, (float) (focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate() + halfSurfaceWidth - Map.TILE_SIDE / 2), (float) (focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate() + halfSurfaceHeight - Map.TILE_SIDE / 2), null);
+            canvas.drawBitmap(scaledFocusBmp, (float) ((focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate() - lastPlayerRadius) * Map.TILE_SIDE + halfSurfaceWidth), (float) ((focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate() - lastPlayerRadius) * Map.TILE_SIDE + halfSurfaceHeight), null);
         }
     }
 
@@ -53,9 +54,10 @@ public class FluffyGameSurfaceController extends GameSurfaceController{
         synchronized (controllerState) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 for (Player player : GameThread.getPlayerArray()) {
-                    if (Math.pow((user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE) - player.getXCoordinate(), 2) + Math.pow((user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE) - player.getYCoordinate(), 2) < Math.pow(user.getPlayerRadius(), 2)) {
+                    if (Math.pow(user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE - player.getXCoordinate(), 2) + Math.pow(user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE - player.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
                         controllerState = ControllerState.FOCUS;
                         focusedPlayer = player;
+                        Log.i("FluffyController", "player focused");
                         return false;
                     }
                 }

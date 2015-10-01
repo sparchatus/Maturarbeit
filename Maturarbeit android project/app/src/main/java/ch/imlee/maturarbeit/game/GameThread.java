@@ -191,6 +191,7 @@ public class GameThread extends Thread implements Tick{
                                 lightBulb.render(c);
                             }
                             joystickController.render(c);
+                            gameSurfaceController.render(c);
                             miniMap.render(c);
                             //todo:display pause button
                         } else {
@@ -286,12 +287,12 @@ public class GameThread extends Thread implements Tick{
     }
 
      public  void setStartData(GameStartEvent startData){
-         Log.d("initialization", "Start data is initialized");
+         Log.i("initialization", "Start data is initialized");
          map = new Map(GameSurface.getRec(), startData.getMapID());
          playerArray = new Player[startData.getPlayerCount()];
          for (byte i = 0; i < startData.getPlayerCount(); i++){
             if (i == startData.getUserID()){
-                Log.d("user", "The user is being initialized.");
+                Log.i("user", "The user is being initialized.");
                 switch (startData.getPlayerTypes().get(i)){
                     case FLUFFY:user = new Fluffy(map, startData.getTeams().get(i), i);
                         break;
@@ -299,11 +300,11 @@ public class GameThread extends Thread implements Tick{
                         break;
                     case SLIME:user = new Slime(map, startData.getTeams().get(i), i);
                         break;
-                    case NULL: Log.d("fail", "user PlayerType is NULL");
+                    case NULL: Log.i("fail", "user PlayerType is NULL");
                 }
                 playerArray[i] = user;
             }else {
-                Log.d("player", "A Player is being initialized");
+                Log.i("player", "A Player is being initialized");
                 playerArray[i] = new Player(startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i);
             }
          }

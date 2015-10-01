@@ -51,10 +51,12 @@ public class FluffyGameSurfaceController extends GameSurfaceController{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.i("FluffyController", "onTouchEvent called");
         synchronized (controllerState) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.i("FluffyController", "ACTION_DOWN Event");
                 for (Player player : GameThread.getPlayerArray()) {
-                    if (Math.pow(user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE - player.getXCoordinate(), 2) + Math.pow(user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE - player.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
+                    if (player.TEAM!=user.TEAM&&Math.pow(user.getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE - player.getXCoordinate(), 2) + Math.pow(user.getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE - player.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
                         controllerState = ControllerState.FOCUS;
                         focusedPlayer = player;
                         Log.i("FluffyController", "player focused");
@@ -70,6 +72,7 @@ public class FluffyGameSurfaceController extends GameSurfaceController{
     }
 
     public static void nullFocusedPlayer(){
+        Log.i("FluffyController", "player nulled");
         focusedPlayer = null;
     }
 }

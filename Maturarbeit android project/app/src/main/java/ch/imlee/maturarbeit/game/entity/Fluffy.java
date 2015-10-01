@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -21,23 +22,18 @@ public class Fluffy extends User {
     @Override
     public void update() {
         super.update();
-        mana += speed / maxSpeed;
+        Log.i("Fluffy",String.valueOf(mana));
+        mana += 2* speed / maxSpeed;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }
-    }
-
-    @Override
-    public Canvas render(Canvas canvas) {
-        canvas =  super.render(canvas);
-        return canvas;
     }
 
     public void skillActivation() {
         Player focusedPlayer = FluffyGameSurfaceController.getFocusedPlayer();
         if (mana == MAX_MANA && focusedPlayer != null) {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
-            new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
+            new StunEvent(ID, focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             FluffyGameSurfaceController.nullFocusedPlayer();
             mana -= MANA_CONSUMPTION;
         }

@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game.entity;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
@@ -115,15 +116,18 @@ public class User extends Player {
                     }
                     particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
                 }
-                if (bulbRequestSent && lightBulb != null){
-                    pickUpBulb = null;
-                    pickUpTickCount = 0;
+                if (bulbRequestSent){
+                    if (lightBulb != null) {
+                        pickUpBulb = null;
+                        pickUpTickCount = 0;
+                    }
                 }  else if (pickUpBulb != null) {
                     pickUpTickCount++;
                     if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
                         pickUpTickCount = 0;
                         pickUpBulb = null;
                     } else if (pickUpTickCount >= PICK_UP_TICKS) {
+                        Log.i("User","LightBulbServer sent");
                         new LightBulbServerEvent(this, pickUpBulb.ID).send();
                         bulbRequestSent = true;
                     }

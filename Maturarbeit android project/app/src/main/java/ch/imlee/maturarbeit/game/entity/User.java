@@ -127,8 +127,13 @@ public class User extends Player {
                         pickUpTickCount = 0;
                         pickUpBulb = null;
                     } else if (pickUpTickCount >= PICK_UP_TICKS) {
-                        Log.i("User","LightBulbServer sent");
-                        new LightBulbServerEvent(this, pickUpBulb.ID).send();
+                        Log.i("User", "LightBulbServer sent");
+                        if (StartActivity.deviceType==DeviceType.CLIENT){
+                            new LightBulbServerEvent(this, pickUpBulb.ID).send();
+                        }else{
+                            new LightBulbEvent(pickUpBulb.ID).send();
+                            bulbReceived(pickUpBulb.ID);
+                        }
                         bulbRequestSent = true;
                     }
                 } else {

@@ -32,6 +32,11 @@ public class LightBulbEvent extends GameActionEvent{
         LIGHT_BULB_ID = lightBulbServerEvent.getLIGHT_BULB_ID();
         PICKED_UP = true;
     }
+    public LightBulbEvent(byte lightBulbID){
+        super((byte)0);
+        PICKED_UP = true;
+        LIGHT_BULB_ID = lightBulbID;
+    }
 
     public LightBulbEvent(byte lightBulbID, byte playerID){
         super(playerID);

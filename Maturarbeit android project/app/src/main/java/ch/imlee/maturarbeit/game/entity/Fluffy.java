@@ -22,7 +22,6 @@ public class Fluffy extends User {
     @Override
     public void update() {
         super.update();
-        Log.i("Fluffy",String.valueOf(mana));
         mana += 2* speed / maxSpeed;
         if (mana >= MAX_MANA){
             mana = MAX_MANA;

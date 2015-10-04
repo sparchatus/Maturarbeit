@@ -295,8 +295,8 @@ public class GameThread extends Thread implements Tick{
          map = new Map(GameSurface.getRec(), startData.getMapID());
          playerArray = new Player[startData.getPlayerCount()];
          particleListArray = new ArrayList[startData.getPlayerCount()];
-         for (ArrayList<Particle> particleList:particleListArray){
-             particleList = new ArrayList<>();
+         for(int i = 0; i < particleListArray.length; ++i){
+             particleListArray[i] = new ArrayList<>();
          }
          for (byte i = 0; i < startData.getPlayerCount(); i++){
             if (i == startData.getUserID()){

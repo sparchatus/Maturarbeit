@@ -35,7 +35,7 @@ public class Player extends Entity implements Tick {
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     private final int DEATH_TIME = 5 * Tick.TICK;
     public int reviveTick;
-    protected static int strength;
+    protected int strength;
 
     public static final float START_RADIUS = 0.4f;
     protected float playerRadius;
@@ -137,7 +137,7 @@ public class Player extends Entity implements Tick {
         this.stunTick = stunTick;
     }
 
-    public static void particleHit(){
+    public void particleHit(){
         strength -= 10;
     }
 

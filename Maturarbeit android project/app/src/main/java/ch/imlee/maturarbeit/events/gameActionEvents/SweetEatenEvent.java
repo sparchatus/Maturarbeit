@@ -18,7 +18,7 @@ public class SweetEatenEvent extends GameActionEvent {
     }
     @Override
     public String toString() {
-        return super.toString() + 'E' + ID + 'i' + senderID;
+        return super.toString() + 'X' + ID + 'i' + senderID;
     }
     @Override
     public void apply(){

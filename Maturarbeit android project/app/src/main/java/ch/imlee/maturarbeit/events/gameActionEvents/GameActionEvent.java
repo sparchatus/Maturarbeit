@@ -18,6 +18,8 @@ public class GameActionEvent extends Event {
             case 'B': return new LightBulbEvent(eventString);
             case 'C': return new LightBulbServerEvent(eventString);
             case 'D': return new DeathEvent(eventString);
+            case 'E': return new LightBulbStandEvent(eventString);
+            case 'F': return new LightBulbStandServerEvent(eventString);
             case 'G': return new GameWinEvent(eventString);
             case 'H': return new ParticleHitEvent(eventString);
             case 'I': return new InvisibilityEvent(eventString);
@@ -25,10 +27,10 @@ public class GameActionEvent extends Event {
             case 'M': return new PlayerMotionEvent(eventString);
             case 'P': return new ParticleShotEvent(eventString);
             case 'Q': return new ParticleServerEvent(eventString);
+            case 'R': return new RadiusChangedEvent(eventString);
             case 'S': return new StunEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
-            case 'E': return new SweetEatenEvent(eventString);
-            case 'R': return new RadiusChangedEvent(eventString);
+            case 'X': return new SweetEatenEvent(eventString);
             default:return null;
         }
     }

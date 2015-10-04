@@ -6,6 +6,7 @@ import android.util.Log;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbStandEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbStandServerEvent;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -130,6 +131,7 @@ public class User extends Player {
                     if (lightBulb != null || !pickUpBulb.isPickable()) {
                         pickUpBulb = null;
                         pickUpTickCount = 0;
+                        bulbRequestSent = false;
                     }
                 } else if (pickUpBulb != null) {
                     pickUpTickCount++;
@@ -164,10 +166,14 @@ public class User extends Player {
                 if (lightBulb != null) {
                     for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
                         if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
-                            if (!standRequestSent) {
-                                new LightBulbStandServerEvent(lightBulb.ID, lightBulbStand.ID);
-                                standRequestSent = true;
-                                requestedStandID = lightBulbStand.ID;
+                            if (StartActivity.deviceType == DeviceType.CLIENT) {
+                                if (!standRequestSent) {
+                                    new LightBulbStandServerEvent(lightBulbStand.ID).send();
+                                    standRequestSent = true;
+                                    requestedStandID = lightBulbStand.ID;
+                                }
+                            }else{
+                                new LightBulbStandServerEvent(lightBulbStand.ID).apply();
                             }
                         }
                     }

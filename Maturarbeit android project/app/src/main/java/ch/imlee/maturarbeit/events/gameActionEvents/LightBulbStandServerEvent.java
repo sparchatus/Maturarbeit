@@ -17,7 +17,7 @@ public class LightBulbStandServerEvent extends GameActionEvent {
         STAND_ID = Byte.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
     }
 
-    public LightBulbStandServerEvent(byte lightBulbID, byte standID){
+    public LightBulbStandServerEvent(byte standID){
         super(GameThread.getUser().getID());
         serverEvent = true;
         STAND_ID = standID;

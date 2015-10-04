@@ -1,19 +1,20 @@
 package ch.imlee.maturarbeit.game;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+
 import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
-import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 
 /**
@@ -65,43 +66,32 @@ public class GameServerThread extends GameThread{
             spawnSweet();
             lastSweetSpawn = getSynchronizedTick();
         }
-        for (Particle particle:particleList) {
-            if(particle != null) {
-                // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
-                if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_MAP_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
-                    removeParticle(particle.getID());
-                    new ParticleHitEvent(particle.getID(), (byte)-1).send();
-                    continue;
-                }
-                for (Player player : playerArray) {
-                    if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) +
-                            Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
-                        new ParticleHitEvent(particle.getID(), player.getID()).send();
-                        player.particleHit();
-                        break;
+        particlePhysics();
+    }
+
+    //todo:review
+    public void particlePhysics(){
+        for (ArrayList<Particle> particleList:particleListArray) {
+            for (Particle particle : particleList) {
+                if (particle != null) {
+                    // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
+                    if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_MAP_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
+                        ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte)-1);
+                        particleHitEvent.send();
+                        particleHitEvent.apply();
+                        continue;
+                    }
+                    for (Player player : playerArray) {
+                        if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
+                            ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), player.getID());
+                            particleHitEvent.send();
+                            particleHitEvent.apply();
+                            break;
+                        }
                     }
                 }
             }
         }
-    }
-
-    public static int getCurrentParticleID(){
-        if (!freeParticleIDs.isEmpty()){
-            int currentID = freeParticleIDs.get(0);
-            freeParticleIDs.remove(0);
-            Log.v("particle", "particle id: " + currentID);
-            return currentID;
-        }
-
-        Log.v("particle", "particle id: " + currentParticleID);
-        currentParticleID++;
-        return currentParticleID - 1;
-    }
-
-    @Override
-    public void removeParticle(int ID) {
-        super.removeParticle(ID);
-        freeParticleIDs.add(ID);
     }
 
     public static void spawnSweet(){

@@ -5,16 +5,12 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbStandEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbStandServerEvent;
-import ch.imlee.maturarbeit.game.GameServerThread;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbServerEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.ParticleServerEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.LightBulbStand;
@@ -59,8 +55,8 @@ public class User extends Player {
     protected final float START_Y;
     protected final float SLOW_AMOUNT = 1 / 2f;
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
-    private final float MIN_RADIUS = startRadius;
-    private final float MAX_RADIUS = startRadius *3;
+    private final float MIN_RADIUS = START_RADIUS;
+    private final float MAX_RADIUS = START_RADIUS *3;
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
     protected float maxSpeed = 4f / Tick.TICK;
@@ -117,14 +113,10 @@ public class User extends Player {
                         lastWeightLoss = GameThread.getSynchronizedTick();
                     }
                 }
-                if (shooting && particleCoolDownTick <= GameThread.getSynchronizedTick() && !stunned) {
-                    if (StartActivity.deviceType == DeviceType.CLIENT) {
-                        new ParticleServerEvent(this, GameThread.getSynchronizedTick()).send();
-                    } else {
-                        ParticleShotEvent particleShotEvent = new ParticleShotEvent(this, (int) GameThread.getSynchronizedTick(), GameServerThread.getCurrentParticleID());
-                        particleShotEvent.send();
-                        particleShotEvent.apply();
-                    }
+                if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
+                    ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getSynchronizedTick(), GameThread.getCurrentFreeParticleID());
+                    particleShotEvent.send();
+                    particleShotEvent.apply();
                     particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
                 }
                 if (bulbRequestSent) {
@@ -425,6 +417,12 @@ public class User extends Player {
         SweetEatenEvent sweetEatenEvent = new SweetEatenEvent(sweet);
         sweetEatenEvent.send();
         sweetEatenEvent.apply();
+    }
+
+    @Override
+    protected void death() {
+        super.death();
+        bulbLost();
     }
 
     public void skillActivation(){

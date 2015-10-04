@@ -98,9 +98,6 @@ public class Util{
         } catch (Exception e){
             e.printStackTrace();
             if(e instanceof NullPointerException){
-
-
-
                 //TODO
                 // if client: connection to host lost, stop game
                 // if host: connection to one client lost, if it was the only client, stop game, else send GameLeftEvent and handle it

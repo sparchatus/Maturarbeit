@@ -60,7 +60,6 @@ public class LightBulb extends Entity{
 
     public void fallOnFloor(){
         possessor = null;
-        //todo:check if landed on a impossible location?
     }
 
     public void putOnLightBulbStand(LightBulbStand lightBulbStand){

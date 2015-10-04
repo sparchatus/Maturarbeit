@@ -12,7 +12,6 @@ import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
-import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -22,39 +21,38 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class Player extends Entity implements Tick {
 
-    protected final byte ID;
-    public final byte TEAM;
-    protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
-    protected final int BAR_HEIGHT;
-    public static final float startRadius = 0.4f;
-    protected float playerRadius;
-    protected final int MAX_STRENGTH = 100;
-    private final int DEATH_TIME = 5 * Tick.TICK;
-
     protected boolean stunned;
     protected boolean invisible;
     protected boolean slimy;
     protected boolean dead;
+
+    protected final byte ID;
+    public final byte TEAM;
+
+    protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
+    protected final int BAR_HEIGHT;
+    protected final int MAX_STRENGTH = 100;
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
-    protected double lastSlimeEjection = 0;
-    protected SlimeSound slimeSound = new SlimeSound();
-
+    private final int DEATH_TIME = 5 * Tick.TICK;
     public int reviveTick;
-    protected int strength;
-    protected LightBulb lightBulb;
+    protected static int strength;
 
+    public static final float START_RADIUS = 0.4f;
+    protected float playerRadius;
 
+    protected double lastSlimeEjection = 0;
     protected double stunTick;
-
     protected double angle;
 
-    protected final PlayerType TYPE;
-    protected User user;
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
+    protected final Bitmap STUN_BMP;
+    protected final PlayerType TYPE;
+    protected SlimeSound slimeSound = new SlimeSound();
+    protected LightBulb lightBulb;
+    protected User user;
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
-    protected final Bitmap STUN_BMP;
     protected  Bitmap scaledStunBmp;
 
     public Player(PlayerType type, Map map, byte team, byte playerId) {
@@ -97,6 +95,9 @@ public class Player extends Entity implements Tick {
         if (stunned){
             canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
         }
+        if (lightBulb != null){
+            canvas.drawRect(xCoordinate - START_RADIUS, yCoordinate - START_RADIUS - BAR_HEIGHT, xCoordinate + START_RADIUS, yCoordinate - START_RADIUS, BAR_BACKGROUND_COLOR);
+            canvas.drawRect(xCoordinate - START_RADIUS, yCoordinate - START_RADIUS - BAR_HEIGHT, (xCoordinate + START_RADIUS) * strength / MAX_STRENGTH, yCoordinate - START_RADIUS, STRENGTH_BAR_COLOR);        }
         return canvas;
     }
 
@@ -126,14 +127,18 @@ public class Player extends Entity implements Tick {
         new DeathEvent(true).send();
         new DeathEvent(true).apply();
         reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
-        setPlayerRadius(startRadius);
-        new RadiusChangedEvent(startRadius).send();
+        setPlayerRadius(START_RADIUS);
+        new RadiusChangedEvent(START_RADIUS).send();
     }
 
     public void stun(double stunTick){
         new StunSound().start(TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
+    }
+
+    public static void particleHit(){
+        strength -= 10;
     }
 
     public SlimeSound getSlimeSound(){
@@ -194,10 +199,6 @@ public class Player extends Entity implements Tick {
 
     public boolean getDead(){
         return dead;
-    }
-
-    public void particleHit(){
-        strength -=10;
     }
 
     public float getPlayerRadius(){

@@ -52,7 +52,6 @@ public class Map implements MapDimensions {
         blueCoordinateDistributionIndex = -1;
         greenCoordinateDistributionIndex = -1;
     }
-    //todo:enhance the rendering and the maps
     public void render(Canvas canvas){
         User user = GameThread.getUser();
         int  userXCoordinateInt = (int)(user.getXCoordinate());
@@ -66,17 +65,7 @@ public class Map implements MapDimensions {
                 }else {
                     currentBmp = TILE_MAP[userXCoordinateInt + x][userYCoordinateInt + y].BMP;
                 }
-                /*
-                try {
-                    currentBmp = TILE_MAP[userXCoordinateInt + x][userYCoordinateInt + y].BMP;
-                } catch(ArrayIndexOutOfBoundsException e){
-                    // this means its outside the map, so its set to a void tile
-                    currentBmp = new VoidTile().BMP;
-                }
-                */
                 canvas.drawBitmap(currentBmp, halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE, halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE, null);
-
-
             }
         }
     }

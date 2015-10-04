@@ -1,19 +1,19 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
-import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /**
- * Created by Sandro on 23.08.2015.
+ * Created by Sandro on 04.10.2015.
  */
 public class ParticleHitEvent extends GameActionEvent{
 
-    private final int PARTICLE_ID;
-    //if no player was hit: ID = -1
-    private final byte PLAYER_HIT_ID;
+    public final int PARTICLE_ID;
+    //-1 when a wall is hit
+    public final byte PLAYER_HIT_ID;
 
     public ParticleHitEvent(String eventString){
-        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
+        super((byte)0);
         PARTICLE_ID = Integer.valueOf(eventString.substring(eventString.indexOf("p") + 1, eventString.indexOf("h")));
         PLAYER_HIT_ID = Byte.valueOf(eventString.substring(eventString.indexOf("h") + 1, eventString.indexOf("i")));
     }
@@ -26,12 +26,14 @@ public class ParticleHitEvent extends GameActionEvent{
 
     @Override
     public String toString() {
-        return super.toString() + 'H' + 'p' + PARTICLE_ID+ 'h' + PLAYER_HIT_ID + 'i' + senderID;
+        return super.toString() + 'H' + 'p' + PARTICLE_ID + 'h' + PLAYER_HIT_ID+ 'i' + senderID;
     }
 
     @Override
     public void apply() {
-        GameClient.getGameThread().playerHit(PLAYER_HIT_ID);
-        GameClient.getGameThread().removeParticle(PARTICLE_ID);
+        GameThread.removeParticle(this);
+        if (PLAYER_HIT_ID !=-1){
+            GameThread.getPlayerArray()[PLAYER_HIT_ID].particleHit();
+        }
     }
 }

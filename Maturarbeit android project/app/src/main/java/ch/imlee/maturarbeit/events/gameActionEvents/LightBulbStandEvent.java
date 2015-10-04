@@ -24,12 +24,6 @@ public class LightBulbStandEvent extends GameActionEvent{
         STAND_ID = lightBulbStandServerEvent.STAND_ID;
     }
 
-    public LightBulbStandEvent(byte standID){
-        super((byte)0);
-        POSSESSOR_ID = 0;
-        STAND_ID = standID;
-    }
-
     @Override
     public String toString() {
         return super.toString() + 'E' + 'p' + POSSESSOR_ID + 's' + STAND_ID + 'i' + senderID;

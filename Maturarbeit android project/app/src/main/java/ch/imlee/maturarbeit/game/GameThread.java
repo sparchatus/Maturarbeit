@@ -6,10 +6,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.View;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,6 +17,8 @@ import java.util.Set;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.Controller.GameSurfaceController;
@@ -72,8 +73,7 @@ public class GameThread extends Thread implements Tick{
     protected static User user;
     protected static Player[] playerArray;
     protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
-    protected static ArrayList<Particle> particleList = new ArrayList<>();
-    protected static ArrayList<Integer> freeParticleIDs = new ArrayList<>();
+    protected static ArrayList<Particle>[] particleListArray;
     public static ArrayList<Sweet> sweets = new ArrayList<>();
     public static Set<Integer> sweetsToRemove = new HashSet<>();
     private static LightBulb[] lightBulbArray;
@@ -149,9 +149,11 @@ public class GameThread extends Thread implements Tick{
                 --i;
             }
         }
-        for (Particle particle:particleList) {
-            if(particle != null) {
-                particle.update();
+        for (ArrayList<Particle> particleList:particleListArray) {
+            for (Particle particle : particleList) {
+                if (particle != null) {
+                    particle.update();
+                }
             }
         }
         for (LightBulb lightBulb: lightBulbArray){
@@ -178,9 +180,11 @@ public class GameThread extends Thread implements Tick{
                             for (Sweet sweet : sweets) {
                                 sweet.render(c);
                             }
-                            for (Particle particle : particleList) {
-                                if (particle != null) {
-                                    particle.render(c);
+                            for (ArrayList<Particle> particleList:particleListArray) {
+                                for (Particle particle : particleList) {
+                                    if (particle != null) {
+                                        particle.render(c);
+                                    }
                                 }
                             }
                             for (Player player : playerArray) {
@@ -290,6 +294,10 @@ public class GameThread extends Thread implements Tick{
          Log.i("initialization", "Start data is initialized");
          map = new Map(GameSurface.getRec(), startData.getMapID());
          playerArray = new Player[startData.getPlayerCount()];
+         particleListArray = new ArrayList[startData.getPlayerCount()];
+         for (ArrayList<Particle> particleList:particleListArray){
+             particleList = new ArrayList<>();
+         }
          for (byte i = 0; i < startData.getPlayerCount(); i++){
             if (i == startData.getUserID()){
                 Log.i("user", "The user is being initialized.");
@@ -336,27 +344,30 @@ public class GameThread extends Thread implements Tick{
         new PlayerMotionEvent(user).send();
     }
 
-    public void addParticle(Particle newParticle){
-        // if particleList has too few indexes, add nulls until it has enough to save the newParticle at its right place
-        if(newParticle.getID() == particleList.size()){
-            particleList.add(newParticle);
-            return;
-        }
-        particleList.set(newParticle.getID(), newParticle);
-    }
-
-    public void removeParticle(int ID){
-        particleList.set(ID, null);
-    }
-
-    public void playerHit(byte playerID){
-        if (playerID < 0)return;
-        playerArray[playerID].particleHit();
-    }
-
     public static void addSlimeTrail(SlimeTrail slimeTrail) {
         slimeTrailList.add(slimeTrail);
         Log.v("slime", "SlimeTrail added");
+    }
+
+    public static void addParticle(ParticleShotEvent pSE){
+        if (pSE.PARTICLE_ID < particleListArray[pSE.getSenderID()].size()) {
+            particleListArray[pSE.getSenderID()].set(pSE.PARTICLE_ID, new Particle(pSE.X_COORDINATE, pSE.Y_COORDINATE, pSE.ANGLE, playerArray[pSE.getSenderID()].TEAM, pSE.SPAWN_TICK, pSE.PARTICLE_ID));
+        }else{
+            particleListArray[pSE.getSenderID()].add(pSE.PARTICLE_ID, new Particle(pSE.X_COORDINATE, pSE.Y_COORDINATE, pSE.ANGLE, playerArray[pSE.getSenderID()].TEAM, pSE.SPAWN_TICK, pSE.PARTICLE_ID));
+        }
+    }
+
+    public static void removeParticle(ParticleHitEvent pHE){
+        particleListArray[pHE.getSenderID()].set(pHE.PARTICLE_ID, null);
+    }
+
+    public static int getCurrentFreeParticleID(){
+        for (int i = 0; i < particleListArray[user.getID()].size(); i++){
+            if (particleListArray[user.getID()].get(i) == null){
+                return i;
+            }
+        }
+        return particleListArray[user.getID()].size();
     }
 
     /**
@@ -386,10 +397,6 @@ public class GameThread extends Thread implements Tick{
 
     public static LightBulb[] getLightBulbArray() {
         return lightBulbArray;
-    }
-
-    public static ArrayList<Particle> getParticleList(){
-        return particleList;
     }
 
     public static ArrayList<SlimeTrail> getSlimeTrailList(){

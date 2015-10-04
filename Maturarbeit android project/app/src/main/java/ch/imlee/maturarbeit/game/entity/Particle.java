@@ -23,7 +23,7 @@ public class Particle extends Entity {
     private float ySpeed;
     private final int ID;
 
-    public Particle(float xCoordinate, float yCoordinate, byte team, double angle, double spawnTick, int ID) {
+    public Particle(float xCoordinate, float yCoordinate, double angle, byte team, double spawnTick, int ID) {
         super(xCoordinate, yCoordinate);
         TEAM = team;
         color = new Paint();

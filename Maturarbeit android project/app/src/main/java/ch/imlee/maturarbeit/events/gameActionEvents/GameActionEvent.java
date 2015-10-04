@@ -26,7 +26,6 @@ public class GameActionEvent extends Event {
             case 'L': return new SlimeEvent(eventString);
             case 'M': return new PlayerMotionEvent(eventString);
             case 'P': return new ParticleShotEvent(eventString);
-            case 'Q': return new ParticleServerEvent(eventString);
             case 'R': return new RadiusChangedEvent(eventString);
             case 'S': return new StunEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);

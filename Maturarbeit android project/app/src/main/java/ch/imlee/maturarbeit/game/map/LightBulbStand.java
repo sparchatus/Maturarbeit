@@ -8,19 +8,27 @@ import android.graphics.Bitmap;
 public class LightBulbStand extends Tile {
     public final byte TEAM;
     public final float CENTER_X, CENTER_Y;
+    public final byte ID;
 
     private boolean isFree;
 
-    public LightBulbStand(int xCoordinate, int yCoordinate, Bitmap bmp, byte team) {
+    public LightBulbStand(int xCoordinate, int yCoordinate, Bitmap bmp, byte team, byte id) {
         super(bmp, true, false);
         TEAM = team;
         CENTER_X = xCoordinate + 0.5f;
         CENTER_Y = yCoordinate + 0.5f;
         isFree = true;
+        ID = id;
     }
 
-    public void setIsFree(boolean isFree){
-        this.isFree = isFree;
+    public LightBulbStand putLightBulbOn(){
+        isFree = false;
+        return this;
+    }
+
+    public LightBulbStand removeLightbulb(){
+        isFree = true;
+        return null;
     }
 
     public boolean isFree() {

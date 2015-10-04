@@ -18,20 +18,16 @@ public class LightBulb extends Entity{
     private final int SIDE;
     public final byte ID;
     private Player possessor;
-    // is -1 when not possessed by a lightBulbStand
-    private byte lightBulbStandTeam;
-    private boolean pickable;
+    private LightBulbStand lightBulbStand;
 
     public LightBulb(byte team, byte ID) {
         super(Map.getFriendlyLightBulbStands(team)[0].CENTER_X, Map.getFriendlyLightBulbStands(team)[0].CENTER_Y);
-        Map.getFriendlyLightBulbStands(team)[0].setIsFree(false);
         SIDE = Map.TILE_SIDE;
         LIGHT_BULB_OFF = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE, SIDE, false);
         LIGHT_BULB_OFF_SMALL = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_off), SIDE / 3 * 2, SIDE / 3 * 2, false);
         LIGHT_BULB_ON_SMALL = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.light_bulb_on), SIDE / 3 * 2, SIDE / 3 * 2, false);
         this.ID = ID;
-        lightBulbStandTeam = team;
-        pickable = true;
+        lightBulbStand = Map.getFriendlyLightBulbStands(team)[0].putLightBulbOn();
     }
 
     public void update(){
@@ -55,46 +51,41 @@ public class LightBulb extends Entity{
 
     public void pickUp(Player possessor){
         this.possessor = possessor;
-        if (possessor!= null){
-            xCoordinate = possessor.getXCoordinate();
-            yCoordinate = possessor.getYCoordinate();
-            pickable = false;
+        if (lightBulbStand != null){
+            lightBulbStand = lightBulbStand.removeLightbulb();
         }
-        lightBulbStandTeam = -1;
+        xCoordinate = possessor.getXCoordinate();
+        yCoordinate = possessor.getYCoordinate();
     }
 
     public void fallOnFloor(){
-        pickable = true;
         possessor = null;
-        lightBulbStandTeam = ID;
-        // TODO: maybe not optimal, lightbulb just gets teleported to stand that way
-        xCoordinate = Map.getFriendlyLightBulbStands(ID)[0].CENTER_X;
-        yCoordinate = Map.getFriendlyLightBulbStands(ID)[0].CENTER_Y;
         //todo:check if landed on a impossible location?
     }
 
     public void putOnLightBulbStand(LightBulbStand lightBulbStand){
-        if (!lightBulbStand.isFree()){
-            return;
-        }
-        lightBulbStand.setIsFree(false);
         possessor = null;
-        pickable = true;
-        lightBulbStandTeam = lightBulbStand.TEAM;
+        this.lightBulbStand = lightBulbStand.putLightBulbOn();
         xCoordinate = lightBulbStand.CENTER_X;
         yCoordinate = lightBulbStand.CENTER_Y;
     }
 
-    public Player getPossessor() {
-        return possessor;
+    public LightBulbStand getLightBulbStand(){
+        return lightBulbStand;
     }
 
-    public byte getLightBulbStandTeam(){
-        return lightBulbStandTeam;
+    public byte getLightBulbStandTeam (){
+        if (lightBulbStand == null){
+            return (byte)-1;
+        }
+        return lightBulbStand.TEAM;
     }
 
     public boolean isPickable(){
-        return pickable;
+        if (possessor == null){
+            return true;
+        }
+        return false;
     }
 
     public byte getID(){

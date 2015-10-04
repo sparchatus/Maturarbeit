@@ -12,6 +12,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
+import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -179,6 +180,11 @@ public class Player extends Entity implements Tick {
 
     public void bulbLost(){
         lightBulb.fallOnFloor();
+        lightBulb = null;
+    }
+
+    public void putBulbOnStand(byte lightBulbStandID){
+        lightBulb.putOnLightBulbStand(Map.getFriendlyLightBulbStands(TEAM)[lightBulbStandID]);
         lightBulb = null;
     }
 

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.GameWinEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.LightBulbStandServerEvent;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
@@ -15,6 +16,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.ParticleServerEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
+import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.utils.Vector2D;
@@ -27,42 +29,50 @@ import ch.imlee.maturarbeit.activities.StartActivity;
  */
 public class User extends Player {
 
-    protected final float START_X;
-    protected final float START_Y;
+    private boolean falling = false;
+    /**
+     * is true when the particleButton is pressed
+     */
+    protected boolean shooting;
+    /**
+     * is true when the player has changed his facing direction(#angle) during the last tick
+     */
+    protected boolean angleChanged;
+    /**
+     * is true after the LightBulbServerEvent is sent until the lightBulbIsPickedUp
+     */
+    private boolean bulbRequestSent;
 
-    protected final Paint SKILL_BAR_COLOR;
-    protected final Paint PICK_UP_BAR_COLOR;
+    private boolean standRequestSent = false;
+
+    private byte requestedStandID;
+
     protected final int MAX_MANA = 1000;
     protected final int PARTICLE_COOL_DOWN = 1000 / TIME_PER_TICK;
     protected final int PICK_UP_RANGE = 2;
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
-    protected final float SLOW_AMOUNT = 1 / 2f;
-    protected LightBulb pickUpBulb = null;
+    protected int pickUpTickCount;
+    private int weightLossCooldown = Tick.TICK * 3;
 
+    protected final float START_X;
+    protected final float START_Y;
+    protected final float SLOW_AMOUNT = 1 / 2f;
+    private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
     private final float MIN_RADIUS = startRadius;
     private final float MAX_RADIUS = startRadius *3;
     private final float RADIUS_CHANGE = 0.2f;
-    private double lastWeightLoss = 0;
-    private int weightLossCooldown = Tick.TICK * 3;
-
-    private boolean falling = false;
-    private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
-
-    protected boolean shooting;
-
-    protected int pickUpTickCount;
-    protected Vector2D newPosition;
-    protected float maxSpeed = 4f / Tick.TICK;
-
-    protected double particleCoolDownTick;
-
-    protected boolean angleChanged;
     protected float mana;
-
-    private boolean bulbRequestSent;
-
+    protected float maxSpeed = 4f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed is the distance it travelled in the last update
     protected float velocity, speed;
+
+    protected double particleCoolDownTick;
+    private double lastWeightLoss = 0;
+
+    protected final Paint SKILL_BAR_COLOR;
+    protected final Paint PICK_UP_BAR_COLOR;
+    protected LightBulb pickUpBulb = null;
+    protected Vector2D newPosition;
     protected Map map;
 
     public User(PlayerType type, Map map, byte team, byte playerId) {
@@ -116,42 +126,50 @@ public class User extends Player {
                     }
                     particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
                 }
-                if (bulbRequestSent){
-                    if (lightBulb != null) {
+                if (bulbRequestSent) {
+                    if (lightBulb != null || !pickUpBulb.isPickable()) {
                         pickUpBulb = null;
                         pickUpTickCount = 0;
                     }
-                }  else if (pickUpBulb != null) {
+                } else if (pickUpBulb != null) {
                     pickUpTickCount++;
-                    if (Math.sqrt(Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2)) > PICK_UP_RANGE) {
+                    if (Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2) > PICK_UP_RANGE * PICK_UP_RANGE) {
                         pickUpTickCount = 0;
                         pickUpBulb = null;
                     } else if (pickUpTickCount >= PICK_UP_TICKS) {
                         Log.i("User", "LightBulbServer sent");
-                        if (StartActivity.deviceType==DeviceType.CLIENT){
+                        if (StartActivity.deviceType == DeviceType.CLIENT) {
                             new LightBulbServerEvent(this, pickUpBulb.ID).send();
-                        }else{
+                        } else {
                             new LightBulbEvent(pickUpBulb.ID).send();
                             bulbReceived(pickUpBulb.ID);
                         }
                         bulbRequestSent = true;
                     }
-                } else {
-                    if (lightBulb == null) {
-                        for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
-                            if ((lightBulb.isPickable() || lightBulb.getLightBulbStandTeam() != TEAM) && Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
-                                pickUpBulb = lightBulb;
-                                break;
-                            }
+                } else if (lightBulb == null) {
+                    for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
+                        if (lightBulb.getLightBulbStandTeam() == TEAM || !lightBulb.isPickable()) {
+                            continue;
+                        }
+                        if (Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
+                            pickUpTickCount = 0;
+                            pickUpBulb = lightBulb;
+                            break;
                         }
                     }
                 }
+                if ((standRequestSent&&Map.getFriendlyLightBulbStands(TEAM)[requestedStandID].isFree())||lightBulb==null){
+                    standRequestSent = false;
+                }
                 if (lightBulb != null) {
-                    if(GameThread.getLightBulbArray()[this.getTeam()].getLightBulbStandTeam() == TEAM
-                            && Math.pow(xCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_X, 2)
-                            + Math.pow(yCoordinate - Map.getFriendlyLightBulbStands(TEAM)[1].CENTER_Y, 2) <= Math.pow(PICK_UP_RANGE, 2)){
-                        new GameWinEvent(TEAM).send();
-                        new GameWinEvent(TEAM).apply();
+                    for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
+                        if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
+                            if (!standRequestSent) {
+                                new LightBulbStandServerEvent(lightBulb.ID, lightBulbStand.ID);
+                                standRequestSent = true;
+                                requestedStandID = lightBulbStand.ID;
+                            }
+                        }
                     }
                     strength++;
                     if (strength >= MAX_STRENGTH) {

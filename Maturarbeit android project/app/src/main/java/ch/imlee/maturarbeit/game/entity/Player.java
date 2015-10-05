@@ -71,7 +71,7 @@ public class Player extends Entity implements Tick {
         STUN_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay);
         scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, Map.TILE_SIDE,Map.TILE_SIDE, false);
         TEAM = team;
-        BAR_HEIGHT = Map.TILE_SIDE / 5;
+        BAR_HEIGHT = Map.TILE_SIDE / 4;
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
@@ -95,9 +95,10 @@ public class Player extends Entity implements Tick {
         if (stunned){
             canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
         }
-        if (lightBulb != null){
-            canvas.drawRect(xCoordinate - START_RADIUS, yCoordinate - START_RADIUS - BAR_HEIGHT, xCoordinate + START_RADIUS, yCoordinate - START_RADIUS, BAR_BACKGROUND_COLOR);
-            canvas.drawRect(xCoordinate - START_RADIUS, yCoordinate - START_RADIUS - BAR_HEIGHT, (xCoordinate + START_RADIUS) * strength / MAX_STRENGTH, yCoordinate - START_RADIUS, STRENGTH_BAR_COLOR);        }
+        if (lightBulb != null) {
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - START_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS - BAR_HEIGHT) * Map.TILE_SIDE, (xCoordinate + GameThread.getUser().getXCoordinate() + START_RADIUS) * Map.TILE_SIDE, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS) * Map.TILE_SIDE, BAR_BACKGROUND_COLOR);
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - START_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS - BAR_HEIGHT) * Map.TILE_SIDE, (xCoordinate + GameThread.getUser().getXCoordinate() + START_RADIUS) * Map.TILE_SIDE * strength / MAX_STRENGTH, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS) * Map.TILE_SIDE, BAR_BACKGROUND_COLOR);
+        }
         return canvas;
     }
 

@@ -353,12 +353,12 @@ public class GameThread extends Thread implements Tick{
         if (pSE.PARTICLE_ID < particleListArray[pSE.getSenderID()].size()) {
             particleListArray[pSE.getSenderID()].set(pSE.PARTICLE_ID, new Particle(pSE.X_COORDINATE, pSE.Y_COORDINATE, pSE.ANGLE, playerArray[pSE.getSenderID()].TEAM, pSE.SPAWN_TICK, pSE.PARTICLE_ID));
         }else{
-            particleListArray[pSE.getSenderID()].add(pSE.PARTICLE_ID, new Particle(pSE.X_COORDINATE, pSE.Y_COORDINATE, pSE.ANGLE, playerArray[pSE.getSenderID()].TEAM, pSE.SPAWN_TICK, pSE.PARTICLE_ID));
+            particleListArray[pSE.getSenderID()].add(new Particle(pSE.X_COORDINATE, pSE.Y_COORDINATE, pSE.ANGLE, playerArray[pSE.getSenderID()].TEAM, pSE.SPAWN_TICK, pSE.PARTICLE_ID));
         }
     }
 
     public static void removeParticle(ParticleHitEvent pHE){
-        particleListArray[pHE.getSenderID()].set(pHE.PARTICLE_ID, null);
+        particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
     }
 
     public static int getCurrentFreeParticleID(){

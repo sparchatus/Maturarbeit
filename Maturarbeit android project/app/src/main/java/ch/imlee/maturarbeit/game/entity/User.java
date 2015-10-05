@@ -443,11 +443,16 @@ public class User extends Player {
         super.bulbLost();
     }
 
-    public void angleHasChanged(){
-        angleChanged = true;
-    }
 
     public double getAngle(){
         return angle;
+    }
+
+    @Override
+    public void setAngle(double angle) {
+        super.setAngle(angle);
+        if (angle != this.angle) {
+            angleChanged = true;
+        }
     }
 }

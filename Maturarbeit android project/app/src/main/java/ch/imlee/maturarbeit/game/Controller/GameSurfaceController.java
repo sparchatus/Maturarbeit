@@ -34,9 +34,6 @@ public class GameSurfaceController {
                 }
                 user.setAngle(angle);
                 setPosChanged(false);
-                if (user.getAngle() != angle){
-                    user.angleHasChanged();
-                }
             }
         }
     }

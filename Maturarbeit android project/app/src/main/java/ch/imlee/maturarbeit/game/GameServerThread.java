@@ -71,19 +71,21 @@ public class GameServerThread extends GameThread{
 
     //todo:review
     public void particlePhysics(){
-        for (ArrayList<Particle> particleList:particleListArray) {
-            for (Particle particle : particleList) {
+        ArrayList<Particle> particleList;
+        for (int i = 0; i < particleListArray.length; i++) {
+            particleList = particleListArray[i];
+            for (Particle particle:particleList) {
                 if (particle != null) {
                     // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
                     if ((int) particle.getXCoordinate() < 0 || (int) particle.getYCoordinate() >= map.TILES_IN_MAP_HEIGHT || (int) particle.getXCoordinate() >= map.TILES_IN_MAP_WIDTH || (int) particle.getYCoordinate() < 0 || map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
-                        ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte)-1);
+                        ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte)-1, (byte)i);
                         particleHitEvent.send();
                         particleHitEvent.apply();
                         continue;
                     }
                     for (Player player : playerArray) {
                         if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
-                            ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), player.getID());
+                            ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), player.getID(), (byte)i);
                             particleHitEvent.send();
                             particleHitEvent.apply();
                             break;

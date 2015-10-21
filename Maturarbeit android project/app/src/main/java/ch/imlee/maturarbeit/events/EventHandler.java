@@ -4,6 +4,7 @@ import android.util.Log;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.utils.LogView;
 
 /**
  * Created by Lukas on 11.08.2015.
@@ -18,6 +19,7 @@ public class EventHandler extends Thread {
 
     @Override
     public void run(){
+        LogView.addLog("received event: " + event.toString());
         if(event == null){
             Log.w("event", "event is null, ignoring it...");
             return;

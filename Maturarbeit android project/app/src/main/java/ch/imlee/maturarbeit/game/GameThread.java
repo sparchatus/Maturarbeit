@@ -40,6 +40,7 @@ import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
 import ch.imlee.maturarbeit.views.MiniMap;
@@ -159,6 +160,9 @@ public class GameThread extends Thread implements Tick{
         for (LightBulb lightBulb: lightBulbArray){
             lightBulb.update();
         }
+
+        //TODO: remove logging stuff when not needed anymore
+        LogView.update();
     }
 
     /**
@@ -221,6 +225,7 @@ public class GameThread extends Thread implements Tick{
                     }
                 }
             }
+            LogView.render(c);
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);

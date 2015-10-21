@@ -10,6 +10,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.GameActionEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStateEvent;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.utils.LogView;
 
 /**
  * Created by Sandro on 13.06.2015.
@@ -59,7 +60,9 @@ public class Event {
         } else{
             this.sendAsClient();
         }
-        Log.v("event", "Event sent: " + this.toString());
+        String logText = "Event sent: " + this.toString();
+        LogView.addLog(logText);
+        Log.v("event", logText);
     }
 
     private void sendAsHost(){

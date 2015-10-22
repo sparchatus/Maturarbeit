@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.utils;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
@@ -43,7 +44,15 @@ public class LogView {
     public static void render(Canvas c){
         logPaint.setTextSize(TEXT_SIZE);
         for(int i = 0; i < logs.size(); ++i){
-            c.drawText(logs.get(i), 5, GameSurface.getSurfaceHeight()-i*(TEXT_SIZE+2), logPaint);
+            logPaint.setColor(Color.WHITE);
+            c.drawText(logs.get(i), 4, GameSurface.getSurfaceHeight() - (i + 1) * (TEXT_SIZE + 2), logPaint);
+            c.drawText(logs.get(i), 6, GameSurface.getSurfaceHeight() - (i + 1) * (TEXT_SIZE + 2), logPaint);
+
+            c.drawText(logs.get(i), 5, GameSurface.getSurfaceHeight() - (i + 1) * (TEXT_SIZE + 2) + 1, logPaint);
+            c.drawText(logs.get(i), 5, GameSurface.getSurfaceHeight() - (i + 1) * (TEXT_SIZE+2)-1, logPaint);
+            logPaint.setColor(Color.BLACK);
+            logPaint.setFakeBoldText(false);
+            c.drawText(logs.get(i), 5, GameSurface.getSurfaceHeight()-(i+1)*(TEXT_SIZE+2), logPaint);
         }
     }
 

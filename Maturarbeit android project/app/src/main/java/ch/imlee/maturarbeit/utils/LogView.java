@@ -19,7 +19,7 @@ public class LogView {
     private static final int MAX_LOGS = 20;
     private static final int LOG_TIME = Tick.TICK * 5;
     private static Paint logPaint = new Paint();
-    private static final float TEXT_SIZE = 10;
+    private static final float TEXT_SIZE = 24;
 
     public static void addLog(String message){
         logs.add(0, message);
@@ -36,7 +36,6 @@ public class LogView {
             if(tick - LOG_TIME > logTimes.get(i)){
                 logTimes.remove(i);
                 logs.remove(i);
-                ++i;
             } else break;
         }
     }

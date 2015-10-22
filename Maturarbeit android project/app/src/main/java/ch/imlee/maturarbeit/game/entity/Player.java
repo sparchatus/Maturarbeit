@@ -185,10 +185,8 @@ public class Player extends Entity implements Tick {
     }
 
     public void bulbLost(){
-        if (lightBulb != null) {
-            lightBulb.fallOnFloor();
-            lightBulb = null;
-        }
+        lightBulb.fallOnFloor();
+        lightBulb = null;
     }
 
     public void putBulbOnStand(byte lightBulbStandID){

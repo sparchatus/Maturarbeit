@@ -439,8 +439,10 @@ public class User extends Player {
 
     @Override
     public void bulbLost() {
-        new LightBulbEvent(lightBulb.ID, ID).send();
-        super.bulbLost();
+        if (lightBulb != null) {
+            new LightBulbEvent(lightBulb.ID, ID).send();
+            super.bulbLost();
+        }
     }
 
 

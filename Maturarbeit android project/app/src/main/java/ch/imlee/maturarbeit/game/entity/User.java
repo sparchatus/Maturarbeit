@@ -452,9 +452,9 @@ public class User extends Player {
 
     @Override
     public void setAngle(double angle) {
-        super.setAngle(angle);
         if (angle != this.angle) {
             angleChanged = true;
         }
+        super.setAngle(angle);
     }
 }

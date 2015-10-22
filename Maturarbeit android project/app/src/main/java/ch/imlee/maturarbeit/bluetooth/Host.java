@@ -80,21 +80,24 @@ public class Host extends StartActivity {
     // it's synchronized so connections won't interfere
     private synchronized void manageConnection(BluetoothSocket socket) {
         // this method adds the socket and its attributes to the corresponding lists for easier access
-        deviceNames.add(socket.getRemoteDevice().getName());
-        // because only the UI Thread can call adapter.notifyDataSetChanged(), we have to call it this way
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        String deviceName = socket.getRemoteDevice().getName();
+        if(deviceName != null) {
+            deviceNames.add(deviceName);
+            // because only the UI Thread can call adapter.notifyDataSetChanged(), we have to call it this way
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
             try {
-            inputStreams.add(socket.getInputStream());
-            outputStreams.add(socket.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
+                inputStreams.add(socket.getInputStream());
+                outputStreams.add(socket.getOutputStream());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            refreshConnectedDevices();
         }
-        refreshConnectedDevices();
     }
 
     public static void disconnect(){

@@ -18,7 +18,7 @@ public class LogView {
     private static ArrayList<String> logs = new ArrayList<>();
     private static ArrayList<Double> logTimes = new ArrayList<>();
     private static final int MAX_LOGS = 20;
-    private static final int LOG_TIME = Tick.TICK * 5;
+    private static final int LOG_TIME = Tick.TICK * 10;
     private static Paint logPaint = new Paint();
     private static final float TEXT_SIZE = 24;
 

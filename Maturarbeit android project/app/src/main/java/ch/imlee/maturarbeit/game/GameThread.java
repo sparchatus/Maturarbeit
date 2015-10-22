@@ -272,6 +272,7 @@ public class GameThread extends Thread implements Tick{
                         }
                     }
                 }
+                LogView.render(c);
             } finally {
                 if (c != null) {
                     holder.unlockCanvasAndPost(c);

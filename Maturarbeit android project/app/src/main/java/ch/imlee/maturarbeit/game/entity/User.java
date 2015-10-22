@@ -180,7 +180,7 @@ public class User extends Player {
             } else {
                 setPlayerRadius(playerRadius - FALLING_RADIUS_DECREASE);
                 new RadiusChangedEvent(playerRadius).send();
-                if (playerRadius <= 0) {
+                if (playerRadius <= 0.05) {
                     death();
                     falling = false;
                 }

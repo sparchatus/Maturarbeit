@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.TickEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.entity.Particle;
@@ -22,10 +23,10 @@ import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
  */
 public class GameServerThread extends GameThread{
 
-    private static int currentParticleID = 0;
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;
     private static double lastSweetSpawn = 0;
     private static int currentSweetId = 0;
+    private int resendCount = 0;
 
 
     private static LinearLayout layout = new LinearLayout(GameClient.getContext());
@@ -67,6 +68,11 @@ public class GameServerThread extends GameThread{
             lastSweetSpawn = getSynchronizedTick();
         }
         particlePhysics();
+        resendCount++;
+        if (resendCount >= TICK * 5){
+            new TickEvent().send();
+            resendCount = 0;
+        }
     }
 
     //todo:review

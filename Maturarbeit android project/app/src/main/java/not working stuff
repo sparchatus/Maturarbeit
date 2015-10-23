@@ -1,12 +1,7 @@
-- spawn points (different teams should spawn in different corners)
 - when game is finished, you should be able to restart or end
 - parent of gameClient activity should be StartActivity
-- particleShotEvent not working
 - bitmap of SlimeTrail should be scaled to radius
-- slime should move faster on slime, not slower
 - you can get bigger in illegal locations
-- invisible ghost bitmap is somehow not sharp, it gets smoothened
-- connect thread
 
 btw my comments are like this
 // blabla

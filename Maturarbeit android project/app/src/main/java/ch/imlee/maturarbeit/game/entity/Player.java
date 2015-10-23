@@ -96,24 +96,15 @@ public class Player extends Entity implements Tick {
             canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
         }
         if (lightBulb != null) {
-            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS - BAR_HEIGHT) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, (xCoordinate + GameThread.getUser().getXCoordinate() + START_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, BAR_BACKGROUND_COLOR);
-            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS - BAR_HEIGHT) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, (xCoordinate + GameThread.getUser().getXCoordinate() + START_RADIUS) * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - START_RADIUS) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, BAR_BACKGROUND_COLOR);
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
         }
         return canvas;
     }
 
     public void update(){
-        if (stunned && stunTick <= GameThread.getSynchronizedTick()){
+        if (stunned && stunTick <= GameThread.getSynchronizedTick()) {
             stunned = false;
-        }
-        if (lightBulb != null){
-            strength ++;
-            if (strength >= MAX_STRENGTH){
-                strength = MAX_STRENGTH;
-            }
-            if (strength <= 0) {
-                bulbLost();
-            }
         }
         if(slimy) {
             if (GameThread.getSynchronizedTick() - SLIME_EJECTION_RATE >= lastSlimeEjection) {

@@ -169,10 +169,6 @@ public class User extends Player {
                             }
                         }
                     }
-                    strength++;
-                    if (strength >= MAX_STRENGTH) {
-                        strength = MAX_STRENGTH;
-                    }
                     if (strength <= 0) {
                         bulbLost();
                     }

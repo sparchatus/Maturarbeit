@@ -342,6 +342,10 @@ public class GameThread extends Thread implements Tick{
          }
      }
 
+    public static void renewTick(int newTick){
+        synchronizedTick = newTick;
+    }
+
     public static void endLoading(){
         synchronizedTick = 0;
         loading = false;

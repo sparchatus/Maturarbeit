@@ -291,11 +291,6 @@ public class GameThread extends Thread implements Tick{
         }
     }
 
-    private Canvas displayPauseButton(Canvas c){
-        //TODO: add pause button and functionality
-        return c;
-    }
-
      public  void setStartData(GameStartEvent startData){
          Log.i("initialization", "Start data is initialized");
          map = new Map(GameSurface.getRec(), startData.getMapID());
@@ -341,10 +336,6 @@ public class GameThread extends Thread implements Tick{
             WaitUntilLoadedThread.incrementReady();
          }
      }
-
-    public static void renewTick(int newTick){
-        synchronizedTick = newTick;
-    }
 
     public static void endLoading(){
         synchronizedTick = 0;

@@ -36,16 +36,25 @@ public class User extends Player {
      */
     protected boolean angleChanged;
     /**
-     * is true after the LightBulbServerEvent is sent until the lightBulbIsPickedUp
+     * is true after the LightBulbServerEvent is sent until anything changes the state/allows the player to pickup again
      */
     private boolean bulbRequestSent;
 
+    /**
+     * is true afte rthe LightBulbStandServerEvent was sent until the player can try again
+     */
     private boolean standRequestSent = false;
 
+    /**
+     * used to test if the put on stand was successful
+     */
     private byte requestedStandID;
 
+    /**
+     * the maximum amount of mana a player can store
+     */
     protected final int MAX_MANA = 1000;
-    protected final int PARTICLE_COOL_DOWN = 1000 / TIME_PER_TICK;
+    protected final int PARTICLE_COOL_DOWN = 700 / TIME_PER_TICK;
     protected final int PICK_UP_RANGE = 2;
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
     protected int pickUpTickCount;

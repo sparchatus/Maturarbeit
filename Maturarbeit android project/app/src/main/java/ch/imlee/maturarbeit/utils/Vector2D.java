@@ -86,5 +86,13 @@ public class Vector2D {
         this.x += x;
         this.y += y;
     }
+
+    public void addX(float x){
+        add(x,0);
+    }
+
+    public void addY(float y){
+        add(0,y);
+    }
 }
 

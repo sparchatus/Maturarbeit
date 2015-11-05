@@ -15,16 +15,18 @@ import ch.imlee.maturarbeit.views.GameSurface;
  * Created by Lukas on 21.08.2015.
  */
 public class SlimeTrail extends Entity {
-    private static final Bitmap SLIME_TRAIL_BITMAP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime_trail), Map.TILE_SIDE, Map.TILE_SIDE, false);
-    private static double LIFETIME = Tick.TICK * 5;
-    public static float TRAIL_RADIUS = 0.5f;
+    private final Bitmap SLIME_TRAIL_BITMAP;
+    private static final double LIFETIME = Tick.TICK * 5;
+    public final float TRAIL_RADIUS;
 
     public boolean removable = false;
 
     private final double TIME_CREATED;
 
-    public SlimeTrail(float x, float y){
+    public SlimeTrail(float x, float y, float radius){
         super(x, y);
+        TRAIL_RADIUS = radius;
+        SLIME_TRAIL_BITMAP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime_trail), (int)(2*radius), (int)(2*radius), false);
         TIME_CREATED = GameThread.getSynchronizedTick();
     }
 

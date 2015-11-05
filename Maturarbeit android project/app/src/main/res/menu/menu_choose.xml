@@ -2,6 +2,4 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ch.imlee.maturarbeit.activities.chooseActivity">
-    <item android:id="@+id/action_settings" android:title="choose team and fluff"
-        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

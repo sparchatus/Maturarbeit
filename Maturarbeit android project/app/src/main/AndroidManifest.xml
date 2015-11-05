@@ -23,6 +23,9 @@
             android:label="@string/title_activity_game"
             android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.imlee.maturarbeit.activities.StartActivity" />
 
         </activity>
         <activity

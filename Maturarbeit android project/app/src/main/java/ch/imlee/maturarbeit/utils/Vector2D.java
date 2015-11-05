@@ -62,10 +62,10 @@ public class Vector2D {
         return - Math.sqrt(x * x + y * y);
     }
 
-    public float xMod1(){
+    public double xDistanceToTileOrigin(){
         return x - (int)x;
     }
-    public float yMod1(){
+    public double yDistanceToTileOrigin(){
         return y - (int)y;
     }
 

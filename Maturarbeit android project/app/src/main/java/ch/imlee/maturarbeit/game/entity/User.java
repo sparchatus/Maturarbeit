@@ -226,7 +226,7 @@ public class User extends Player {
 
     protected float processedVelocity(){
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
-            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + SlimeTrail.TRAIL_RADIUS, 2)){
+            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + slimeTrail.TRAIL_RADIUS, 2)){
                 if (TYPE==PlayerType.SLIME) {
                     return velocity / SLOW_AMOUNT;
                 }else{
@@ -238,21 +238,21 @@ public class User extends Player {
     }
 
     private void physicEngine(){
+        Vector2D tempVec, repelVec;
+        repelVec = new Vector2D(0,0);
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            newPosition.x = (int) (newPosition.x) - playerRadius + 1;
+            repelVec.addX(2 - newPosition.xMod1() - playerRadius);
         }
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            newPosition.x = newPosition.xIntPos() + playerRadius;
+            repelVec.addX(1 - newPosition.xMod1() + playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            newPosition.y = newPosition.yIntPos() - playerRadius + 1;
+            repelVec.addY(2 - newPosition.yMod1() - playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            newPosition.y = newPosition.yIntPos() + playerRadius;
+            repelVec.addY(1 - newPosition.yMod1() + playerRadius);
         }
-        Vector2D tempVec;
         float l;
-        //bottom right quadrant
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
@@ -262,34 +262,6 @@ public class User extends Player {
                 newPosition.y += tempVec.y;
             }
         }
-        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() + 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        //top right quadrant
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
@@ -299,34 +271,6 @@ public class User extends Player {
                 newPosition.y += tempVec.y;
             }
         }
-        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos(), newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() + 2, newPosition.yIntPos() - 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 2, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        //top left quadrant
         if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
@@ -336,34 +280,6 @@ public class User extends Player {
                 newPosition.y += tempVec.y;
             }
         }
-        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() - 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        //bottom left quadrant
         if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
@@ -373,33 +289,7 @@ public class User extends Player {
                 newPosition.y += tempVec.y;
             }
         }
-        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
-        if (Map.getSolid(newPosition.xIntPos() - 2, newPosition.yIntPos() + 2)) {
-            tempVec = new Vector2D(newPosition.xIntPos() - 1, newPosition.yIntPos() + 2, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
-            if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
-            }
-        }
+        newPosition.add(repelVec);
     }
 
     private void loseWeight(){

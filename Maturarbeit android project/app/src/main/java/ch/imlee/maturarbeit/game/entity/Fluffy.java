@@ -15,8 +15,8 @@ public class Fluffy extends User {
 
     private int MANA_CONSUMPTION = MAX_MANA;
 
-    public Fluffy(Map map, byte team, byte playerId) {
-        super(PlayerType.FLUFFY, map, team, playerId);
+    public Fluffy(Map map, byte team, byte playerId, String name) {
+        super(PlayerType.FLUFFY, map, team, playerId, name);
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
+import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.events.EventReceiver;
@@ -106,7 +107,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
         if(checkInputs()){
             if(StartActivity.deviceType == DeviceType.HOST) {
                 // we don't have to check whether everyone has selected a team and player type, because it's not clickable until then.
-                gameStartEvent.setPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0);
+                gameStartEvent.setPlayer(PlayerType.values()[selectedPlayerType], selectedTeam, (byte)0, Util.ba.getName());
                 gameStartEvent.send();
                 gameStartEvent.setUserID((byte)0);
                 gameStartEvent.handle((byte)0);

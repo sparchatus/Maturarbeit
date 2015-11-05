@@ -12,7 +12,7 @@ public class SlimeEvent extends GameActionEvent{
     public SlimeEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         senderID = Byte.valueOf(eventString.substring(2, 3));
-        if (eventString.substring(3).equals("0")){
+        if (eventString.charAt(3) == '0'){
             slimy = false;
         }else {
             slimy = true;
@@ -23,11 +23,6 @@ public class SlimeEvent extends GameActionEvent{
         super(playerId);
         this.slimy = slimy;
     }
-
-    public void setSlimy(boolean slimy) {
-        this.slimy = slimy;
-    }
-
 
     @Override
     public String toString() {
@@ -41,10 +36,12 @@ public class SlimeEvent extends GameActionEvent{
     @Override
     public void apply() {
         GameThread.getPlayerArray()[senderID].setSlimy(slimy);
+        /*
         if(slimy){
             GameThread.getPlayerArray()[senderID].getSlimeSound().start();
         } else{
             GameThread.getPlayerArray()[senderID].getSlimeSound().stop();
         }
+        */
     }
 }

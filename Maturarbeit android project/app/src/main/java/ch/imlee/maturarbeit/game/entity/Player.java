@@ -109,7 +109,7 @@ public class Player extends Entity implements Tick {
         if(slimy) {
             if (GameThread.getSynchronizedTick() - SLIME_EJECTION_RATE >= lastSlimeEjection) {
                 lastSlimeEjection = GameThread.getSynchronizedTick();
-                SlimeTrail slimeTrail = new SlimeTrail(getXCoordinate(), getYCoordinate());
+                SlimeTrail slimeTrail = new SlimeTrail(getXCoordinate(), getYCoordinate(), getPlayerRadius());
                 GameThread.addSlimeTrail(slimeTrail);
             }
         }

@@ -42,7 +42,6 @@ public class GameStartEvent extends GameStateEvent {
 
     private ArrayList<PlayerType> types = new ArrayList<>();
     private ArrayList<Byte> teams = new ArrayList<>();
-    private ArrayList<String> names = new ArrayList<>();
     private final int MAP_ID;
     private byte userID = 1;
 
@@ -51,12 +50,23 @@ public class GameStartEvent extends GameStateEvent {
         while(eventString.charAt(0) != 'i'){
             types.add(PlayerType.values()[Integer.parseInt(Character.toString(eventString.charAt(0)))]);
             teams.add(Byte.parseByte(Character.toString(eventString.charAt(1))));
-            int i = eventString.indexOf('\n');
-            names.add(eventString.substring(2, i-1));
-            eventString = eventString.substring(i+1);
+            eventString = eventString.substring(2);
         }
         userID = Byte.parseByte(Character.toString(eventString.charAt(1)));
         MAP_ID = Integer.parseInt(eventString.substring(3));
+    }
+
+    public GameStartEvent(ArrayList<PlayerType> types, ArrayList<Byte> teams, byte userID, int mapID) {
+        super(GameThread.getUser().getID());
+        initializeArrays(types.size());
+        this.types = types;
+        this.teams = teams;
+        this.userID = userID;
+        MAP_ID = mapID;
+    }
+
+    public GameStartEvent(int mapID){
+        MAP_ID = mapID;
     }
 
     public GameStartEvent(){
@@ -67,15 +77,13 @@ public class GameStartEvent extends GameStateEvent {
         for(int i = types.size(); i < size; ++i){
             types.add(PlayerType.NULL);
             teams.add((byte)(-1));
-            names.add("");
         }
     }
 
-    public void setPlayer(PlayerType type, byte team, byte id, String name){
+    public void setPlayer(PlayerType type, byte team, byte id){
         initializeArrays(id+1);
         types.set(id, type);
         teams.set(id, team);
-        names.set(id, name);
     }
 
     public int getPlayerCount(){
@@ -86,10 +94,6 @@ public class GameStartEvent extends GameStateEvent {
             }
         }
         return temp;
-    }
-
-    public String getName(byte id){
-        return names.get(id);
     }
 
     public byte getUserID(){
@@ -117,8 +121,6 @@ public class GameStartEvent extends GameStateEvent {
         for (int i = 0; i < types.size(); i++) {
             playerInfo += types.get(i).ordinal();
             playerInfo += teams.get(i);
-            playerInfo += names.get(i) + '\n';
-            // the '\n' is the terminating character of the devices name. It is used to identify its last character
         }
         return super.toString() + 'S' + playerInfo + "i" + userID + "m" + MAP_ID;
     }

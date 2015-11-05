@@ -81,8 +81,8 @@ public class User extends Player {
     protected Vector2D newPosition;
     protected Map map;
 
-    public User(PlayerType type, Map map, byte team, byte playerId, String name) {
-        super(type, map, team, playerId, name);
+    public User(PlayerType type, Map map, byte team, byte playerId) {
+        super(type, map, team, playerId);
         START_X = xCoordinate;
         START_Y = yCoordinate;
         user = this;

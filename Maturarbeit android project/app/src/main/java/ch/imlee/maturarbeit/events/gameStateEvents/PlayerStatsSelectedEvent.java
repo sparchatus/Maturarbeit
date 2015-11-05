@@ -34,7 +34,7 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
     public boolean handle(byte id){
         ChooseActivity.gameStartEvent.setPlayer(TYPE,
                 TEAM,
-                id, Host.deviceNames.get(id+1));
+                id);
         ++ChooseActivity.playersReady;
         if(ChooseActivity.playersReady == Host.sockets.size()){
             ChooseActivity.startGameButton.setClickable(true);

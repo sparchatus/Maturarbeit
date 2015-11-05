@@ -303,18 +303,18 @@ public class GameThread extends Thread implements Tick{
             if (i == startData.getUserID()){
                 Log.i("user", "The user is being initialized.");
                 switch (startData.getPlayerTypes().get(i)){
-                    case FLUFFY:user = new Fluffy(map, startData.getTeams().get(i), i, startData.getName(i));
+                    case FLUFFY:user = new Fluffy(map, startData.getTeams().get(i), i);
                         break;
-                    case GHOST:user = new Ghost(map, startData.getTeams().get(i), i, startData.getName(i));
+                    case GHOST:user = new Ghost(map, startData.getTeams().get(i), i);
                         break;
-                    case SLIME:user = new Slime(map, startData.getTeams().get(i), i, startData.getName(i));
+                    case SLIME:user = new Slime(map, startData.getTeams().get(i), i);
                         break;
                     case NULL: Log.i("fail", "user PlayerType is NULL");
                 }
                 playerArray[i] = user;
             }else {
                 Log.i("player", "A Player is being initialized");
-                playerArray[i] = new Player(startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, startData.getName(i));
+                playerArray[i] = new Player(startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i);
             }
          }
          lightBulbArray = new LightBulb[2];

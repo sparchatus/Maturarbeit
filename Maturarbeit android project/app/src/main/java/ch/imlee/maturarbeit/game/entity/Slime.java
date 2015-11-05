@@ -11,8 +11,8 @@ public class Slime extends User {
 
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
-    public Slime(Map map, byte team, byte playerId, String name) {
-        super(PlayerType.SLIME, map, team, playerId, name);
+    public Slime(Map map, byte team, byte playerId) {
+        super(PlayerType.SLIME, map, team, playerId);
         slimy = false;
     }
 
@@ -34,11 +34,12 @@ public class Slime extends User {
 
     @Override
     public void skillActivation() {
-        SlimeEvent slimeEvent;
-        if(!slimy && mana > 10 * MANA_CONSUMPTION) {
-            slimeEvent = new SlimeEvent(ID, true);
+        SlimeEvent slimeEvent = new SlimeEvent(ID, false);
+        if(!slimy && mana > 10*MANA_CONSUMPTION) {
+            slimeEvent.setSlimy(true);
+            slimy = true;
         } else{
-            slimeEvent = new SlimeEvent(ID, false);
+            slimy = false;
         }
         slimeEvent.send();
         slimeEvent.apply();

@@ -241,16 +241,16 @@ public class User extends Player {
         Vector2D tempVec, repelVec;
         repelVec = new Vector2D(0,0);
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            repelVec.addX(newPosition.xMod1() - playerRadius);
+            repelVec.addX(2 - newPosition.xMod1() - playerRadius);
         }
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            repelVec.addX(newPosition.xMod1() + playerRadius - 1);
+            repelVec.addX(1 - newPosition.xMod1() + playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            repelVec.addY(newPosition.yMod1() - playerRadius);
+            repelVec.addY(2 - newPosition.yMod1() - playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            repelVec.addY(newPosition.yMod1() + playerRadius - 1);
+            repelVec.addY(1 - newPosition.yMod1() + playerRadius);
         }
         float l;
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {

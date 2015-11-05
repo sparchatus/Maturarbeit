@@ -1,7 +1,12 @@
 - when game is finished, you should be able to restart or end
 - parent of gameClient activity should be StartActivity
 - bitmap of SlimeTrail should be scaled to radius
-- you can get bigger in illegal locations
+- player names
+- Tick event
+- Explode
+- Continue
+- exit button
+- hitbox corrections/can get bigger
 
 btw my comments are like this
 // blabla

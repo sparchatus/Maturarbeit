@@ -217,7 +217,7 @@ public class User extends Player {
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * tempVelocity * maxSpeed));
         physicEngine();
         speed= (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
-        if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
+        if (xCoordinate != newPosition.x || yCoordinate != newPosition.y || angleChanged) {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
             new PlayerMotionEvent(this).send();
@@ -226,7 +226,7 @@ public class User extends Player {
 
     protected float processedVelocity(){
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
-            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + SlimeTrail.TRAIL_RADIUS, 2)){
+            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + slimeTrail.TRAIL_RADIUS, 2)){
                 if (TYPE==PlayerType.SLIME) {
                     return velocity / SLOW_AMOUNT;
                 }else{
@@ -241,16 +241,16 @@ public class User extends Player {
         Vector2D tempVec, repelVec;
         repelVec = new Vector2D(0,0);
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            newPosition.x = (int) (newPosition.x) - playerRadius + 1;
+            repelVec.addX(newPosition.xMod1() - playerRadius);
         }
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            newPosition.x = newPosition.xIntPos() + playerRadius;
+            repelVec.addX(newPosition.xMod1() + playerRadius - 1);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            newPosition.y = newPosition.yIntPos() - playerRadius + 1;
+            repelVec.addY(newPosition.yMod1() - playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            newPosition.y = newPosition.yIntPos() + playerRadius;
+            repelVec.addY(newPosition.yMod1() + playerRadius - 1);
         }
         float l;
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
@@ -289,6 +289,7 @@ public class User extends Player {
                 newPosition.y += tempVec.y;
             }
         }
+        newPosition.add(repelVec);
     }
 
     private void loseWeight(){

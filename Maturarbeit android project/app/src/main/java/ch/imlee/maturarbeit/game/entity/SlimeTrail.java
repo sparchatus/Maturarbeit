@@ -25,8 +25,8 @@ public class SlimeTrail extends Entity {
 
     public SlimeTrail(float x, float y, float radius){
         super(x, y);
-        TRAIL_RADIUS = radius * Map.TILE_SIDE;
-        SLIME_TRAIL_BITMAP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime_trail), (int)(2*TRAIL_RADIUS), (int)(2*TRAIL_RADIUS), false);
+        TRAIL_RADIUS = radius;
+        SLIME_TRAIL_BITMAP = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime_trail), (int)(2*radius), (int)(2*radius), false);
         TIME_CREATED = GameThread.getSynchronizedTick();
     }
 

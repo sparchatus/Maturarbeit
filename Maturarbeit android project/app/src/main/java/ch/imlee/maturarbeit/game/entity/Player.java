@@ -15,6 +15,7 @@ import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
@@ -112,11 +113,12 @@ public class Player extends Entity implements Tick {
         float[] charWidths = new float[nameChars.length];
         float textWidth = 0;
         namePaint.getTextWidths(nameChars, 0, nameChars.length-1, charWidths);
-        for (int i = 0; i < charWidths.length; ++i){
-            textWidth += charWidths[i];
+        namePaint.setAlpha(0xff);
+        for (float w : charWidths){
+            textWidth += w;
         }
         canvas.drawText(NAME, getXCoordinate() - GameThread.getUser().getXCoordinate() - textWidth / 2, getYCoordinate() - GameThread.getUser().getXCoordinate() - 6, namePaint);
-
+        LogView.addLog("name of device " + getID() + ": " + NAME);
         return canvas;
     }
 

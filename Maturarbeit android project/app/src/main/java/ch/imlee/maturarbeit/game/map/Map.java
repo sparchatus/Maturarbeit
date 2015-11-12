@@ -12,6 +12,7 @@ import android.view.SurfaceView;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 /**
@@ -56,10 +57,11 @@ public class Map implements MapDimensions {
         User user = GameThread.getUser();
         int  userXCoordinateInt = (int)(user.getXCoordinate());
         int userYCoordinateInt = (int)(user.getYCoordinate());
+        // distance of the user to the tile origin(top left corner of the tile)
         float userXTranslation = userXCoordinateInt - user.getXCoordinate();
         float userYTranslation = userYCoordinateInt - user.getYCoordinate();
         for (int y = - (TILES_IN_SCREEN_HEIGHT / 2 + 1); y <= (TILES_IN_SCREEN_HEIGHT / 2 + 1); y++){
-            for (int x = - (TILES_IN_SCREEN_WIDTH / 2); x <= (TILES_IN_SCREEN_WIDTH / 2 + 1); x++){
+            for (int x = - (TILES_IN_SCREEN_WIDTH / 2 + 1); x <= (TILES_IN_SCREEN_WIDTH / 2 + 1); x++){
                 if (userXCoordinateInt + x < 0 || userYCoordinateInt + y < 0 || userXCoordinateInt + x >= TILES_IN_MAP_WIDTH || userYCoordinateInt + y >= TILES_IN_MAP_HEIGHT){
                     currentBmp = voidTile.BMP;
                 }else {
@@ -68,6 +70,7 @@ public class Map implements MapDimensions {
                 canvas.drawBitmap(currentBmp, halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE, halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE, null);
             }
         }
+        LogView.addLog(String.valueOf(halfGameSurfaceHeight));
     }
 
     private void scanPixelMap(Resources rec){

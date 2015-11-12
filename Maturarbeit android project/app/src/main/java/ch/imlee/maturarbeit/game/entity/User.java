@@ -105,6 +105,10 @@ public class User extends Player {
         if(!dead) {
             if (!falling) {
                 move();
+                if(angleChanged && velocity==0){
+                    new PlayerMotionEvent(this).send();
+                    angleChanged = false;
+                }
                 if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()].FALL_THROUGH) {
                     //// TODO: 09.09.2015 if there is a 2*2 field (or bigger) of void tiles, you should be able to fall down if you have a radius >0.5 
                     if (xCoordinate % 1 >= 0.8f * playerRadius && xCoordinate + 0.8f * playerRadius <= (int) xCoordinate + 1 &&
@@ -217,7 +221,7 @@ public class User extends Player {
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * tempVelocity * maxSpeed));
         physicEngine();
         speed= (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
-        if (xCoordinate != newPosition.x || yCoordinate != newPosition.y || angleChanged) {
+        if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
             new PlayerMotionEvent(this).send();
@@ -241,16 +245,16 @@ public class User extends Player {
         Vector2D tempVec, repelVec;
         repelVec = new Vector2D(0,0);
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            repelVec.addX(2 - newPosition.xMod1() - playerRadius);
+            repelVec.addX(1 - newPosition.xMod1() - playerRadius);
         }
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            repelVec.addX(1 - newPosition.xMod1() + playerRadius);
+            repelVec.addX(-newPosition.xMod1() + playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            repelVec.addY(2 - newPosition.yMod1() - playerRadius);
+            repelVec.addY(1 - newPosition.yMod1() - playerRadius);
         }
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            repelVec.addY(1 - newPosition.yMod1() + playerRadius);
+            repelVec.addY(-newPosition.yMod1() + playerRadius);
         }
         float l;
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
@@ -258,8 +262,8 @@ public class User extends Player {
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
+                repelVec.addX(tempVec.x);
+                repelVec.addY(tempVec.y);
             }
         }
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
@@ -267,8 +271,8 @@ public class User extends Player {
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
+                repelVec.addX(tempVec.x);
+                repelVec.addY(tempVec.y);
             }
         }
         if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
@@ -276,8 +280,8 @@ public class User extends Player {
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
+                repelVec.addX(tempVec.x);
+                repelVec.addY(tempVec.y);
             }
         }
         if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
@@ -285,8 +289,8 @@ public class User extends Player {
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                newPosition.x += tempVec.x;
-                newPosition.y += tempVec.y;
+                repelVec.addX(tempVec.x);
+                repelVec.addY(tempVec.y);
             }
         }
         newPosition.add(repelVec);
@@ -347,9 +351,7 @@ public class User extends Player {
 
     @Override
     public void setAngle(double angle) {
-        if (angle != this.angle) {
-            angleChanged = true;
-        }
+        angleChanged = true;
         super.setAngle(angle);
     }
 }

@@ -94,35 +94,38 @@ public class GameThread extends Thread implements Tick{
      */
     @Override
     public void run() {
-        loading = true;
-        particleButton = GameClient.getParticleButton();
-        skillButton = GameClient.getSkillButton();
-        backgroundMusic = new BackgroundMusic();
-        backgroundMusic.start();
-        miniMap = GameClient.getMiniMap();
-        displayLoadingScreen();
-        while(running){
-            update();
-            render();
-            if((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
-                try {
-                    sleep(timeLeft);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        try {
+            loading = true;
+            particleButton = GameClient.getParticleButton();
+            skillButton = GameClient.getSkillButton();
+            backgroundMusic = new BackgroundMusic();
+            backgroundMusic.start();
+            miniMap = GameClient.getMiniMap();
+            displayLoadingScreen();
+            while (running) {
+                update();
+                render();
+                if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
+                    try {
+                        sleep(timeLeft);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    synchronizedTick -= timeLeft / TIME_PER_TICK;
+                    predictedDelay -= timeLeft;
+                    if (predictedDelay >= 0.5) {
+                        //todo: request a fresh synchronizedTick
+                        //todo: on receiving a new Tick, the old Data has to be reviewed
+                    }
                 }
+                lastTime = System.currentTimeMillis();
+                synchronizedTick++;
             }
-            else{
-                synchronizedTick -= timeLeft / TIME_PER_TICK;
-                predictedDelay -= timeLeft;
-                if(predictedDelay >= 0.5){
-                    //todo: request a fresh synchronizedTick
-                    //todo: on receiving a new Tick, the old Data has to be reviewed
-                }
-            }
-            lastTime = System.currentTimeMillis();
-            synchronizedTick++;
+            backgroundMusic.stop();
+        }catch (Exception e){
+            LogView.addLog(e.toString());
         }
-        backgroundMusic.stop();
     }
 
     /**

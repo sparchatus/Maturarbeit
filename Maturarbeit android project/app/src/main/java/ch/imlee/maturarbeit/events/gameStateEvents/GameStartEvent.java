@@ -130,6 +130,7 @@ public class GameStartEvent extends GameStateEvent {
             // so the client knows which userID he has, send him this.toString(), which contains it.
             Util.sendString(Host.outputStreams.get(userID - 1), toString() + '|');
             Log.i("game", "GameStartEvent sent to player " + userID);
+            Log.w("GameStartEvent", toString());
         }
     }
 }

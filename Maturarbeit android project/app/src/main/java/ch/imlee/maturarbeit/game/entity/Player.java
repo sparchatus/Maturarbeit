@@ -123,6 +123,9 @@ public class Player extends Entity implements Tick {
             LogView.addLog("name of device " + getID() + ": " + NAME);
         }catch (Exception e){
             Log.e("RENDER BUG", e.getMessage());
+            for(int i = 0; i < GameThread.getPlayerArray().length; ++i){
+                Log.w("team debug", "Team of Player " + i + ": " + GameThread.getPlayerArray()[i].getTeam());
+            }
             LogView.addLog(e.getMessage());
         }
         return canvas;

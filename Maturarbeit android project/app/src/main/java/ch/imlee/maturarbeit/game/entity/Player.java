@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
@@ -103,22 +104,27 @@ public class Player extends Entity implements Tick {
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + 2 * playerRadius * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
         }
-        Paint namePaint = new Paint();
-        namePaint.setColor(Color.RED);
-        namePaint.setTextSize(12);
-        if(this.getTeam() == user.getTeam()){
-            namePaint.setColor(Color.GREEN);
+        try {
+            Paint namePaint = new Paint();
+            namePaint.setColor(Color.RED);
+            namePaint.setTextSize(12);
+            if (getTeam() == user.getTeam()) {
+                namePaint.setColor(Color.GREEN);
+            }
+            char[] nameChars = NAME.toCharArray();
+            float[] charWidths = new float[nameChars.length];
+            float textWidth = 0;
+            namePaint.getTextWidths(nameChars, 0, nameChars.length - 1, charWidths);
+            namePaint.setAlpha(0xff);
+            for (float w : charWidths) {
+                textWidth += w;
+            }
+            canvas.drawText(NAME, getXCoordinate() - GameThread.getUser().getXCoordinate() - textWidth / 2, getYCoordinate() - GameThread.getUser().getXCoordinate() - 6, namePaint);
+            LogView.addLog("name of device " + getID() + ": " + NAME);
+        }catch (Exception e){
+            Log.e("RENDER BUG", e.getMessage());
+            LogView.addLog(e.getMessage());
         }
-        char[] nameChars = NAME.toCharArray();
-        float[] charWidths = new float[nameChars.length];
-        float textWidth = 0;
-        namePaint.getTextWidths(nameChars, 0, nameChars.length-1, charWidths);
-        namePaint.setAlpha(0xff);
-        for (float w : charWidths){
-            textWidth += w;
-        }
-        canvas.drawText(NAME, getXCoordinate() - GameThread.getUser().getXCoordinate() - textWidth / 2, getYCoordinate() - GameThread.getUser().getXCoordinate() - 6, namePaint);
-        LogView.addLog("name of device " + getID() + ": " + NAME);
         return canvas;
     }
 

@@ -17,6 +17,7 @@ import ch.imlee.maturarbeit.views.SkillButton;
 public class GameClient extends Activity {
 
     private static boolean surfaceCreated = false;
+
     private static ParticleButton particleButton;
     private static SkillButton skillButton;
     private static GameSurface gameSurface;
@@ -24,6 +25,10 @@ public class GameClient extends Activity {
     private static MiniMap miniMap;
     private static Context context;
 
+    /**
+     * System called method. The layout and thus the views are initialized and a reference is saved for later use in the GameThread.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,31 +37,30 @@ public class GameClient extends Activity {
         skillButton = (SkillButton) findViewById(R.id.button_skill);
         miniMap = (MiniMap) findViewById(R.id.mini_map_surface);
         context = getApplicationContext();
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Log.d("tag", "GameClient Activity started");
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
+    /**
+     * This function properly stops the eventReceiver Thread when the Activity ends.
+     */
     @Override
     protected void onStop(){
         super.onStop();
         ChooseActivity.eventReceiver.setRunning(false);
     }
 
+    /**
+     * The gameThread object gets initialized and the start data is set.
+     * @param gameStartEvent
+     */
     public static void initializeStartData(GameStartEvent gameStartEvent) {
         gameThread = gameSurface.getGameThread();
         gameThread.setStartData(gameStartEvent);
     }
 
+    /**
+     * The method is called when all Devices are done loading. It causes the game Loop to start.
+     */
     public static void startSynchronizedTick() {
         gameThread.endLoading();
     }
@@ -75,10 +79,6 @@ public class GameClient extends Activity {
 
     public static ParticleButton getParticleButton() {
         return particleButton;
-    }
-
-    public static GameThread getGameThread(){
-        return gameThread;
     }
 
     public static MiniMap getMiniMap(){

@@ -88,6 +88,7 @@ public class GameThread extends Thread implements Tick{
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
     }
+
     /**
      * The method called when the gameThread is started. It contains the main game loop.
      */
@@ -414,5 +415,9 @@ public class GameThread extends Thread implements Tick{
 
     public static void setWinningTeam(byte team){
         winningTeam = team;
+    }
+
+    public static SurfaceHolder getHolder() {
+        return holder;
     }
 }

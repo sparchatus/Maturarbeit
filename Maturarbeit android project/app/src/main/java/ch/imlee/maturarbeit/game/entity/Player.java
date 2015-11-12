@@ -31,7 +31,6 @@ public class Player extends Entity implements Tick {
 
     protected final byte ID;
     public final byte TEAM;
-    public final String NAME;
 
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
@@ -47,6 +46,8 @@ public class Player extends Entity implements Tick {
     protected double lastSlimeEjection = 0;
     protected double stunTick;
     protected double angle;
+
+    public final String NAME;
 
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
@@ -103,31 +104,6 @@ public class Player extends Entity implements Tick {
         if (lightBulb != null) {
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + 2 * playerRadius * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
-        }
-        try {
-            Paint namePaint = new Paint();
-            namePaint.setColor(Color.RED);
-            namePaint.setTextSize(12);
-            if (getTeam() == user.getTeam()) {
-                namePaint.setColor(Color.GREEN);
-            }
-            char[] nameChars = NAME.toCharArray();
-            float[] charWidths = new float[nameChars.length];
-            float textWidth = 0;
-            namePaint.getTextWidths(nameChars, 0, nameChars.length - 1, charWidths);
-            namePaint.setAlpha(0xff);
-            for (float w : charWidths) {
-                textWidth += w;
-            }
-            canvas.drawText(NAME, getXCoordinate() - GameThread.getUser().getXCoordinate() - textWidth / 2, getYCoordinate() - GameThread.getUser().getXCoordinate() - 6, namePaint);
-            LogView.addLog("name of device " + getID() + ": " + NAME);
-        }catch (Exception e){
-            Log.e("RENDER BUG", e.getMessage());
-            for(int i = 0; i < GameThread.getPlayerArray().length; ++i){
-                Log.w("team debug", "Team of Player " + i + ": " + GameThread.getPlayerArray()[i].getTeam());
-
-            }
-            LogView.addLog(e.getMessage());
         }
         return canvas;
     }

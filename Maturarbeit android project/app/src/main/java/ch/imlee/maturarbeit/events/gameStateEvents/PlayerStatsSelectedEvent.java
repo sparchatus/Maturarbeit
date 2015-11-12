@@ -3,6 +3,8 @@ package ch.imlee.maturarbeit.events.gameStateEvents;
 import android.os.Looper;
 import android.os.Handler;
 
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.activities.ChooseActivity;
@@ -31,21 +33,24 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
     }
 
     @Override
-    public boolean handle(byte id){
-        ChooseActivity.gameStartEvent.setPlayer(TYPE,
-                TEAM,
-                id, Host.sockets.get(id).getRemoteDevice().getName());
-        ++ChooseActivity.playersReady;
-        if(ChooseActivity.playersReady == Host.sockets.size()){
-            ChooseActivity.startGameButton.setClickable(true);
-            // because we can only change the button's text in the UI thread, we have to do it with a Handler
-            Handler setText = new Handler(Looper.getMainLooper());
-            setText.post(new Runnable() {
-                public void run() {
-                    ChooseActivity.startGameButton.setText("Start Game");
-                }
-            });
+    public boolean handle(byte id) {
+        if (StartActivity.deviceType == DeviceType.HOST) {
+            ChooseActivity.gameStartEvent.setPlayer(TYPE,
+                    TEAM,
+                    id, Host.sockets.get(id).getRemoteDevice().getName());
+            ++ChooseActivity.playersReady;
+            if (ChooseActivity.playersReady == Host.sockets.size()) {
+                ChooseActivity.startGameButton.setClickable(true);
+                // because we can only change the button's text in the UI thread, we have to do it with a Handler
+                Handler setText = new Handler(Looper.getMainLooper());
+                setText.post(new Runnable() {
+                    public void run() {
+                        ChooseActivity.startGameButton.setText("Start Game");
+                    }
+                });
+            }
         }
         return true;
     }
+
 }

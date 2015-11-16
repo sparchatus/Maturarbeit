@@ -9,9 +9,6 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Lukas on 24.08.2015.
- */
 public class Sweet extends Entity {
     private static final Bitmap SWEET_BITMAP = Bitmap.createScaledBitmap(
             BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.sweet), Map.TILE_SIDE, Map.TILE_SIDE, false);
@@ -20,6 +17,8 @@ public class Sweet extends Entity {
         super(x + 0.5f, y + 0.5f);
         ID = id;
     }
+
+    // the Objects are generally drawn in relation to the User position on the Map because the User's position on the screen is constant
     public void render(Canvas canvas){
         canvas.drawBitmap(SWEET_BITMAP, GameSurface.getSurfaceWidth()/2+(this.xCoordinate-GameThread.getUser().xCoordinate - 0.5f)*Map.TILE_SIDE,
                 GameSurface.getSurfaceHeight()/2+(this.yCoordinate-GameThread.getUser().yCoordinate - 0.5f)*Map.TILE_SIDE, null);

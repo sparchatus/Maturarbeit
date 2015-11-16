@@ -213,7 +213,7 @@ public class GameThread extends Thread implements Tick{
                             textPaint.setColor(0xffffffff);
                             c.drawText("YOU ARE DEAD", 20, 120, textPaint);
                             textPaint.setTextSize(20);
-                            c.drawText("Respawn in " + (int) (getUser().reviveTick - getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
+                            c.drawText("Respawn in " + (int) (getUser().getReviveTick() - getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
                         }
                     } else {
                         c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());

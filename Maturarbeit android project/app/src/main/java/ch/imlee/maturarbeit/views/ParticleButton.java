@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.game.entity.User;
  * Created by Sandro on 08.06.2015.
  */
 public class ParticleButton extends Button {
+
     private User user;
 
     public ParticleButton(Context context, AttributeSet attrs) {

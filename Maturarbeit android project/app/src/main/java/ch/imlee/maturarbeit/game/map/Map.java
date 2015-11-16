@@ -1,13 +1,9 @@
 package ch.imlee.maturarbeit.game.map;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -15,9 +11,6 @@ import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Sandro on 04.06.2015.
- */
 public class Map implements MapDimensions {
     public static int TILE_SIDE;
     public static int TILES_IN_MAP_WIDTH, TILES_IN_MAP_HEIGHT;
@@ -49,6 +42,7 @@ public class Map implements MapDimensions {
         spawnTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.spawn_tile), TILE_SIDE, TILE_SIDE, false), false, false);
         TILE_MAP = new Tile[pixelMap.getWidth()][pixelMap.getHeight()];
         scanPixelMap(rec);
+
         //minus one because the ++ in the coordinate distribution function has to be before the return
         blueCoordinateDistributionIndex = -1;
         greenCoordinateDistributionIndex = -1;
@@ -57,6 +51,7 @@ public class Map implements MapDimensions {
         User user = GameThread.getUser();
         int  userXCoordinateInt = (int)(user.getXCoordinate());
         int userYCoordinateInt = (int)(user.getYCoordinate());
+
         // distance of the user to the tile origin(top left corner of the tile)
         float userXTranslation = userXCoordinateInt - user.getXCoordinate();
         float userYTranslation = userYCoordinateInt - user.getYCoordinate();

@@ -17,9 +17,6 @@ import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 
-/**
- * Created by Sandro on 14.08.2015.
- */
 public class GameServerThread extends GameThread{
 
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;

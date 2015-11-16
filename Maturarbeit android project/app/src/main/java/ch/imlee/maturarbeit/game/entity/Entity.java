@@ -1,8 +1,5 @@
 package ch.imlee.maturarbeit.game.entity;
 
-/**
- * Created by Sandro on 05.06.2015.
- */
 public class Entity {
     // every entity has these position coordinates.
     protected float xCoordinate, yCoordinate;

@@ -1,8 +1,6 @@
 package ch.imlee.maturarbeit.game.map;
 
-/**
- * Created by Sandro on 15.08.2015.
- */
+// defines the amount of tiles that are shown on the screen at maximum
 public interface MapDimensions {
     int TILES_IN_SCREEN_WIDTH= 16;
     int TILES_IN_SCREEN_HEIGHT = 9;

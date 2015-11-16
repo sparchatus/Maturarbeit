@@ -1,16 +1,10 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import android.graphics.Canvas;
-import android.util.Log;
-
 import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.StunEvent;
 
-/**
- * Created by Sandro on 07.06.2015.
- */
 public class Fluffy extends User {
 
     private int MANA_CONSUMPTION = MAX_MANA;
@@ -22,9 +16,9 @@ public class Fluffy extends User {
     @Override
     public void update() {
         super.update();
-        // This player type generates mana by moving around. the faster he moves the more mana he gets
+        // this player type generates mana by moving around. the faster he moves the more mana he gets
         mana += 2* speed / maxSpeed;
-        // the cap for the maximum mana
+        // the mana is capped at MAX_MANA
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }

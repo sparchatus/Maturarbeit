@@ -32,7 +32,9 @@ import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.DeathScreen;
+import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 import ch.imlee.maturarbeit.game.special_screens.LoadingScreen;
+import ch.imlee.maturarbeit.game.special_screens.ServerEndGameScreen;
 import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
@@ -44,11 +46,13 @@ public class GameThread extends Thread implements Tick{
 
     private static boolean running;
     private static boolean loading;
-    private static boolean gameRunning = true;
+    private static boolean endGameActive = false;
+
     private static long lastTime;
     private static long timeLeft;
 
     private static double synchronizedTick;
+
     private static byte winningTeam = -1;
 
     private static LightBulb[] lightBulbArray;
@@ -92,6 +96,11 @@ public class GameThread extends Thread implements Tick{
             }
             lastTime = System.currentTimeMillis();
             synchronizedTick++;
+        }
+        if (StartActivity.deviceType == DeviceType.HOST){
+            new ServerEndGameScreen().endGameLoop(holder);
+        }else {
+            new EndGameScreen().endGameLoop(holder);
         }
         //todo:sound rework
         backgroundMusic.stop();
@@ -177,18 +186,6 @@ public class GameThread extends Thread implements Tick{
                 if (user.getDead()) {
                     DeathScreen.render(c);
                 }
-                /*
-                c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());
-                Paint paint = new Paint();
-                paint.setTextSize(64);
-                paint.setColor(0xffffffff);
-                c.drawText("Game Finished!", 10, 10 + paint.getTextSize(), paint);
-                if (winningTeam == 0) {
-                    c.drawText("Team Green won!", 10, 20 + 2 * paint.getTextSize(), paint);
-                } else if (winningTeam == 1) {
-                    c.drawText("Team Blue won!", 10, 20 + 2 * paint.getTextSize(), paint);
-                }
-                */
             }
             // todo: remove in end product
             LogView.render(c);
@@ -267,8 +264,16 @@ public class GameThread extends Thread implements Tick{
         return particleListArray[user.getID()].size();
     }
 
+    public static void activateEndGame(){
+        endGameActive = true;
+    }
+
     public void setRunning(boolean running){
         this.running = running;
+    }
+
+    public static void setWinningTeam(byte team){
+        winningTeam = team;
     }
 
     public static double getSynchronizedTick(){
@@ -283,10 +288,6 @@ public class GameThread extends Thread implements Tick{
         return playerArray;
     }
 
-    public  void setHolder(SurfaceHolder holder){
-        this.holder = holder;
-    }
-
     public static LightBulb[] getLightBulbArray() {
         return lightBulbArray;
     }
@@ -299,15 +300,15 @@ public class GameThread extends Thread implements Tick{
         return  loading;
     }
 
-    public static void setGameRunning(boolean gameRunning1){
-        gameRunning = gameRunning1;
-    }
-
-    public static void setWinningTeam(byte team){
-        winningTeam = team;
-    }
-
     public static SurfaceHolder getHolder() {
         return holder;
+    }
+
+    public static boolean getEndGameActive(){
+        return endGameActive;
+    }
+
+    public static byte getWinningTeam() {
+        return winningTeam;
     }
 }

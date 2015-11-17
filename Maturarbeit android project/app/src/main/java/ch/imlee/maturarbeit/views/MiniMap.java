@@ -16,6 +16,7 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 
 public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -161,6 +162,9 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (GameThread.getEndGameActive()){
+            return EndGameScreen.onTouch(event);
+        }
         // before the main loop finished loading there might be some variables missing which can lead to an error
         if (GameThread.getLoading()) {
             return false;

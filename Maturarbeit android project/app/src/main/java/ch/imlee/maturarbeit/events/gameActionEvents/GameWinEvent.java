@@ -28,8 +28,6 @@ public class GameWinEvent extends GameActionEvent {
         Log.i("game ended", "Team " + TEAM + " won!");
         GameThread.setGameRunning(false);
         GameThread.setWinningTeam(TEAM);
-        if(StartActivity.deviceType == DeviceType.HOST){
-            GameServerThread.setEndGameLayoutVisibility(View.VISIBLE);
-        }
+        GameThread.activateEndGame();
     }
 }

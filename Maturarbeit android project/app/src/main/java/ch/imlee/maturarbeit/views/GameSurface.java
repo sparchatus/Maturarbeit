@@ -21,6 +21,7 @@ import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
@@ -81,6 +82,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (GameThread.getEndGameActive()){
+            return EndGameScreen.onTouch(event);
+        }
         // if the GameThread wasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()){
             return false;
@@ -102,6 +106,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }else{
             gameSurfaceController = new GameSurfaceController();
         }
+    }
+
+    public static void restart(){
+        if(StartActivity.deviceType == DeviceType.HOST) {
+            gameThread = new GameServerThread(holder);
+        }else{
+            gameThread = new GameThread(holder);
+        }
+        gameThread.setRunning(true);
+        gameThread.start();
     }
 
     public static void nullFocusedPlayer(){

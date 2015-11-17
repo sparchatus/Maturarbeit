@@ -11,6 +11,7 @@ import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 
 public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -47,6 +48,9 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (GameThread.getEndGameActive()){
+            return EndGameScreen.onTouch(event);
+        }
         // if the GameThread wasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()) {
             return false;

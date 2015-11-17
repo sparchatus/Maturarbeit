@@ -101,14 +101,8 @@ public class User extends Player {
             if (!falling) {
                 // this includes: moving and resolving collisions with walls
                 move();
-                // if the User is on no more stable ground he starts to fall
-                if (Map.TILE_MAP[(int) getXCoordinate()][(int) getYCoordinate()].FALL_THROUGH) {
-                    //// TODO: 09.09.2015 if there is a 2*2 field (or bigger) of void tiles, you should be able to fall down if you have a radius >0.5 
-                    if (xCoordinate % 1 >= 0.8f * playerRadius && xCoordinate + 0.8f * playerRadius <= (int) xCoordinate + 1 &&
-                            yCoordinate % 1 >= 0.8f * playerRadius && yCoordinate + 0.8f * playerRadius <= (int) yCoordinate + 1) {
-                        falling = true;
-                    }
-                }
+                // checks if all the floor Tiles below the User are FALL_TROUGH
+                checkFloor();
                 // every now an then the Player looses weight/gets smaller
                 if (GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss) {
                     loseWeight();
@@ -138,6 +132,9 @@ public class User extends Player {
         // if the death time is over, tell the other devices that tis player revived
         else if(GameThread.getSynchronizedTick() >= reviveTick){
             dead = false;
+            xCoordinate = START_X;
+            yCoordinate = START_Y;
+            new PlayerMotionEvent(this).send();
             new DeathEvent(false).send();
         }
     }
@@ -179,89 +176,6 @@ public class User extends Player {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
             new PlayerMotionEvent(this).send();
-        }
-    }
-
-    // if the ParticleButton is pressed and the User isn't stunned nor the Particles are on cool down then the User shoots a particle in the direction he is facing
-    private void shoot(){
-        if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
-            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getSynchronizedTick(), GameThread.getCurrentFreeParticleID());
-            particleShotEvent.send();
-            particleShotEvent.apply();
-            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
-        }
-    }
-
-    private void lightBulbInteraction(){
-        // if already a request to get the LightBulb was sent there shouldn't be another one sent
-        if (bulbRequestSent) {
-            // if the LightBulb was received or picked up by someone else
-            if (!pickUpBulb.isPickable()) {
-                pickUpBulb = null;
-                pickUpTickCount = 0;
-                bulbRequestSent = false;
-            }
-        }
-        // if the User is picking up a LightBulb
-        else if (pickUpBulb != null) {
-            pickUpTickCount++;
-            // if the User is out of range or gets stunned he stops picking up
-            if (stunned || Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2) > PICK_UP_RANGE * PICK_UP_RANGE) {
-                pickUpTickCount = 0;
-                pickUpBulb = null;
-            }
-            // if the PICK_UP_TICKS have uninterruptedly passed the User asks the Server for the LightBulb
-            else if (pickUpTickCount >= PICK_UP_TICKS) {
-                if (StartActivity.deviceType == DeviceType.CLIENT) {
-                    new LightBulbServerEvent(this, pickUpBulb.ID).send();
-                }
-                // if the User is the Server himself he does not have to ask for perission to take the LightBulb
-                else {
-                    new LightBulbEvent(pickUpBulb.ID).send();
-                    bulbReceived(pickUpBulb.ID);
-                }
-                bulbRequestSent = true;
-            }
-        }
-        // if the User isn't already in possession of a LightBulb and not currently picking up one
-        // then he is allowed to start picking up one in range as long as it isn't possessed by an enemy or an allied LightBulbStand
-        else if (lightBulb == null) {
-            for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
-                if (lightBulb.getLightBulbStandTeam() == TEAM || !lightBulb.isPickable()) {
-                    continue;
-                }
-                if (Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
-                    pickUpTickCount = 0;
-                    pickUpBulb = lightBulb;
-                    break;
-                }
-            }
-        }
-        // if the request was sent and LightBulb put on the stand or the LightBulb was lost then a new LightBulbStand request is allowed
-        if ((standRequestSent&&(!Map.getFriendlyLightBulbStands(TEAM)[requestedStandID].isFree())||lightBulb==null)){
-            standRequestSent = false;
-        }
-
-        // if the User is in possession of a LightBulb he checks for reachable allied LightBulbStands to put the LightBulb on
-        //Also the User checks if he has lost all his strength. if so, he looses his LightBulb
-        if (lightBulb != null) {
-            for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
-                if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
-                    if (StartActivity.deviceType == DeviceType.CLIENT) {
-                        if (!standRequestSent) {
-                            new LightBulbStandServerEvent(lightBulbStand.ID).send();
-                            standRequestSent = true;
-                            requestedStandID = lightBulbStand.ID;
-                        }
-                    }else{
-                        new LightBulbStandServerEvent(lightBulbStand.ID).apply();
-                    }
-                }
-            }
-            // if the User lost all his strength, he looses his LightBulb
-            if (strength <= 0) {
-                bulbLost();
-            }
         }
     }
 
@@ -353,6 +267,127 @@ public class User extends Player {
         }
         // resolving the repel
         newPosition.add(repelVec);
+    }
+
+    // if the User is on no more stable ground he starts to fall
+    // the principle algorithm is quite the same as in the physics engine
+    private void checkFloor(){
+        // checks the floor to the right of the User
+        if (!Map.getFallThrough((int) (xCoordinate + playerRadius), (int) yCoordinate)) {
+            return;
+        }
+        // checks the floor to the left of the User
+        if (Map.getSolid((int) (xCoordinate - playerRadius), (int) yCoordinate)) {
+            return;
+        }
+        // checks the floor at the bottom of the User
+        if (Map.getSolid((int) xCoordinate, (int) (yCoordinate + playerRadius))) {
+            return;
+        }
+        // checks the floor at the top of the User
+        if (Map.getSolid((int) xCoordinate, (int) (yCoordinate - playerRadius))) {
+            return;
+        }
+        // checks the wall to the right bottom of the User
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) >= Math.pow(playerRadius, 2)) {
+            return;
+        }
+        // checks the wall to the right top of the User
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) >= Math.pow(playerRadius, 2)) {
+            return;
+        }
+        // checks the wall to the left top of the User
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) >= Math.pow(playerRadius, 2)) {
+            return;
+        }
+        // checks the wall to the left bottom of the User
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) >= Math.pow(playerRadius, 2)) {
+            return;
+        }
+        falling = true;
+    }
+
+    // if the ParticleButton is pressed and the User isn't stunned nor the Particles are on cool down then the User shoots a particle in the direction he is facing
+    private void shoot(){
+        if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
+            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getSynchronizedTick(), GameThread.getCurrentFreeParticleID());
+            particleShotEvent.send();
+            particleShotEvent.apply();
+            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+        }
+    }
+
+    private void lightBulbInteraction(){
+        // if already a request to get the LightBulb was sent there shouldn't be another one sent
+        if (bulbRequestSent) {
+            // if the LightBulb was received or picked up by someone else
+            if (!pickUpBulb.isPickable()) {
+                pickUpBulb = null;
+                pickUpTickCount = 0;
+                bulbRequestSent = false;
+            }
+        }
+        // if the User is picking up a LightBulb
+        else if (pickUpBulb != null) {
+            pickUpTickCount++;
+            // if the User is out of range or gets stunned he stops picking up
+            if (stunned || Math.pow(xCoordinate - pickUpBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - pickUpBulb.getYCoordinate(), 2) > PICK_UP_RANGE * PICK_UP_RANGE) {
+                pickUpTickCount = 0;
+                pickUpBulb = null;
+            }
+            // if the PICK_UP_TICKS have uninterruptedly passed the User asks the Server for the LightBulb
+            else if (pickUpTickCount >= PICK_UP_TICKS) {
+                if (StartActivity.deviceType == DeviceType.CLIENT) {
+                    new LightBulbServerEvent(this, pickUpBulb.ID).send();
+                }
+                // if the User is the Server himself he does not have to ask for perission to take the LightBulb
+                else {
+                    new LightBulbEvent(pickUpBulb.ID).send();
+                    bulbReceived(pickUpBulb.ID);
+                }
+                bulbRequestSent = true;
+            }
+        }
+        // if the User isn't already in possession of a LightBulb and not currently picking up one
+        // then he is allowed to start picking up one in range as long as it isn't possessed by an enemy or an allied LightBulbStand
+        else if (lightBulb == null) {
+            for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
+                if (lightBulb.getLightBulbStandTeam() == TEAM || !lightBulb.isPickable()) {
+                    continue;
+                }
+                if (Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
+                    pickUpTickCount = 0;
+                    pickUpBulb = lightBulb;
+                    break;
+                }
+            }
+        }
+        // if the request was sent and LightBulb put on the stand or the LightBulb was lost then a new LightBulbStand request is allowed
+        if ((standRequestSent&&(!Map.getFriendlyLightBulbStands(TEAM)[requestedStandID].isFree())||lightBulb==null)){
+            standRequestSent = false;
+        }
+
+        // if the User is in possession of a LightBulb he checks for reachable allied LightBulbStands to put the LightBulb on
+        //Also the User checks if he has lost all his strength. if so, he looses his LightBulb
+        if (lightBulb != null) {
+            for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
+                if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
+                    if (StartActivity.deviceType == DeviceType.CLIENT) {
+                        if (!standRequestSent) {
+                            new LightBulbStandServerEvent(lightBulbStand.ID).send();
+                            standRequestSent = true;
+                            requestedStandID = lightBulbStand.ID;
+                        }
+                    }else{
+                        new LightBulbStandServerEvent(lightBulbStand.ID).apply();
+                    }
+                }
+            }
+            // if the User lost all his strength, he looses his LightBulb
+            if (strength <= 0) {
+                bulbLost();
+            }
+        }
     }
 
     // reducing the Players radius (called weight in method name)

@@ -5,14 +5,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Button;
 
-import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.game.GameThread;
 
-/**
- * Created by Sandro on 08.06.2015.
- */
 public class ParticleButton extends Button {
-
-    private User user;
 
     public ParticleButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -20,16 +15,17 @@ public class ParticleButton extends Button {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // if the GameThread wasn't done loading yet it would cause an error because there would be no User
+        if (GameThread.getLoading()){
+            return false;
+        }
         if(event.getAction() == MotionEvent.ACTION_DOWN){
-            user.setShooting(true);
+            GameThread.getUser().setShooting(true);
         }else if (event.getAction() == MotionEvent.ACTION_UP){
-            user.setShooting(false);
+            GameThread.getUser().setShooting(false);
         }
         return super.onTouchEvent(event);
     }
 
-    public void setUser(User gameUser){
-        user = gameUser;
-    }
 }
 

@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
-import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 // the map is built up by little squares which get placed on the screen.
@@ -24,12 +23,11 @@ public class Map implements MapDimensions {
     private static float[][] playerStartCoordinates = new float[8][2];
 
     // the actual map data consisting of references to Tiles
-    public static Tile[][] TILE_MAP;
-    public static LightBulbStand[] blueLightBulbStandArray = new LightBulbStand[2];
-    public static LightBulbStand[] greenLightBulbStandArray = new LightBulbStand[2];
+    private static Tile[][] TILE_MAP;
+    private static LightBulbStand[] blueLightBulbStandArray = new LightBulbStand[2];
+    private static LightBulbStand[] greenLightBulbStandArray = new LightBulbStand[2];
     private static Bitmap pixelMap;
-    private Tile voidTile, groundTile, wallTile, greenBaseTile, blueBaseTile, spawnTile;
-    private Bitmap currentBmp;
+    private static Tile voidTile, groundTile, wallTile, greenBaseTile, blueBaseTile, spawnTile;
 
     public Map(Resources rec, int pixelMapID) {
         halfGameSurfaceWidth = GameSurface.getSurfaceWidth() / 2;
@@ -47,6 +45,7 @@ public class Map implements MapDimensions {
         blueBaseTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.blue_base_tile), TILE_SIDE, TILE_SIDE, false), true, false);
         spawnTile = new Tile(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(rec, R.drawable.spawn_tile), TILE_SIDE, TILE_SIDE, false), false, false);
         TILE_MAP = new Tile[pixelMap.getWidth()][pixelMap.getHeight()];
+        // import the Map data from the image file
         scanPixelMap(rec);
 
         //minus one because the ++ in the coordinate distribution function has to be before the return
@@ -55,14 +54,18 @@ public class Map implements MapDimensions {
     }
     public void render(Canvas canvas){
         User user = GameThread.getUser();
+        // bitmap of the currently rendering Tile
+        Bitmap currentBmp;
         int  userXCoordinateInt = (int)(user.getXCoordinate());
         int userYCoordinateInt = (int)(user.getYCoordinate());
 
         // distance of the user to the tile origin(top left corner of the tile)
         float userXTranslation = userXCoordinateInt - user.getXCoordinate();
         float userYTranslation = userYCoordinateInt - user.getYCoordinate();
+        // renders the amount of Tiles defined in MapDimensions
         for (int y = - (TILES_IN_SCREEN_HEIGHT / 2 + 1); y <= (TILES_IN_SCREEN_HEIGHT / 2 + 1); y++){
             for (int x = - (TILES_IN_SCREEN_WIDTH / 2 + 1); x <= (TILES_IN_SCREEN_WIDTH / 2 + 1); x++){
+                // catch all the Tiles that aren't on the screen to avoid a NullPointerException
                 if (userXCoordinateInt + x < 0 || userYCoordinateInt + y < 0 || userXCoordinateInt + x >= TILES_IN_MAP_WIDTH || userYCoordinateInt + y >= TILES_IN_MAP_HEIGHT){
                     currentBmp = voidTile.BMP;
                 }else {
@@ -71,7 +74,6 @@ public class Map implements MapDimensions {
                 canvas.drawBitmap(currentBmp, halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE, halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE, null);
             }
         }
-        LogView.addLog(String.valueOf(halfGameSurfaceHeight));
     }
 
     private void scanPixelMap(Resources rec){
@@ -82,10 +84,10 @@ public class Map implements MapDimensions {
         int blueLightBulbStandDistributionIndex = 0;
         int greenLightBulbStandDistributionIndex = 0;
 
-        //
         blueCoordinateDistributionIndex = 0;
         greenCoordinateDistributionIndex = 0;
 
+        // take a look at the map_color_codes for information about the meaning of a certain color
         for(int y = 0; y < pixelMap.getHeight(); y++){
             for (int x = 0; x < pixelMap.getWidth(); x++){
                 if(pixelMap.getPixel(x, y) == 0xffffffff) {
@@ -96,32 +98,42 @@ public class Map implements MapDimensions {
                     TILE_MAP[x][y] = greenBaseTile;
                 }else if (pixelMap.getPixel(x, y) == 0xff0000ff){
                     TILE_MAP[x][y] = blueBaseTile;
-                }else if (pixelMap.getPixel(x, y) == 0xff00ffff){
+                }
+                // not just the Tile has to be set but it's coordinates also have to be registered
+                else if (pixelMap.getPixel(x, y) == 0xff00ffff){
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[blueCoordinateDistributionIndex][0] = x + 0.5f;
                     playerStartCoordinates[blueCoordinateDistributionIndex][1] = y + 0.5f;
                     blueCoordinateDistributionIndex++;
-                }else if (pixelMap.getPixel(x, y) == 0xff01ffff){
+                }
+                // not just the Tile has to be set but it's coordinates also have to be registered
+                else if (pixelMap.getPixel(x, y) == 0xff01ffff){
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][0] = x + 0.5f;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][1] = y + 0.5f;
                     greenCoordinateDistributionIndex++;
-                }else if (pixelMap.getPixel(x, y) == 0xffffff00){
+                }
+                // not just the Tile has to be set but a reference to it has to be saved
+                else if (pixelMap.getPixel(x, y) == 0xffffff00){
                     TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, (byte) 0, (byte)blueLightBulbStandDistributionIndex);
                     blueLightBulbStandArray[blueLightBulbStandDistributionIndex] = (LightBulbStand)TILE_MAP[x][y];
                     blueLightBulbStandDistributionIndex++;
-                }else if (pixelMap.getPixel(x, y) == 0xffffff01){
+                }
+                // not just the Tile has to be set but a reference to it has to be saved
+                else if (pixelMap.getPixel(x, y) == 0xffffff01){
                     TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, (byte) 1, (byte) greenLightBulbStandDistributionIndex);
                     greenLightBulbStandArray[greenLightBulbStandDistributionIndex] = (LightBulbStand) TILE_MAP[x][y];
                     greenLightBulbStandDistributionIndex++;
-                }else{
+                }
+                // the default Tile
+                else{
                     TILE_MAP[x][y] = voidTile;
                 }
             }
         }
     }
 
-    // returns if the Tile at the targeted location is solid
+    // returns if the Tile at the targeted location is SOLID
     public static boolean getSolid(int xTileCoordinate, int yTileCoordinate){
         if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILE_MAP.length || yTileCoordinate >= TILE_MAP[0].length) {
             return false;
@@ -129,6 +141,15 @@ public class Map implements MapDimensions {
         return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }
 
+    // returns if the Tile at the targeted location is fall FALL_THROUGH
+    public static boolean getFallThrough(int xTileCoordinate, int yTileCoordinate){
+        if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILE_MAP.length || yTileCoordinate >= TILE_MAP[0].length) {
+            return false;
+        }
+        return TILE_MAP[xTileCoordinate][yTileCoordinate].FALL_THROUGH;
+    }
+
+    // returns the spawn point x coordinates
     public static float getStartX(byte team) {
         if (team == 0){
             blueCoordinateDistributionIndex++;
@@ -139,6 +160,7 @@ public class Map implements MapDimensions {
         }
     }
 
+    // returns the spawn point y coordinates
     public static float getStartY(byte team) {
         if (team == 0){
             return playerStartCoordinates[blueCoordinateDistributionIndex % 4][1];

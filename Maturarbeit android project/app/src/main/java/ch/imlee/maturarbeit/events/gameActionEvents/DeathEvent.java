@@ -27,7 +27,6 @@ public class DeathEvent extends GameActionEvent {
         Player player = GameThread.getPlayerArray()[senderID];
         player.setDead(DEAD);
         if(DEAD){
-            player.setCoordinates(Map.getStartX(player.TEAM), Map.getStartY(player.TEAM));
             player.bulbLost();
         }
     }

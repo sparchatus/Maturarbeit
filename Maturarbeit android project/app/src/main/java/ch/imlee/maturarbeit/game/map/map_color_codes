@@ -1,3 +1,4 @@
+// this codes are used to determine what type of Tile a pixel on the map picture file is
 0x000000 void
 0xff0000 wall
 0x00ff00 green base wall

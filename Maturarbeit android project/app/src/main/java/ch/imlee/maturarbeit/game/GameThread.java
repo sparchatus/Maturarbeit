@@ -88,40 +88,44 @@ public class GameThread extends Thread implements Tick{
     public GameThread(SurfaceHolder holder, Context context){
         this.holder = holder;
     }
+
     /**
      * The method called when the gameThread is started. It contains the main game loop.
      */
     @Override
     public void run() {
-        loading = true;
-        particleButton = GameClient.getParticleButton();
-        skillButton = GameClient.getSkillButton();
-        backgroundMusic = new BackgroundMusic();
-        backgroundMusic.start();
-        miniMap = GameClient.getMiniMap();
-        displayLoadingScreen();
-        while(running){
-            update();
-            render();
-            if((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
-                try {
-                    sleep(timeLeft);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        try {
+            loading = true;
+            particleButton = GameClient.getParticleButton();
+            skillButton = GameClient.getSkillButton();
+            backgroundMusic = new BackgroundMusic();
+            backgroundMusic.start();
+            miniMap = GameClient.getMiniMap();
+            displayLoadingScreen();
+            while (running) {
+                update();
+                render();
+                if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
+                    try {
+                        sleep(timeLeft);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    synchronizedTick -= timeLeft / TIME_PER_TICK;
+                    predictedDelay -= timeLeft;
+                    if (predictedDelay >= 0.5) {
+                        //todo: request a fresh synchronizedTick
+                        //todo: on receiving a new Tick, the old Data has to be reviewed
+                    }
                 }
+                lastTime = System.currentTimeMillis();
+                synchronizedTick++;
             }
-            else{
-                synchronizedTick -= timeLeft / TIME_PER_TICK;
-                predictedDelay -= timeLeft;
-                if(predictedDelay >= 0.5){
-                    //todo: request a fresh synchronizedTick
-                    //todo: on receiving a new Tick, the old Data has to be reviewed
-                }
-            }
-            lastTime = System.currentTimeMillis();
-            synchronizedTick++;
+            backgroundMusic.stop();
+        }catch (Exception e){
+            LogView.addLog(e.toString());
         }
-        backgroundMusic.stop();
     }
 
     /**
@@ -209,7 +213,7 @@ public class GameThread extends Thread implements Tick{
                             textPaint.setColor(0xffffffff);
                             c.drawText("YOU ARE DEAD", 20, 120, textPaint);
                             textPaint.setTextSize(20);
-                            c.drawText("Respawn in " + (int) (getUser().reviveTick - getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
+                            c.drawText("Respawn in " + (int) (getUser().getReviveTick() - getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
                         }
                     } else {
                         c.drawRect(0, 0, c.getWidth(), c.getHeight(), new Paint());
@@ -414,5 +418,9 @@ public class GameThread extends Thread implements Tick{
 
     public static void setWinningTeam(byte team){
         winningTeam = team;
+    }
+
+    public static SurfaceHolder getHolder() {
+        return holder;
     }
 }

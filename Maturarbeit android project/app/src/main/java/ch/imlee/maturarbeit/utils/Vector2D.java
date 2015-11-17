@@ -1,9 +1,9 @@
 package ch.imlee.maturarbeit.utils;
 
-/**
- * Created by Sandro on 10.09.2015.
- */
+// a general vector class usefull for the hit box resolution
+
 public class Vector2D {
+    // coordinates the vector points to
     public float x, y;
 
     public Vector2D(float x, float y){
@@ -16,26 +16,12 @@ public class Vector2D {
         y = yPoint2 - yPoint1;
     }
 
+    // make the vector length 1
+
     public void normalize(){
-        double absolute = Math.sqrt(x * x + y * y);
-        x /= absolute;
-        y /= absolute;
-    }
-
-    public static float scalarProduct(Vector2D vector1, Vector2D vector2){
-        return vector1.x * vector2.x  + vector1.y * vector2.y;
-    }
-
-    public static float scalarProduct(float xVector1, float yVector1, float xVector2, float yVector2){
-        return xVector1 * xVector2  + yVector1 * yVector2;
-    }
-
-    public float scalarProduct(float xVector, float yVector) {
-        return x * xVector + y * yVector;
-    }
-
-    public float scalarProduct(Vector2D vector) {
-        return x * vector.x + y * vector.y;
+        double abs = Math.sqrt(x * x + y * y);
+        x /= abs;
+        y /= abs;
     }
 
     public void scale(float scalar){
@@ -44,35 +30,31 @@ public class Vector2D {
     }
 
     public void scaleTo(float newLength){
-        double length = Math.sqrt(x * x + y * y);
-        x /= length;
-        x *= newLength;
-        y /= length;
-        y *= newLength;
+        normalize();
+        scale(newLength);
     }
 
     public double getLength(){
         return Math.sqrt(x * x + y * y);
     }
 
-    public double getDirectedLength(){
-        if (x < 0 && y < 0 || x > 0 && y > 0){
-            return Math.sqrt(x * x + y * y);
-        }
-        return - Math.sqrt(x * x + y * y);
-    }
 
+    // returns the digits after the comma of x
     public float xMod1(){
         return x - (int)x;
     }
+
+    // returns the digits after the comma of y
     public float yMod1(){
         return y - (int)y;
     }
 
+    // returns the x value without the part after the comma
     public int xIntPos(){
         return (int)x;
     }
 
+    // returns the y value without the part after the comma
     public int yIntPos(){
         return (int)y;
     }

@@ -3,56 +3,47 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.Sound.SlimeSound;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
-import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Sandro on 05.06.2015.
- */
 public class Player extends Entity implements Tick {
 
-    protected boolean stunned;
-    protected boolean invisible;
+    protected boolean stunned = false;
+    protected boolean invisible = false;
     protected boolean slimy;
     protected boolean dead;
 
     protected final byte ID;
     public final byte TEAM;
-    public final String NAME;
 
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
     protected final int BAR_HEIGHT;
     protected final int MAX_STRENGTH = 100;
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
-    private final int DEATH_TIME = 5 * Tick.TICK;
-    public int reviveTick;
     protected int strength;
 
     public static final float START_RADIUS = 0.4f;
-    protected float playerRadius;
+    protected float playerRadius = START_RADIUS;
 
     protected double lastSlimeEjection = 0;
     protected double stunTick;
     protected double angle;
 
+    public final String NAME;
+
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap STUN_BMP;
     protected final PlayerType TYPE;
-    protected SlimeSound slimeSound = new SlimeSound();
     protected LightBulb lightBulb;
     protected User user;
     protected Bitmap PLAYER_BMP;
@@ -62,6 +53,7 @@ public class Player extends Entity implements Tick {
     public Player(PlayerType type, Map map, byte team, byte playerId, String name) {
         super(map.getStartX(team), map.getStartY(team));
         TYPE = type;
+        //setting the Player Bitmap according to the PlayerType
         if (type == PlayerType.FLUFFY){
             PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy);
         }else if (type == PlayerType.SLIME){
@@ -85,57 +77,17 @@ public class Player extends Entity implements Tick {
         }else {
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
-        stunned = false;
-        invisible = false;
         this.ID = playerId;
         NAME = name;
     }
 
-    public Canvas render(Canvas canvas){
-        if (!invisible && !dead) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-            Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
-            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f - rotated.getHeight() / 2f, null);        }
-        if (stunned){
-            canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
-        }
-        if (lightBulb != null) {
-            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
-            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + 2 * playerRadius * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
-        }
-        try {
-            Paint namePaint = new Paint();
-            namePaint.setColor(Color.RED);
-            namePaint.setTextSize(12);
-            if (getTeam() == user.getTeam()) {
-                namePaint.setColor(Color.GREEN);
-            }
-            char[] nameChars = NAME.toCharArray();
-            float[] charWidths = new float[nameChars.length];
-            float textWidth = 0;
-            namePaint.getTextWidths(nameChars, 0, nameChars.length - 1, charWidths);
-            namePaint.setAlpha(0xff);
-            for (float w : charWidths) {
-                textWidth += w;
-            }
-            canvas.drawText(NAME, getXCoordinate() - GameThread.getUser().getXCoordinate() - textWidth / 2, getYCoordinate() - GameThread.getUser().getXCoordinate() - 6, namePaint);
-            LogView.addLog("name of device " + getID() + ": " + NAME);
-        }catch (Exception e){
-            Log.e("RENDER BUG", e.getMessage());
-            for(int i = 0; i < GameThread.getPlayerArray().length; ++i){
-                Log.w("team debug", "Team of Player " + i + ": " + GameThread.getPlayerArray()[i].getTeam());
-
-            }
-            LogView.addLog(e.getMessage());
-        }
-        return canvas;
-    }
 
     public void update(){
+        // the PLayer removes the stun at the right time
         if (stunned && stunTick <= GameThread.getSynchronizedTick()) {
             stunned = false;
         }
+        // if he is of the PlayerType Slime and has his skill activated, he ejects a SlimeTrail
         if(slimy) {
             if (GameThread.getSynchronizedTick() - SLIME_EJECTION_RATE >= lastSlimeEjection) {
                 lastSlimeEjection = GameThread.getSynchronizedTick();
@@ -145,14 +97,29 @@ public class Player extends Entity implements Tick {
         }
     }
 
-    protected void death(){
-        new DeathEvent(true).send();
-        new DeathEvent(true).apply();
-        reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
-        setPlayerRadius(START_RADIUS);
-        new RadiusChangedEvent(START_RADIUS).send();
+    // the Objects are generally drawn in relation to the User position on the Map because the User's position on the screen is constant
+    public Canvas render(Canvas canvas){
+        // if the Player isn't invisible nor dead he is rendered
+        if (!invisible && !dead) {
+            // rotating the Player Bitmap before rendering it.
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
+            Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
+
+            canvas.drawBitmap(rotated, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f - rotated.getWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f - rotated.getHeight() / 2f, null);        }
+        // if the Player is stunned he gets an overlay
+        if (stunned){
+            canvas.drawBitmap(scaledStunBmp, (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f, (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f, null);
+        }
+        // if the Player is in possession of a LightBulb, he renders his strength bar below himself
+        if (lightBulb != null) {
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
+            canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + 2 * playerRadius * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+        }
+        return canvas;
     }
 
+    // getting stunned activates stunned, plays a sound and activates the stun timer
     public void stun(double stunTick){
         new StunSound().start(TIME_PER_TICK * STUN_TIME);
         stunned = true;
@@ -161,10 +128,6 @@ public class Player extends Entity implements Tick {
 
     public void particleHit(){
         strength -= 10;
-    }
-
-    public SlimeSound getSlimeSound(){
-        return slimeSound;
     }
 
     public void setInvisible(boolean invisible){
@@ -232,4 +195,5 @@ public class Player extends Entity implements Tick {
         playerRadius = radius;
         scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
         scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
-    }}
+    }
+}

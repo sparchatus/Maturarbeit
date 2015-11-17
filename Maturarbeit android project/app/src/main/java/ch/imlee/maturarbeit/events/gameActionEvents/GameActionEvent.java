@@ -2,9 +2,6 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.events.Event;
 
-/**
- * Created by Lukas on 18.06.2015.
- */
 public class GameActionEvent extends Event {
 
     public GameActionEvent(byte senderID) {
@@ -14,6 +11,8 @@ public class GameActionEvent extends Event {
     public GameActionEvent(){super();}
 
     public static GameActionEvent fromString(String eventString){
+        // this method is used to get an actual event out of an eventString
+        // the second character in each eventString determines its exact type
         switch(eventString.charAt(1)){
             case 'B': return new LightBulbEvent(eventString);
             case 'C': return new LightBulbServerEvent(eventString);
@@ -30,12 +29,14 @@ public class GameActionEvent extends Event {
             case 'S': return new StunEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
             case 'X': return new SweetEatenEvent(eventString);
-            default:return null;
+            // null only gets returned when the second character of the eventString got corrupted over bluetooth
+            default: return null;
         }
     }
 
     @Override
     public String toString() {
+        // this is the first character of every GameActionEvent's eventString
         return "A";
     }
 

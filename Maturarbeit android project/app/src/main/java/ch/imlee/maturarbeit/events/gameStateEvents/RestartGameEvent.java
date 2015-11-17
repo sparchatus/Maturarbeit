@@ -1,9 +1,8 @@
 package ch.imlee.maturarbeit.events.gameStateEvents;
 
-/**
- * Created by Lukas on 19.09.2015.
- */
+// this Event gets sent by the host when the game is finished and should be restarted. It is not implemented yet
 public class RestartGameEvent extends GameStateEvent {
+
     @Override
     public String toString(){
         return super.toString() + 'R';
@@ -11,7 +10,7 @@ public class RestartGameEvent extends GameStateEvent {
 
     @Override
     public boolean handle(byte i){
-
+        // TODO: implement
         return true;
     }
 }

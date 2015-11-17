@@ -4,9 +4,7 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.map.Map;
 
-/**
- * Created by Lukas on 09.09.2015.
- */
+// this Event gets created and sent when the user dies by falling into a void tile
 public class DeathEvent extends GameActionEvent {
     private final boolean DEAD;
 
@@ -23,6 +21,7 @@ public class DeathEvent extends GameActionEvent {
     public String toString(){
         return super.toString()+ 'D' + ((DEAD) ? 1 : 0) + 'i' + senderID;
     }
+
     @Override
     public void apply(){
         Player player = GameThread.getPlayerArray()[senderID];

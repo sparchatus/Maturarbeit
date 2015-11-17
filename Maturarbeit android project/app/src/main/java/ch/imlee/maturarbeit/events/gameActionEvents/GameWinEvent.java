@@ -8,9 +8,7 @@ import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 
-/**
- * Created by Lukas on 12.09.2015.
- */
+// this Event gets created and sent by the host in the LightBulbStandServerEvent's apply method when a team wins by having two LightBulbs in their house
 public class GameWinEvent extends GameActionEvent {
     private final byte TEAM;
 

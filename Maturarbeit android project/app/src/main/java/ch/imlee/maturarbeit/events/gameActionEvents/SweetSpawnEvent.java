@@ -3,9 +3,7 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 
-/**
- * Created by Lukas on 24.08.2015.
- */
+// this Event gets sent by the host every time a Sweet spawns on the map
 public class SweetSpawnEvent extends GameActionEvent{
     private final int X, Y, ID;
     public SweetSpawnEvent(Sweet sweet){
@@ -19,7 +17,7 @@ public class SweetSpawnEvent extends GameActionEvent{
         ID = Integer.parseInt(eventString.substring(eventString.indexOf('i')+1));
     }
     public String toString(){
-        return super.toString() + "Wx" + X + 'y' + Y + 'i' + ID;
+        return super.toString() + 'W' + 'x' + X + 'y' + Y + 'i' + ID;
     }
     public void apply(){
         GameThread.sweets.add(new Sweet(X, Y, ID));

@@ -72,7 +72,7 @@ public class GameStartEvent extends GameStateEvent {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(!GameClient.getSurfaceCreated()){
+                while(!GameClient.getActivityLoaded()){
                     try{
                         Thread.sleep(20);
                     }catch(Exception e){

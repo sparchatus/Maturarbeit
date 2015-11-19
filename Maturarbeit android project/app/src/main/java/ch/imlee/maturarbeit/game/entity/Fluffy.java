@@ -1,9 +1,9 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.StunEvent;
+import ch.imlee.maturarbeit.views.GameSurface;
 
 public class Fluffy extends User {
 
@@ -26,14 +26,14 @@ public class Fluffy extends User {
 
     public void skillActivation() {
         // getting the focused player from the corresponding controller
-        Player focusedPlayer = FluffyGameSurfaceController.getFocusedPlayer();
+        Player focusedPlayer = GameSurface.getFocusedPlayer();
         //only with sufficient mana and a player as focus this player type is able to activate his skill
         if (mana == MAX_MANA && focusedPlayer != null) {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             // sending the information to the other devices
             new StunEvent(ID, focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             // reset the focus
-            FluffyGameSurfaceController.nullFocusedPlayer();
+            GameSurface.nullFocusedPlayer();
             // consuming the mana
             mana -= MANA_CONSUMPTION;
         }

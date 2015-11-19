@@ -1,9 +1,7 @@
 package ch.imlee.maturarbeit.game;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -268,8 +266,8 @@ public class GameThread extends Thread implements Tick{
         endGameActive = true;
     }
 
-    public void setRunning(boolean running){
-        this.running = running;
+    public static void setRunning(boolean isRunning){
+        running = isRunning;
     }
 
     public static void setWinningTeam(byte team){

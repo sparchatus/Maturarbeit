@@ -78,6 +78,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 e.printStackTrace();
             }
         }
+        System.exit(0);
     }
 
     @Override
@@ -122,7 +123,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         gameSurfaceController.nullFocusedPlayer();
     }
 
-    public Player getFocusedPlayer(){
+    public static Player getFocusedPlayer(){
         return gameSurfaceController.getFocusedPlayer();
     }
 

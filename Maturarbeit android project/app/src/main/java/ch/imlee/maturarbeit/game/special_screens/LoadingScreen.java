@@ -29,14 +29,17 @@ public class LoadingScreen implements Tick{
     private static Bitmap fluffy, slime, ghost;
 
     public static void loadingLoop(SurfaceHolder surfaceHolder) {
+
         // initializing variables
         i = 3;
         halfSurfaceHeight = GameSurface.getSurfaceHeight() / 2;
         thirdSurfaceWidth = GameSurface.getSurfaceWidth() / 3;
         ninthSurfaceWidth = thirdSurfaceWidth / 3;
         holder = surfaceHolder;
+
         // setting up the tex and pictures that will be drawn
         textPaint = new Paint();
+
         //white
         textPaint.setColor(0xffffffff);
         textPaint.setTextSize(TEXT_SIZE);
@@ -48,6 +51,7 @@ public class LoadingScreen implements Tick{
         fluffy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), ninthSurfaceWidth, ninthSurfaceWidth, false);
         slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
         ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
+
         // end of content setup
         while (GameThread.getLoading()) {
             //todo:remove in end product

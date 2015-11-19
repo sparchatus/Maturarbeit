@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.User;
@@ -67,6 +68,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
         invalidate();
         width = getWidth();
         height = getHeight();
+        GameClient.miniMapSurfaceLoaded();
     }
 
     @Override

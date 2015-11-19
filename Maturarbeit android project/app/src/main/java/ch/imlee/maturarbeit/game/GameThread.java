@@ -53,7 +53,7 @@ public class GameThread extends Thread implements Tick{
 
     private static byte winningTeam = -1;
 
-    private static LightBulb[] lightBulbArray;
+    public static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
     private static BackgroundMusic backgroundMusic;
     private static MiniMap miniMap;
@@ -79,6 +79,7 @@ public class GameThread extends Thread implements Tick{
         backgroundMusic.start();
         miniMap = GameClient.getMiniMap();
         LoadingScreen.loadingLoop(holder);
+
         while (running) {
             update();
             render();
@@ -103,6 +104,8 @@ public class GameThread extends Thread implements Tick{
         //todo:sound rework
         backgroundMusic.stop();
     }
+
+
     // this method applies events and calls all the update methods of particles, players, etc...
     protected void update(){
         for(Queue<Event> eventQueue:EventReceiver.events){
@@ -193,42 +196,6 @@ public class GameThread extends Thread implements Tick{
             }
         }
     }
-
-     public  void setStartData(GameStartEvent startData){
-         map = new Map(GameSurface.getRec(), startData.getMapID());
-         playerArray = new Player[startData.getPlayerCount()];
-         particleListArray = new ArrayList[startData.getPlayerCount()];
-         for(int i = 0; i < particleListArray.length; ++i){
-             particleListArray[i] = new ArrayList<>();
-         }
-         for (byte i = 0; i < startData.getPlayerCount(); i++){
-            if (i == startData.getUserID()){
-                switch (startData.getPlayerTypes().get(i)){
-                    case FLUFFY:user = new Fluffy(map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case GHOST:user = new Ghost(map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case SLIME:user = new Slime(map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case NULL: Log.e("GameThread", "User PlayerType is NULL");
-                }
-                playerArray[i] = user;
-            }else {
-                playerArray[i] = new Player(startData.getPlayerTypes().get(i), map, startData.getTeams().get(i), i, startData.getName(i));
-            }
-         }
-         GameSurface.setup();
-         MiniMap.setup();
-         // adding the LightBulbs to the game
-         lightBulbArray = new LightBulb[2];
-         lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
-         lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
-         if(StartActivity.deviceType == DeviceType.CLIENT) {
-            new GameLoadedEvent().send();
-         } else {
-            WaitUntilLoadedThread.incrementReady();
-         }
-     }
 
     public static void endLoading() {
         synchronizedTick = 0;

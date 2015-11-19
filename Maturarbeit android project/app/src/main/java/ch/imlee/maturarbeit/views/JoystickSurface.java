@@ -10,6 +10,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 
@@ -24,7 +25,6 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         super(context, attrs);
         holder = getHolder();
         holder.addCallback(this);
-        joystickController = new JoystickController();
     }
 
     @Override
@@ -32,6 +32,7 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         // needs to be called to get the real width and height
         invalidate();
         halfJoystickWidth = getWidth()/2;
+        GameClient.joystickSurfaceLoaded();
     }
 
     @Override
@@ -44,6 +45,10 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
+    }
+
+    public static void setup(){
+        joystickController = new JoystickController();
     }
 
     @Override
@@ -66,7 +71,7 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         return joystickController.render(canvas);
     }
 
-    private class JoystickController {
+    private static class JoystickController {
         private boolean moving;
         private boolean posChanged;
 

@@ -4,17 +4,21 @@ package ch.imlee.maturarbeit.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.MiniMap;
 
 public class GameClient extends Activity {
 
     private static boolean activityLoaded = false;
-
+    private static boolean gameSurfaceLoaded = false;
+    private static boolean joystickSurfaceLoaded = false;
+    private static boolean miniMapSurfaceLoaded = false;
     private static GameSurface gameSurface;
     private static GameThread gameThread;
     private static MiniMap miniMap;
@@ -28,6 +32,7 @@ public class GameClient extends Activity {
         miniMap = (MiniMap) findViewById(R.id.mini_map_surface);
         context = getApplicationContext();
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+        activityLoaded = true;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class GameClient extends Activity {
     // The gameThread object gets initialized and the start data is set.
     public static void initializeStartData(GameStartEvent gameStartEvent) {
         gameThread = gameSurface.getGameThread();
-        gameThread.setStartData(gameStartEvent);
+        StartDataInitializer.setStartData(gameStartEvent, gameThread);
     }
 
     // The method is called when all Devices are done loading. It causes the game Loop to start.
@@ -54,12 +59,8 @@ public class GameClient extends Activity {
         gameThread.endLoading();
     }
 
-    public static synchronized boolean getActivityLoaded(){
-        return activityLoaded;
-    }
-
-    public static synchronized void setSurfaceCreated(boolean created){
-        activityLoaded = created;
+    public static synchronized boolean getLoaded(){
+        return activityLoaded&&miniMapSurfaceLoaded&&joystickSurfaceLoaded&&gameSurfaceLoaded;
     }
 
     public static MiniMap getMiniMap(){
@@ -68,5 +69,15 @@ public class GameClient extends Activity {
 
     public static Context getContext(){
         return  context;
+    }
+
+    public static void gameSurfaceLoaded(){
+        gameSurfaceLoaded = true;
+    }
+    public static void joystickSurfaceLoaded(){
+        joystickSurfaceLoaded = true;
+    }
+    public static void miniMapSurfaceLoaded(){
+        miniMapSurfaceLoaded = true;
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.events.EventReceiver;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.PlayerStatsSelectedEvent;
+import ch.imlee.maturarbeit.utils.LogView;
 
 public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
     ImageView fluffImage;

@@ -11,6 +11,7 @@ import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
+import ch.imlee.maturarbeit.utils.LogView;
 
 /*
 this Event is sent by the host when everyone has chosen a team and a PlayerType. It notifies the clients that they should start loading the game
@@ -59,20 +60,26 @@ public class GameStartEvent extends GameStateEvent {
         for(; userID <= Host.sockets.size(); ++userID){
             // so the client knows which userID he has, send him this.toString(), which contains it.
             Util.sendString(Host.outputStreams.get(userID - 1), toString() + '|');
-            Log.i("game", "GameStartEvent sent to player " + userID);
-            Log.w("GameStartEvent", toString());
+            Log.e("game", "GameStartEvent sent to player " + userID);
+            Log.e("GameStartEvent", toString());
         }
     }
 
     @Override
     public boolean handle(byte i){
         // start the game (finally)
+        LogView.addLog("handling start");
+        Log.e("GameStartEvent", "handling ");
+        Log.e("GameStartEvent", "handling ");
+        Log.e("GameStartEvent", "handling ");
+        Log.e("GameStartEvent", "handling ");
         Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
         //GameClient.initializeStartData(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(!GameClient.getActivityLoaded()){
+                while(!GameClient.getLoaded()){
                     try{
                         Thread.sleep(20);
                     }catch(Exception e){

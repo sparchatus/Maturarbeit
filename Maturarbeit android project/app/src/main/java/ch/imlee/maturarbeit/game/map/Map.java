@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -29,7 +30,8 @@ public class Map implements MapDimensions {
     private static Bitmap pixelMap;
     private static Tile voidTile, groundTile, wallTile, greenBaseTile, blueBaseTile, spawnTile;
 
-    public Map(Resources rec, int pixelMapID) {
+    public Map(int pixelMapID) {
+        Resources rec = GameSurface.getRec();
         halfGameSurfaceWidth = GameSurface.getSurfaceWidth() / 2;
         halfGameSurfaceHeight = GameSurface.getSurfaceHeight() / 2;
         TILE_SIDE = GameSurface.getSurfaceHeight() / TILES_IN_SCREEN_HEIGHT;

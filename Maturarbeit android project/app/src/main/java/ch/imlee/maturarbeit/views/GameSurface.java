@@ -54,7 +54,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         invalidate();
         width = getWidth();
         height = getHeight();
-        GameClient.setSurfaceCreated(true);
+        rec = getResources();
+        GameClient.gameSurfaceLoaded();
     }
 
     @Override

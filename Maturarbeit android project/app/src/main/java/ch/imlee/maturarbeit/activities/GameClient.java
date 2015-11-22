@@ -4,7 +4,6 @@ package ch.imlee.maturarbeit.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -38,7 +37,6 @@ public class GameClient extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        activityLoaded = true;
     }
 
     // This function properly stops the eventReceiver Thread when the Activity ends.

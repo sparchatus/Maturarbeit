@@ -35,7 +35,7 @@ public class GameStartEvent extends GameStateEvent {
             teams.add(Byte.parseByte(Character.toString(eventString.charAt(1))));
             int i = eventString.indexOf('\n');
             names.add(eventString.substring(2, i-1));
-            eventString = eventString.substring(i);
+            eventString = eventString.substring(i+1);
         }
         userID = Byte.parseByte(Character.toString(eventString.charAt(1)));
         MAP_ID = Integer.parseInt(eventString.substring(3));

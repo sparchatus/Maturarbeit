@@ -22,13 +22,13 @@ import ch.imlee.maturarbeit.activities.StartActivity;
 
 public class User extends Player {
 
-    private boolean falling = false;
+    protected boolean falling = false;
     //is true when the particleButton is pressed
     protected boolean shooting;
     protected boolean angleChanged;
     // is true after the LightBulbServerEvent is sent until anything changes the state/allows the player to pickup again
     private boolean bulbRequestSent;
-    // is true afte rthe LightBulbStandServerEvent was sent until the player can try again
+    // is true after the LightBulbStandServerEvent was sent until the player can try again
     private boolean standRequestSent = false;
 
     // used to test if the put on stand was successful
@@ -41,9 +41,9 @@ public class User extends Player {
     protected final int PICK_UP_RANGE = 2;
     // the time it takes to pick up the LightBulb
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
-    private final int DEATH_TIME = 5 * Tick.TICK;
+    private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
     // the time already passed since starting to pick up the LightBulb
-    private int weightLossCooldown = Tick.TICK * 3;
+    private final int weightLossCoolDown = Tick.TICK * 3;
     private int reviveTick;
     protected int pickUpTickCount;
 
@@ -53,11 +53,11 @@ public class User extends Player {
     // the amount of slow SlimeTrails apply
     protected final float SLOW_AMOUNT = 1 / 2f;
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
-    private final float MIN_RADIUS = START_RADIUS;
+    private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
-    protected float maxSpeed = 4f / Tick.TICK;
+    protected final float MAX_SPEED = 8f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 
@@ -95,47 +95,48 @@ public class User extends Player {
     @Override
     public void update() {
         // a dead User isn't able to do anything
-        if(!dead) {
-            super.update();
-            // also a falling Player isn't able to do anything
-            if (!falling) {
-                // this includes: moving and resolving collisions with walls
-                move();
-                // checks if all the floor Tiles below the User are FALL_TROUGH
-                checkFloor();
-                // every now an then the Player looses weight/gets smaller
-                if (GameThread.getSynchronizedTick() - weightLossCooldown > lastWeightLoss) {
-                    loseWeight();
+        if (dead) {
+            // if the death time is over, tell the other devices that tis player revived
+            if (GameThread.getSynchronizedTick() >= reviveTick) {
+                dead = false;
+                xCoordinate = START_X;
+                yCoordinate = START_Y;
+                new PlayerMotionEvent(this).send();
+                new DeathEvent(false).send();
+            }
+            return;
+        }
+        super.update();
+        // also a falling Player isn't able to do anything
+        if (!falling) {
+            // this includes: moving and resolving collisions with walls
+            move();
+            // checks if all the floor Tiles below the User are FALL_TROUGH
+            checkFloor();
+            // every now an then the Player looses weight/gets smaller
+            if (GameThread.getSynchronizedTick() - weightLossCoolDown > lastWeightLoss) {
+                loseWeight();
+                lastWeightLoss = GameThread.getSynchronizedTick();
+            }
+            // if the User is on a sweet he eats it
+            for (Sweet sweet : GameThread.sweets) {
+                if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
+                    eatSweet(sweet);
                     lastWeightLoss = GameThread.getSynchronizedTick();
                 }
-                // if the User is on a sweet he eats it
-                for (Sweet sweet : GameThread.sweets) {
-                    if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
-                        eatSweet(sweet);
-                        lastWeightLoss = GameThread.getSynchronizedTick();
-                    }
-                }
-                shoot();
-                lightBulbInteraction();
             }
-            //if the Player is falling, his radius rapidly decreases which has to be told to the other devices
-            else {
-                setPlayerRadius(playerRadius - FALLING_RADIUS_DECREASE);
-                new RadiusChangedEvent(playerRadius).send();
-                // after some time faling the Player dies
-                if (playerRadius <= 0.05) {
-                    death();
-                    falling = false;
-                }
-            }
+            shoot();
+            lightBulbInteraction();
         }
-        // if the death time is over, tell the other devices that tis player revived
-        else if(GameThread.getSynchronizedTick() >= reviveTick){
-            dead = false;
-            xCoordinate = START_X;
-            yCoordinate = START_Y;
-            new PlayerMotionEvent(this).send();
-            new DeathEvent(false).send();
+        //if the Player is falling, his radius rapidly decreases which has to be told to the other devices
+        else {
+            setPlayerRadius(playerRadius - FALLING_RADIUS_DECREASE);
+            new RadiusChangedEvent(playerRadius).send();
+            // after some time falling the Player dies
+            if (playerRadius <= 0.05) {
+                death();
+                falling = false;
+            }
         }
     }
 
@@ -166,7 +167,7 @@ public class User extends Player {
             return;
         }
         // the desired position of the User
-        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * maxSpeed), (float) (yCoordinate + Math.sin(angle) * tempVelocity * maxSpeed));
+        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving colissions with walls
         physicEngine();
         // calculating the distance the User travelled
@@ -175,7 +176,10 @@ public class User extends Player {
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
             xCoordinate = newPosition.x;
             yCoordinate = newPosition.y;
-            new PlayerMotionEvent(this).send();
+            // less movement events to make it easier for the devices
+            if (GameThread.getSynchronizedTick()%2 == 0) {
+                new PlayerMotionEvent(this).send();
+            }
         }
     }
 
@@ -273,35 +277,38 @@ public class User extends Player {
     // the principle algorithm is quite the same as in the physics engine
     private void checkFloor(){
         // checks the floor to the right of the User
+        if (!Map.getFallThrough((int) (xCoordinate), (int) yCoordinate)) {
+            return;
+        }
         if (!Map.getFallThrough((int) (xCoordinate + playerRadius), (int) yCoordinate)) {
             return;
         }
         // checks the floor to the left of the User
-        if (Map.getSolid((int) (xCoordinate - playerRadius), (int) yCoordinate)) {
+        if (!Map.getFallThrough((int) (xCoordinate - playerRadius), (int) yCoordinate)) {
             return;
         }
         // checks the floor at the bottom of the User
-        if (Map.getSolid((int) xCoordinate, (int) (yCoordinate + playerRadius))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate + playerRadius))) {
             return;
         }
         // checks the floor at the top of the User
-        if (Map.getSolid((int) xCoordinate, (int) (yCoordinate - playerRadius))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate - playerRadius))) {
             return;
         }
         // checks the wall to the right bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) >= Math.pow(playerRadius, 2)) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*playerRadius) {
             return;
         }
         // checks the wall to the right top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) >= Math.pow(playerRadius, 2)) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*playerRadius) {
             return;
         }
         // checks the wall to the left top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) >= Math.pow(playerRadius, 2)) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*playerRadius) {
             return;
         }
         // checks the wall to the left bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) >= Math.pow(playerRadius, 2)) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*playerRadius) {
             return;
         }
         falling = true;
@@ -338,7 +345,7 @@ public class User extends Player {
             // if the PICK_UP_TICKS have uninterruptedly passed the User asks the Server for the LightBulb
             else if (pickUpTickCount >= PICK_UP_TICKS) {
                 if (StartActivity.deviceType == DeviceType.CLIENT) {
-                    new LightBulbServerEvent(this, pickUpBulb.ID).send();
+                    new LightBulbServerEvent(pickUpBulb.ID).send();
                 }
                 // if the User is the Server himself he does not have to ask for perission to take the LightBulb
                 else {
@@ -362,14 +369,15 @@ public class User extends Player {
                 }
             }
         }
-        // if the request was sent and LightBulb put on the stand or the LightBulb was lost then a new LightBulbStand request is allowed
-        if ((standRequestSent&&(!Map.getFriendlyLightBulbStands(TEAM)[requestedStandID].isFree())||lightBulb==null)){
-            standRequestSent = false;
+        // if the request was sent and LightBulb put on the stand or failed the action a new event is allowed
+        if (standRequestSent){
+            if (!Map.getFriendlyLightBulbStands(TEAM)[requestedStandID].isFree()||lightBulb==null) {
+                standRequestSent = false;
+            }
         }
-
         // if the User is in possession of a LightBulb he checks for reachable allied LightBulbStands to put the LightBulb on
         //Also the User checks if he has lost all his strength. if so, he looses his LightBulb
-        if (lightBulb != null) {
+        else if (lightBulb != null) {
             for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
                 if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
                     if (StartActivity.deviceType == DeviceType.CLIENT) {
@@ -438,6 +446,12 @@ public class User extends Player {
         }
     }
 
+    @Override
+    public void bulbReceived(int bulbID) {
+        super.bulbReceived(bulbID);
+        bulbRequestSent = false;
+    }
+
     public void setShooting(boolean isShooting){
         shooting = isShooting;
     }
@@ -458,5 +472,9 @@ public class User extends Player {
 
     public int getReviveTick() {
         return reviveTick;
+    }
+
+    public boolean getFalling(){
+        return falling;
     }
 }

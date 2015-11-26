@@ -1,9 +1,9 @@
 package ch.imlee.maturarbeit.game;
 
-// this interface allows quick changes at the Tick speed and als0 gives simple access to this important data
+// this interface allows quick changes at the Tick speed and also gives simple access to this important data
 public interface Tick {
     // game tick
-    int TICK = 25;
+    int TICK = 20;
     int TIME_PER_TICK = 1000 / TICK;
 
     // tick of the loading screen

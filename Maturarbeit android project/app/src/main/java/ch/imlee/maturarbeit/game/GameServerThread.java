@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game;
 
 import android.view.SurfaceHolder;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
+import ch.imlee.maturarbeit.events.gameActionEvents.TickEvent;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Sweet;
@@ -14,6 +15,10 @@ public class GameServerThread extends GameThread{
     private static int currentSweetId = 0;
 
     private static double lastSweetSpawn = 0;
+
+    private static int nextTimeTickSend = 0 ;
+    private final int TICK_SEND_PERIOD = 5000 / TIME_PER_TICK;
+
     public GameServerThread(SurfaceHolder holder) {
         super(holder);
     }
@@ -27,6 +32,10 @@ public class GameServerThread extends GameThread{
         }
         // checks if the particles hit anything
         particlePhysics();
+        if(nextTimeTickSend <= synchronizedTick){
+            new TickEvent().send();
+            nextTimeTickSend = synchronizedTick + TICK_SEND_PERIOD;
+        }
     }
 
     public void particlePhysics(){

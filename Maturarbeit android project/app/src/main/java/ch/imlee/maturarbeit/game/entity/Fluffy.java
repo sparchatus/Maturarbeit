@@ -17,7 +17,7 @@ public class Fluffy extends User {
     public void update() {
         super.update();
         // this player type generates mana by moving around. the faster he moves the more mana he gets
-        mana += 2* speed / maxSpeed;
+        mana += 2* speed / MAX_SPEED;
         // the mana is capped at MAX_MANA
         if (mana >= MAX_MANA){
             mana = MAX_MANA;

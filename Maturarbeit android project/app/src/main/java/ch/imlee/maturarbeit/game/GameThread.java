@@ -15,19 +15,14 @@ import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
 import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
-import ch.imlee.maturarbeit.game.entity.Fluffy;
-import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
-import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.entity.SlimeTrail;
 import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.events.Event;
 import ch.imlee.maturarbeit.events.EventReceiver;
-import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
-import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.DeathScreen;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
@@ -49,7 +44,7 @@ public class GameThread extends Thread implements Tick{
     private static long lastTime;
     private static long timeLeft;
 
-    private static double synchronizedTick;
+    protected static int synchronizedTick;
 
     private static byte winningTeam = -1;
 
@@ -79,30 +74,33 @@ public class GameThread extends Thread implements Tick{
         backgroundMusic.start();
         miniMap = GameClient.getMiniMap();
         LoadingScreen.loadingLoop(holder);
-
-        while (running) {
-            update();
-            render();
-            if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
-                try {
-                    sleep(timeLeft);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        try {
+            while (running) {
+                update();
+                render();
+                if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
+                    try {
+                        sleep(timeLeft);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // minus because the timeLeft is negative
+                    synchronizedTick -= (int)(timeLeft / TIME_PER_TICK);
                 }
-            } else {
-                // minus because the timeLeft is negative
-                synchronizedTick -= timeLeft / TIME_PER_TICK;
+                lastTime = System.currentTimeMillis();
+                ++synchronizedTick;
             }
-            lastTime = System.currentTimeMillis();
-            synchronizedTick++;
-        }
-        if (StartActivity.deviceType == DeviceType.HOST){
-            new ServerEndGameScreen().endGameLoop(holder);
-        }else {
-            new EndGameScreen().endGameLoop(holder);
+            Log.e("GameThread run", "main loop quit");
+            if (StartActivity.deviceType == DeviceType.HOST) {
+                new ServerEndGameScreen().endGameLoop(holder);
+            } else {
+                new EndGameScreen().endGameLoop(holder);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         //todo:sound rework
-        backgroundMusic.stop();
     }
 
 
@@ -183,9 +181,9 @@ public class GameThread extends Thread implements Tick{
                     GameSurface.render(c);
                     miniMap.render(c);
                     //todo:display pause button
-                }
-                if (user.getDead()) {
-                    DeathScreen.render(c);
+                    if (user.getDead()) {
+                        DeathScreen.render(c);
+                    }
                 }
             }
             // todo: remove in end product
@@ -239,6 +237,10 @@ public class GameThread extends Thread implements Tick{
 
     public static void setWinningTeam(byte team){
         winningTeam = team;
+    }
+
+    public static void setSynchronizedTick(int newSynchronizedTick){
+        synchronizedTick = newSynchronizedTick;
     }
 
     public static double getSynchronizedTick(){

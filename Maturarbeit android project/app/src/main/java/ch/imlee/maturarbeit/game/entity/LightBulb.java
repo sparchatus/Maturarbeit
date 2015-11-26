@@ -20,7 +20,7 @@ public class LightBulb extends Entity{
     private final Bitmap LIGHT_BULB_OFF_SMALL, LIGHT_BULB_ON_SMALL;
 
     // the Player holding the LightBulb. this is null if the LightBulb isn't possessed by a Player
-    private Player possessor;
+    private Player possessor=null;
 
     // the LightBulbStand that the LightBulb is on. this is null if the LightBulb isn't on a LightBulbStand
     private LightBulbStand lightBulbStand;

@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.events.Event;
+import ch.imlee.maturarbeit.game.Tick;
 
 public class GameActionEvent extends Event {
 
@@ -27,6 +28,7 @@ public class GameActionEvent extends Event {
             case 'P': return new ParticleShotEvent(eventString);
             case 'R': return new RadiusChangedEvent(eventString);
             case 'S': return new StunEvent(eventString);
+            case 'T': return new TickEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
             case 'X': return new SweetEatenEvent(eventString);
             // null only gets returned when the second character of the eventString got corrupted over bluetooth

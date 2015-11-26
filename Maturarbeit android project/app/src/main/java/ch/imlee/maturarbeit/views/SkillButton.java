@@ -28,6 +28,9 @@ public class SkillButton extends Button{
             return false;
         }
         if (event.getAction() == MotionEvent.ACTION_DOWN){
+            if(GameThread.getUser().getDead()||GameThread.getUser().getFalling()){
+                return super.onTouchEvent(event);
+            }
             GameThread.getUser().skillActivation();
         }
         return super.onTouchEvent(event);

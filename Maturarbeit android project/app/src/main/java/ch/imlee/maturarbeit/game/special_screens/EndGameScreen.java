@@ -24,10 +24,10 @@ public class EndGameScreen {
 
     public void endGameLoop(SurfaceHolder surfaceHolder){
         holder = surfaceHolder;
-        render();
         isHost = StartActivity.deviceType == DeviceType.HOST;
         while(GameThread.getEndGameActive()){
             update();
+            render();
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) {
@@ -43,6 +43,7 @@ public class EndGameScreen {
             synchronized (holder) {
                 if (c != null) {
                     subRender(c);
+                    LogView.render(c);
                 }
             }
             // todo:remove in end product
@@ -55,7 +56,7 @@ public class EndGameScreen {
     }
 
     protected void update(){
-
+        LogView.update();
     }
 
     protected void subRender(Canvas canvas){

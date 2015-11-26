@@ -43,4 +43,12 @@ public class Slime extends User {
         slimeEvent.send();
         slimeEvent.apply();
     }
+
+    @Override
+    protected void death() {
+        super.death();
+        if (slimy){
+            skillActivation();
+        }
+    }
 }

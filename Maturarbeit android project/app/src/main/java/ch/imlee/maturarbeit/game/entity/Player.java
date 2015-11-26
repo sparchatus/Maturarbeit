@@ -7,8 +7,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
-import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
 import ch.imlee.maturarbeit.game.map.Map;
@@ -128,6 +126,9 @@ public class Player extends Entity implements Tick {
 
     public void particleHit(){
         strength -= 10;
+        if (strength < 0){
+            strength = 0;
+        }
     }
 
     public void setInvisible(boolean invisible){
@@ -164,7 +165,7 @@ public class Player extends Entity implements Tick {
 
     public void bulbReceived(int bulbID){
         strength = MAX_STRENGTH;
-        lightBulb = GameThread.getLightBulbArray() [bulbID];
+        lightBulb = GameThread.getLightBulbArray()[bulbID];
         lightBulb.pickUp(this);
     }
 
@@ -182,18 +183,18 @@ public class Player extends Entity implements Tick {
         this.dead = dead;
     }
 
+    public void setPlayerRadius(float radius){
+        if(radius < 0.01f) radius = 0.01f;
+        playerRadius = radius;
+        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
+    }
+
     public boolean getDead(){
         return dead;
     }
 
     public float getPlayerRadius(){
         return playerRadius;
-    }
-
-    public void setPlayerRadius(float radius){
-        if(radius < 0.01f) radius = 0.01f;
-        playerRadius = radius;
-        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
-        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
     }
 }

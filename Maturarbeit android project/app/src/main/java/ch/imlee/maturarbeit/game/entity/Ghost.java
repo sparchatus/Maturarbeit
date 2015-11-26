@@ -58,9 +58,9 @@ public class Ghost extends User {
     // Ghost has a toggle skill
     @Override
     public void skillActivation() {
-        if(invisible){
+        if (invisible) {
             setInvisible(false);
-        }else{
+        } else {
             setInvisible(true);
         }
     }
@@ -77,5 +77,13 @@ public class Ghost extends User {
     public void setInvisible(boolean invisible){
         this.invisible = invisible;
         new InvisibilityEvent(ID, invisible).send();
+    }
+
+    @Override
+    protected void death() {
+        super.death();
+        if (invisible){
+            skillActivation();
+        }
     }
 }

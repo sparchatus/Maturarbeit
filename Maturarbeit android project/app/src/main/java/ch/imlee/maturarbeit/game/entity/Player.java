@@ -3,16 +3,19 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.events.gameActionEvents.DeathEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.RadiusChangedEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.StunSound;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 public class Player extends Entity implements Tick {
@@ -39,13 +42,14 @@ public class Player extends Entity implements Tick {
     protected double angle;
 
     public final String NAME;
+    private static Paint namePaint = new Paint();
 
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap STUN_BMP;
     protected final PlayerType TYPE;
     protected LightBulb lightBulb;
-    protected User user;
+    protected static User user;
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
     protected  Bitmap scaledStunBmp;
@@ -71,7 +75,6 @@ public class Player extends Entity implements Tick {
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
-        user = GameThread.getUser();
         if (user == null || TEAM == user.TEAM){
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else {
@@ -79,11 +82,12 @@ public class Player extends Entity implements Tick {
         }
         this.ID = playerId;
         NAME = name;
+        namePaint.setTextAlign(Paint.Align.CENTER);
     }
 
 
     public void update(){
-        // the PLayer removes the stun at the right time
+        // the Player removes the stun at the right time
         if (stunned && stunTick <= GameThread.getSynchronizedTick()) {
             stunned = false;
         }
@@ -116,6 +120,19 @@ public class Player extends Entity implements Tick {
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
             canvas.drawRect((xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f,(xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + 2 * playerRadius * Map.TILE_SIDE * strength / MAX_STRENGTH + GameSurface.getSurfaceWidth() / 2f,(yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2f + BAR_HEIGHT, STRENGTH_BAR_COLOR);
         }
+        // render the name
+        // team members should have a green nametag, enemies a red one
+        if(this.getTeam()==user.getTeam()){
+            namePaint.setColor(Color.GREEN);
+        } else{
+            namePaint.setColor(Color.RED);
+        }
+        namePaint.setTextSize(this.getPlayerRadius()*Map.TILE_SIDE);
+        // don't draw the name for your own Player
+        if(this.getID() != user.getID()) canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate())*Map.TILE_SIDE + GameSurface.getSurfaceWidth()/2, (yCoordinate - GameThread.getUser().getYCoordinate())*Map.TILE_SIDE + GameSurface.getSurfaceHeight()/2 + namePaint.getTextSize()/2, namePaint);
+
+
+
         return canvas;
     }
 
@@ -124,6 +141,10 @@ public class Player extends Entity implements Tick {
         new StunSound().start(TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
+    }
+
+    public static void setUser(User user1){
+        user = user1;
     }
 
     public void particleHit(){

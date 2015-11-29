@@ -41,11 +41,23 @@ public class GameClient extends Activity {
         activityLoaded = true;
     }
 
+    // This method destroys the gameSurface when for example the screen is locked to avoid glitches
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if(gameSurfaceLoaded){
+            gameSurface.surfaceDestroyed(gameSurface.getHolder());
+        }
+    }
+
     // This function properly stops the eventReceiver Thread when the Activity ends.
     @Override
     protected void onStop(){
         super.onStop();
         ChooseActivity.eventReceiver.setRunning(false);
+        if(gameSurfaceLoaded){
+            gameSurface.surfaceDestroyed(gameSurface.getHolder());
+        }
     }
 
     // The gameThread object gets initialized and the start data is set.

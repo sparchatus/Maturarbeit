@@ -39,6 +39,7 @@ public class StartDataInitializer {
                     case NULL: Log.e("GameThread", "User PlayerType is NULL");
                 }
                 gameThread.playerArray[i] = gameThread.user;
+                Player.setUser(gameThread.user);
             }else {
                 gameThread.playerArray[i] = new Player(startData.getPlayerTypes().get(i), gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
             }

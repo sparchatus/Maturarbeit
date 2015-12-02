@@ -38,7 +38,7 @@ public class LightBulbEvent extends GameActionEvent{
     public LightBulbEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         LIGHT_BULB_ID = Byte.valueOf(eventString.substring(eventString.indexOf('l') + 1, eventString.indexOf('b')));
-        PICKED_UP = eventString.charAt(eventString.indexOf('b') + 1) == '0';
+        PICKED_UP = eventString.charAt(eventString.indexOf('b') + 1) == 0;
         PLAYER_ID = Byte.valueOf(eventString.substring(eventString.indexOf('p') + 1, eventString.indexOf('i')));
     }
 

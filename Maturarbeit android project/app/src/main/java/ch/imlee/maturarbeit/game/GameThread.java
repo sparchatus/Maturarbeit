@@ -10,11 +10,9 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
-import ch.imlee.maturarbeit.game.Sound.BackgroundMusic;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Particle;
 import ch.imlee.maturarbeit.game.entity.Player;
@@ -50,8 +48,6 @@ public class GameThread extends Thread implements Tick{
 
     public static LightBulb[] lightBulbArray;
     private static SurfaceHolder holder;
-    private static BackgroundMusic backgroundMusic;
-    private static MiniMap miniMap;
     protected static Map map;
     protected static User user;
     protected static Player[] playerArray;
@@ -70,9 +66,6 @@ public class GameThread extends Thread implements Tick{
     public void run() {
         loading = true;
         //todo:sound rework
-        backgroundMusic = new BackgroundMusic();
-        backgroundMusic.start();
-        miniMap = GameClient.getMiniMap();
         LoadingScreen.loadingLoop(holder);
         try {
             while (running) {
@@ -179,7 +172,7 @@ public class GameThread extends Thread implements Tick{
                     }
                     JoystickSurface.render(c);
                     GameSurface.render(c);
-                    miniMap.render(c);
+                    MiniMap.render(c);
                     //todo:display pause button
                     if (user.getDead()) {
                         DeathScreen.render(c);

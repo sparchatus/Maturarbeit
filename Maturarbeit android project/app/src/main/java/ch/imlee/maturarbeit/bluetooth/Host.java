@@ -40,6 +40,7 @@ public class Host extends StartActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button and the acceptThread gets interrupted
+                    // if another Exception gets thrown, it just loops again
                     if(e.getMessage().equals("Operation Canceled")) {
                         Log.i("acceptThread", "acceptThread canceled");
                         break;

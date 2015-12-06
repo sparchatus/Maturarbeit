@@ -18,27 +18,6 @@ import ch.imlee.maturarbeit.game.entity.PlayerType;
 public class GameStartEvent extends GameStateEvent {
 
 
-    @Override
-    public boolean handle(byte i){
-        // start the game (finally)
-        Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        //GameClient.initializeStartData(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(!GameClient.getSurfaceCreated()){
-                    try{
-                        Thread.sleep(20);
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        System.exit(1);
-                    }
-                }
-                GameClient.initializeStartData(GameStartEvent.this);
-            }
-        }).start();
-        return true;
-    }
 
     private ArrayList<PlayerType> types = new ArrayList<>();
     private ArrayList<Byte> teams = new ArrayList<>();
@@ -133,5 +112,28 @@ public class GameStartEvent extends GameStateEvent {
             Util.sendString(Host.outputStreams.get(userID - 1), toString() + '|');
             Log.i("game", "GameStartEvent sent to player " + userID);
         }
+    }
+
+
+    @Override
+    public boolean handle(byte i){
+        // start the game (finally)
+        Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        //GameClient.initializeStartData(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(!GameClient.getSurfaceCreated()){
+                    try{
+                        Thread.sleep(20);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+                GameClient.initializeStartData(GameStartEvent.this);
+            }
+        }).start();
+        return true;
     }
 }

@@ -49,7 +49,6 @@ public class Client extends StartActivity {
             connecting = true;
             try{
                 socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
-                // the generated UUID contains the version name and code, so only players with the same game version can play together.
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -88,7 +87,6 @@ public class Client extends StartActivity {
 
     // used to check whether device discovery finished automatically or was canceled
     private static boolean discoveryCanceled = false;
-
 
 
     public Client(Context context){

@@ -4,14 +4,14 @@ package ch.imlee.maturarbeit.utils;
 
 public class Vector2D {
     // coordinates the vector points to
-    public float x, y;
+    public double x, y;
 
-    public Vector2D(float x, float y){
+    public Vector2D(double x, double y){
         this.x = x;
         this.y = y;
     }
 
-    public Vector2D(float xPoint1, float yPoint1, float xPoint2, float yPoint2){
+    public Vector2D(double xPoint1, double yPoint1, double xPoint2, double yPoint2){
         x = xPoint2 - xPoint1;
         y = yPoint2 - yPoint1;
     }
@@ -24,12 +24,12 @@ public class Vector2D {
         y /= abs;
     }
 
-    public void scale(float scalar){
+    public void scale(double scalar){
         x *= scalar;
         y *= scalar;
     }
 
-    public void scaleTo(float newLength){
+    public void scaleTo(double newLength){
         normalize();
         scale(newLength);
     }
@@ -40,12 +40,12 @@ public class Vector2D {
 
 
     // returns the digits after the comma of x
-    public float xMod1(){
+    public double xMod1(){
         return x - (int)x;
     }
 
     // returns the digits after the comma of y
-    public float yMod1(){
+    public double yMod1(){
         return y - (int)y;
     }
 
@@ -64,16 +64,16 @@ public class Vector2D {
         y += vector.y;
     }
 
-    public void add(float x, float y){
+    public void add(double x, double y){
         this.x += x;
         this.y += y;
     }
 
-    public void addX(float x){
+    public void addX(double x){
         add(x,0);
     }
 
-    public void addY(float y){
+    public void addY(double y){
         add(0,y);
     }
 }

@@ -16,7 +16,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
  */
 public class LogView {
     private static ArrayList<String> logs = new ArrayList<>();
-    private static ArrayList<Double> logTimes = new ArrayList<>();
+    private static ArrayList<Integer> logTimes = new ArrayList<>();
     private static final int MAX_LOGS = 20;
     private static final int LOG_TIME = Tick.TICK * 10;
     private static Paint logPaint = new Paint();
@@ -32,7 +32,7 @@ public class LogView {
             logs.remove(MAX_LOGS);
             logTimes.remove(MAX_LOGS);
         }
-        double tick = GameThread.getSynchronizedTick();
+        int tick = GameThread.getSynchronizedTick();
         for(int i = logTimes.size()-1; i >= 0; --i){
             if(tick - LOG_TIME > logTimes.get(i)){
                 logTimes.remove(i);

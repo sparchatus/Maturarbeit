@@ -89,10 +89,10 @@ public class LoadingScreen implements Tick{
                         default:
                             c.drawText(loadingText, GameSurface.getSurfaceWidth() / 2 - textWidth / 2, halfSurfaceHeight - TEXT_SIZE, textPaint);
                     }
+                    LogView.render(c);
                 }
             }
             // todo:remove in end product
-            LogView.render(c);
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);

@@ -9,14 +9,6 @@ public class Entity {
         yCoordinate = entityYCoordinate;
     }
 
-    public void setXCoordinate(float playerXCoordinate){
-        xCoordinate = playerXCoordinate;
-    }
-
-    public void setYCoordinate(float playerYCoordinate){
-        yCoordinate = playerYCoordinate;
-    }
-
     public void setCoordinates(float playerXCoordinate, float playerYCoordinate){
         xCoordinate = playerXCoordinate;
         yCoordinate = playerYCoordinate;

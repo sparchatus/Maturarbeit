@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.views;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -107,7 +106,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
         BIG_MINI_MAP_ORIGIN_X = (GameSurface.getSurfaceWidth() - GameSurface.getSurfaceHeight()) / 2;
     }
 
-    public void render(Canvas canvas) {
+    public static void render(Canvas canvas) {
         if (isSmall) {
             renderSmall(canvas);
         } else {
@@ -115,7 +114,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void renderSmall(Canvas canvas){
+    private static void renderSmall(Canvas canvas){
         // first the pixel map image (pixel file)is drawn
         canvas.drawBitmap(SMALL_MINI_MAP, SMALL_MINI_MAP_ORIGIN_X, SMALL_MINI_MAP_ORIGIN_Y, miniMapPaint);
         for (Player player : GameThread.getPlayerArray()) {
@@ -131,7 +130,7 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawCircle(SMALL_MINI_MAP_ORIGIN_X + player.getXCoordinate() * TILE_SIDE_SMALL_MINI_MAP, SMALL_MINI_MAP_ORIGIN_Y + player.getYCoordinate() * TILE_SIDE_SMALL_MINI_MAP, player.getPlayerRadius() * TILE_SIDE_SMALL_MINI_MAP, miniMapPlayerPaint);            }
     }
 
-    private void renderBig(Canvas canvas){
+    private static void renderBig(Canvas canvas){
         // first the pixel map image (pixel file)is drawn
         canvas.drawBitmap(BIG_MINI_MAP, BIG_MINI_MAP_ORIGIN_X, BIG_MINI_MAP_ORIGIN_Y, miniMapPaint);
         // the cross is rendered where the small MiniMap would be

@@ -6,18 +6,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.ControllerState;
 import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
@@ -58,12 +59,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         GameClient.gameSurfaceLoaded();
     }
 
+    // the surface does not change in size during the game
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // needs to be called to get the real width and height
-        invalidate();
-        this.width = getWidth();
-        this.height = getHeight();
+
     }
 
     @Override
@@ -111,11 +110,24 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public static void restart(){
-        if(StartActivity.deviceType == DeviceType.HOST) {
-            gameThread = new GameServerThread(holder);
+        gameThread.stopEndGame();
+        if(StartActivity.deviceType == DeviceType.HOST){
+            restartServer();
         }else{
-            gameThread = new GameThread(holder);
+            restartClient();
         }
+    }
+    public static void restartServer(){
+        RestartGameEvent restartGameEvent = new RestartGameEvent();
+        restartGameEvent.send();
+        gameThread = new GameServerThread(holder);
+        gameThread.setRunning(true);
+        gameThread.start();
+        new WaitUntilLoadedThread().start();
+    }
+
+    public static void restartClient(){
+        gameThread = new GameThread(holder);
         gameThread.setRunning(true);
         gameThread.start();
     }

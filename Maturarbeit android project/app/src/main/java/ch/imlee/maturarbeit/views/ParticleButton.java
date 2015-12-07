@@ -17,7 +17,6 @@ public class ParticleButton extends Button {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.e("Particle Button", String.valueOf(GameThread.getSynchronizedTick()));
         if (GameThread.getEndGameActive()){
             return EndGameScreen.onTouch(event);
         }

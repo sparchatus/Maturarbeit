@@ -38,7 +38,7 @@ public class User extends Player {
     protected final int MAX_MANA = 1000;
     protected final int PARTICLE_COOL_DOWN = 700 / TIME_PER_TICK;
     // the range in which the LightBulb can be picked up
-    protected final int PICK_UP_RANGE = 2;
+    protected final int PICK_UP_RANGE = 1;
     // the time it takes to pick up the LightBulb
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
     private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
@@ -51,14 +51,14 @@ public class User extends Player {
     protected final float START_X;
     protected final float START_Y;
     // the amount of slow SlimeTrails apply
-    protected final float SLOW_AMOUNT = 1 / 2f;
+    protected final float SLOW_AMOUNT = 2 / 3f;
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
     private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
-    // should be strictly smaller than Tick.TICK * MIN_RADIUS
-    protected final float MAX_SPEED = 7f / Tick.TICK;
+    // should be strictly smaller than Tick.TICK * MIN_RADIUS / SLOW_AMOUNT
+    protected final float MAX_SPEED = 10f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 
@@ -126,7 +126,9 @@ public class User extends Player {
                     lastWeightLoss = GameThread.getSynchronizedTick();
                 }
             }
-            shoot();
+            if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
+                shoot(angle);
+            }
             lightBulbInteraction();
         }
         //if the Player is falling, his radius rapidly decreases which has to be told to the other devices
@@ -142,9 +144,9 @@ public class User extends Player {
     }
 
     @Override
-    public Canvas render(Canvas canvas){
+    public void render(Canvas canvas){
         // draw the mana bar
-        canvas = super.render(canvas);
+        super.render(canvas);
         canvas.drawRect(0, GameSurface.getSurfaceHeight() - BAR_HEIGHT, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
         canvas.drawRect(0, GameSurface.getSurfaceHeight() - BAR_HEIGHT, GameSurface.getSurfaceWidth() * mana / MAX_MANA, GameSurface.getSurfaceHeight(), SKILL_BAR_COLOR);
         // if the User is picking up a LightBulb, this draws the progress bar
@@ -152,7 +154,6 @@ public class User extends Player {
             canvas.drawRect(0, 0, BAR_HEIGHT, GameSurface.getSurfaceHeight(), BAR_BACKGROUND_COLOR);
             canvas.drawRect(0, GameSurface.getSurfaceHeight() - GameSurface.getSurfaceHeight() * pickUpTickCount / PICK_UP_TICKS, BAR_HEIGHT, GameSurface.getSurfaceHeight(), PICK_UP_BAR_COLOR);
         }
-        return  canvas;
     }
 
     private void move() {
@@ -177,10 +178,7 @@ public class User extends Player {
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
             xCoordinate = (float)newPosition.x;
             yCoordinate = (float)newPosition.y;
-            // less movement events to make it easier for the devices
-            if (GameThread.getSynchronizedTick()%2 == 0) {
-                new PlayerMotionEvent(this).send();
-            }
+            new PlayerMotionEvent(this).send();
         }
     }
 
@@ -203,6 +201,9 @@ public class User extends Player {
     private void physicEngine(boolean explode){
         // variable to determine the amount by which the User is inside a block
         double l;
+        //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
+        boolean right, left, bottom, top;
+        right = left = bottom = top = false;
         // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         // repelVec is the total amount by which the User is repelled by the walls
         Vector2D tempVec, repelVec;
@@ -212,25 +213,28 @@ public class User extends Player {
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
             l = 1 - newPosition.xMod1() - playerRadius;
             repelVec.addX(l);
+            right = true;
         }
         // checks the wall to the left of the User
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
             l = -newPosition.xMod1() + playerRadius;
             repelVec.addX(l);
+            left = true;
         }
         // checks the wall at the bottom of the User
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
             l = 1 - newPosition.yMod1() - playerRadius;
             repelVec.addY(l);
+            bottom = true;
         }
         // checks the wall at the top of the User
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
             l = -newPosition.yMod1() + playerRadius;
             repelVec.addY(l);
+            top = true;
         }
-        /**
         // checks the wall to the right bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+        if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
@@ -240,7 +244,7 @@ public class User extends Player {
             }
         }
         // checks the wall to the right top of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
+        if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
@@ -250,7 +254,7 @@ public class User extends Player {
             }
         }
         // checks the wall to the left top of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
+        if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
@@ -260,7 +264,7 @@ public class User extends Player {
             }
         }
         // checks the wall to the left bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
+        if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = (float) tempVec.getLength();
             if (l < playerRadius) {
@@ -269,12 +273,11 @@ public class User extends Player {
                 repelVec.addY(tempVec.y);
             }
         }
-         */
         // resolving the repel
         if(!explode) {
             newPosition.add(repelVec);
             physicEngine(true);
-        }else if(repelVec.getLength()>=0.1f){
+        }else if(repelVec.getLength()>=0.5f){
             exploding();
         }
     }
@@ -322,22 +325,17 @@ public class User extends Player {
     }
 
     // if the ParticleButton is pressed and the User isn't stunned nor the Particles are on cool down then the User shoots a particle in the direction he is facing
-    private void shoot(){
-        if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
-            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getCurrentFreeParticleID());
-            particleShotEvent.send();
-            particleShotEvent.apply();
-            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
-        }
+    private void shoot(double shootAngle){
+        ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, shootAngle, GameThread.getCurrentFreeParticleID());
+        particleShotEvent.send();
+        particleShotEvent.apply();
+        particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
     }
 
     private void shootRandom(){
         int y = (int)(10 * playerRadius);
         for(int i = 0; i < y; ++i) {
-            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, - Math.PI + 2 * Math.PI * i / y, GameThread.getCurrentFreeParticleID());
-            particleShotEvent.send();
-            particleShotEvent.apply();
-            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+            shoot(- Math.PI + 2 * Math.PI * i / y);
         }
     }
 
@@ -396,7 +394,7 @@ public class User extends Player {
         //Also the User checks if he has lost all his strength. if so, he looses his LightBulb
         else if (lightBulb != null) {
             for (LightBulbStand lightBulbStand : Map.getFriendlyLightBulbStands(TEAM)) {
-                if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
+                if (lightBulbStand.isFree() && Math.pow(xCoordinate - lightBulbStand.CENTER_X, 2) + Math.pow(yCoordinate - lightBulbStand.CENTER_Y, 2) < PICK_UP_RANGE * PICK_UP_RANGE) {
                     if (StartActivity.deviceType == DeviceType.CLIENT) {
                         if (!standRequestSent) {
                             new LightBulbStandServerEvent(lightBulbStand.ID).send();

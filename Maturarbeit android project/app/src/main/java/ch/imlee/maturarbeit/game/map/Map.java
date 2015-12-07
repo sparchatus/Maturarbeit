@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.User;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 // the map is built up by little squares which get placed on the screen.
@@ -66,7 +67,7 @@ public class Map implements MapDimensions {
         // renders the amount of Tiles defined in MapDimensions
         for (int y = - (TILES_IN_SCREEN_HEIGHT / 2 + 1); y <= (TILES_IN_SCREEN_HEIGHT / 2 + 1); y++){
             for (int x = - (TILES_IN_SCREEN_WIDTH / 2 + 1); x <= (TILES_IN_SCREEN_WIDTH / 2 + 1); x++){
-                // catch all the Tiles that aren't on the screen to avoid a NullPointerException
+                // catch all the Tiles that aren't on the map to avoid a NullPointerException
                 if (userXCoordinateInt + x < 0 || userYCoordinateInt + y < 0 || userXCoordinateInt + x >= TILES_IN_MAP_WIDTH || userYCoordinateInt + y >= TILES_IN_MAP_HEIGHT){
                     currentBmp = voidTile.BMP;
                 }else {

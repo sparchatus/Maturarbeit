@@ -78,8 +78,14 @@ public class EndGameScreen {
     }
 
     public static boolean onTouch(MotionEvent event){
-        if(!isHost){
+        if(!isHost || isExit || isRestart){
             return false;
+        }else{
+            if(event.getX() > exitButtonCoords[0] && event.getX() < exitButtonCoords[2] && event.getY() > exitButtonCoords[1] && event.getY() > exitButtonCoords[3]){
+                isExit = true;
+            }else if(event.getX() > restartButtonCoords[0] && event.getX() < restartButtonCoords[2] && event.getY() > restartButtonCoords[1] && event.getY() > restartButtonCoords[3]){
+                isRestart = true;
+            }
         }
         return false;
     }

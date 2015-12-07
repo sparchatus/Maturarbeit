@@ -39,7 +39,7 @@ public class ServerEndGameScreen extends EndGameScreen {
     protected void update() {
         if(isExit){
             new GameCancelledEvent().send();
-            //todo exit
+            System.exit(0);
         }else if(isRestart){
             new RestartGameEvent().send();
             GameSurface.restart();

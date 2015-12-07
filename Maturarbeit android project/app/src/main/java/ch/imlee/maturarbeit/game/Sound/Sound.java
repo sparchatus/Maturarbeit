@@ -5,9 +5,6 @@ import android.media.MediaPlayer;
 
 import ch.imlee.maturarbeit.activities.GameClient;
 
-/**
- * Created by Lukas on 21.08.2015.
- */
 
 public class Sound {
     //// TODO: 27.08.2015 use SoundPool instead of MediaPlayer 

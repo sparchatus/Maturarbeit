@@ -31,6 +31,7 @@ public class GameActionEvent extends Event {
             case 'T': return new TickEvent(eventString);
             case 'W': return new SweetSpawnEvent(eventString);
             case 'X': return new SweetEatenEvent(eventString);
+            case 'Z': return new ErrorEvent(eventString);
             // null only gets returned when the second character of the eventString got corrupted over bluetooth
             default: return null;
         }

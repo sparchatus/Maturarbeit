@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
@@ -77,12 +78,10 @@ public class GameThread extends Thread implements Tick{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    // minus because the timeLeft is negative
-                    synchronizedTick -= (int)(timeLeft / TIME_PER_TICK);
                 }
                 lastTime = System.currentTimeMillis();
                 ++synchronizedTick;
+                new ErrorEvent("GameThread run()", "t").send();
             }
             Log.e("GameThread run", "main loop quit");
             if (StartActivity.deviceType == DeviceType.HOST) {
@@ -177,6 +176,8 @@ public class GameThread extends Thread implements Tick{
                     if (user.getDead()) {
                         DeathScreen.render(c);
                     }
+                }else{
+                    new ErrorEvent("GameThread render()", "canvas is null");
                 }
             }
             // todo: remove in end product
@@ -223,6 +224,8 @@ public class GameThread extends Thread implements Tick{
     public static void activateEndGame(){
         endGameActive = true;
     }
+
+    public void stopEndGame(){endGameActive = false;}
 
     public static void setRunning(boolean isRunning){
         running = isRunning;

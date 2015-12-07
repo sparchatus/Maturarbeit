@@ -118,15 +118,17 @@ public class Player extends Entity implements Tick {
         }
         // render the name
         // team members should have a green nametag, enemies a red one
-        if(this.getTeam()==user.getTeam()){
-            namePaint.setColor(Color.GREEN);
-        } else{
-            namePaint.setColor(Color.RED);
+        if(!invisible) {
+            if (this.getTeam() == user.getTeam()) {
+                namePaint.setColor(Color.GREEN);
+            } else {
+                namePaint.setColor(Color.RED);
+            }
+            namePaint.setTextSize(this.getPlayerRadius() * Map.TILE_SIDE);
+            // don't draw the name for your own Player
+            if (this.getID() != user.getID())
+                canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2, namePaint);
         }
-        namePaint.setTextSize(this.getPlayerRadius()*Map.TILE_SIDE);
-        // don't draw the name for your own Player
-        if(this.getID() != user.getID()) canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate())*Map.TILE_SIDE + GameSurface.getSurfaceWidth()/2, (yCoordinate - GameThread.getUser().getYCoordinate())*Map.TILE_SIDE + GameSurface.getSurfaceHeight()/2 + namePaint.getTextSize()/2, namePaint);
-
 
 
         return canvas;

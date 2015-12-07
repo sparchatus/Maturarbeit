@@ -12,7 +12,7 @@ public class DeathEvent extends GameActionEvent {
         DEAD = dead;
     }
     public DeathEvent(String eventString){
-        DEAD = (1 == (Integer.parseInt(eventString.substring(3,4))));
+        DEAD = (1 == (Integer.parseInt(eventString.substring(eventString.indexOf('D'+1), eventString.indexOf('i')))));
         senderID = Byte.parseByte(eventString.substring(eventString.indexOf('i')));
     }
 

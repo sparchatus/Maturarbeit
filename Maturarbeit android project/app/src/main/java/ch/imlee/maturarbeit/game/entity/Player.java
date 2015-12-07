@@ -63,9 +63,9 @@ public class Player extends Entity implements Tick {
         }else {
             PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ic_launcher);
         }
-        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, Map.TILE_SIDE, Map.TILE_SIDE, false);
+        scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
         STUN_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay);
-        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, Map.TILE_SIDE,Map.TILE_SIDE, false);
+        scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE),(int) (playerRadius * 2 * Map.TILE_SIDE), false);
         TEAM = team;
         BAR_HEIGHT = Map.TILE_SIDE / 4;
         BAR_BACKGROUND_COLOR = new Paint();

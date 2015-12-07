@@ -180,7 +180,7 @@ public class GameThread extends Thread implements Tick{
                 }
             }
             // todo: remove in end product
-            LogView.render(c);
+            //LogView.render(c);
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);
@@ -208,7 +208,7 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void removeParticle(ParticleHitEvent pHE){
-        particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
+        //particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
     }
 
     public static int getCurrentFreeParticleID(){
@@ -236,7 +236,7 @@ public class GameThread extends Thread implements Tick{
         synchronizedTick = newSynchronizedTick;
     }
 
-    public static double getSynchronizedTick(){
+    public static int getSynchronizedTick(){
         return synchronizedTick;
     }
 

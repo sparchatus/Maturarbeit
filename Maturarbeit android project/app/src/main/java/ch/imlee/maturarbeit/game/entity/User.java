@@ -57,7 +57,8 @@ public class User extends Player {
     private final float MAX_RADIUS = 1;
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
-    protected final float MAX_SPEED = 8f / Tick.TICK;
+    // should be strictly smaller than Tick.TICK * MIN_RADIUS
+    protected final float MAX_SPEED = 7f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 
@@ -169,13 +170,13 @@ public class User extends Player {
         // the desired position of the User
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving colissions with walls
-        physicEngine();
+        physicEngine(false);
         // calculating the distance the User travelled
         speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
         // if the User has moved the coordinates get updated and the other devices get informed
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
-            xCoordinate = newPosition.x;
-            yCoordinate = newPosition.y;
+            xCoordinate = (float)newPosition.x;
+            yCoordinate = (float)newPosition.y;
             // less movement events to make it easier for the devices
             if (GameThread.getSynchronizedTick()%2 == 0) {
                 new PlayerMotionEvent(this).send();
@@ -199,10 +200,9 @@ public class User extends Player {
 
     // detecting and resolving collisions with walls
     // the different checks aren't in a for loop to make it more readable
-    private void physicEngine(){
+    private void physicEngine(boolean explode){
         // variable to determine the amount by which the User is inside a block
-        float l;
-
+        double l;
         // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         // repelVec is the total amount by which the User is repelled by the walls
         Vector2D tempVec, repelVec;
@@ -228,7 +228,7 @@ public class User extends Player {
             l = -newPosition.yMod1() + playerRadius;
             repelVec.addY(l);
         }
-
+        /**
         // checks the wall to the right bottom of the User
         if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
@@ -269,17 +269,24 @@ public class User extends Player {
                 repelVec.addY(tempVec.y);
             }
         }
+         */
         // resolving the repel
-        newPosition.add(repelVec);
+        if(!explode) {
+            newPosition.add(repelVec);
+            physicEngine(true);
+        }else if(repelVec.getLength()>=0.1f){
+            exploding();
+        }
     }
 
     // if the User is on no more stable ground he starts to fall
     // the principle algorithm is quite the same as in the physics engine
     private void checkFloor(){
-        // checks the floor to the right of the User
+        // checks the floor below the user
         if (!Map.getFallThrough((int) (xCoordinate), (int) yCoordinate)) {
             return;
         }
+        // checks the floor to the right of the User
         if (!Map.getFallThrough((int) (xCoordinate + playerRadius), (int) yCoordinate)) {
             return;
         }
@@ -317,7 +324,17 @@ public class User extends Player {
     // if the ParticleButton is pressed and the User isn't stunned nor the Particles are on cool down then the User shoots a particle in the direction he is facing
     private void shoot(){
         if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
-            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getSynchronizedTick(), GameThread.getCurrentFreeParticleID());
+            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, angle, GameThread.getCurrentFreeParticleID());
+            particleShotEvent.send();
+            particleShotEvent.apply();
+            particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
+        }
+    }
+
+    private void shootRandom(){
+        int y = (int)(10 * playerRadius);
+        for(int i = 0; i < y; ++i) {
+            ParticleShotEvent particleShotEvent = new ParticleShotEvent(xCoordinate, yCoordinate, - Math.PI + 2 * Math.PI * i / y, GameThread.getCurrentFreeParticleID());
             particleShotEvent.send();
             particleShotEvent.apply();
             particleCoolDownTick = GameThread.getSynchronizedTick() + PARTICLE_COOL_DOWN;
@@ -431,6 +448,11 @@ public class User extends Player {
         setPlayerRadius(START_RADIUS);
         new RadiusChangedEvent(START_RADIUS).send();
         bulbLost();
+    }
+
+    public void exploding(){
+        death();
+        shootRandom();
     }
 
     // used for a more simple call of the subclass skillActivation

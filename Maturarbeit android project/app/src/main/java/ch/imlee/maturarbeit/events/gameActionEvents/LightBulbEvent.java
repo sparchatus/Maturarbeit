@@ -3,9 +3,9 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 import ch.imlee.maturarbeit.game.GameThread;
 
 /*
-this Event gets sent only by the host
 if the host picks up a LightBulb, he sends this Event straight away
 if a client picks up a LightBulb, he first sends a LightBulbServerEvent for the host to verify that the LightBulb hasn't been picked up yet to avoid two players picking up the same LightBulb
+if the anybody loses his LightBulb this event is sent directly
  */
 public class LightBulbEvent extends GameActionEvent{
 
@@ -38,7 +38,7 @@ public class LightBulbEvent extends GameActionEvent{
     public LightBulbEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         LIGHT_BULB_ID = Byte.valueOf(eventString.substring(eventString.indexOf('l') + 1, eventString.indexOf('b')));
-        PICKED_UP = eventString.charAt(eventString.indexOf('b') + 1) == 0;
+        PICKED_UP = 1 == Byte.valueOf(eventString.substring(eventString.indexOf('b') + 1, eventString.indexOf('p')));
         PLAYER_ID = Byte.valueOf(eventString.substring(eventString.indexOf('p') + 1, eventString.indexOf('i')));
     }
 

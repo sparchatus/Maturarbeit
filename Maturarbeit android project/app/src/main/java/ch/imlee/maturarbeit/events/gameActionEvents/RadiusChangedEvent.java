@@ -2,9 +2,7 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
 
-/**
- * Created by Lukas on 26.08.2015.
- */
+// this Event gets sent whenever a player changes his radius, either as a visual effect when falling or when gaining or losing weight
 public class RadiusChangedEvent extends GameActionEvent {
     private final float RADIUS;
     public RadiusChangedEvent(float radius){
@@ -15,6 +13,7 @@ public class RadiusChangedEvent extends GameActionEvent {
         super(Byte.parseByte(eventString.substring(eventString.indexOf('i') + 1)));
         RADIUS = Float.parseFloat(eventString.substring(2, eventString.indexOf('i')));
     }
+
     @Override
     public String toString(){
         return super.toString() + 'R' + RADIUS + 'i' + senderID;

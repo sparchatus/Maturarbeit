@@ -3,25 +3,25 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 
-/**
- * Created by Sandro on 03.10.2015.
+/*
+this event gets sent only by the host
+either when the host wants to put his LightBulb onto a nearby LightBulbStand
+or from the apply method of the LightBulbStandServerEvent
  */
 public class LightBulbStandEvent extends GameActionEvent{
 
     public final byte POSSESSOR_ID;
     public final byte STAND_ID;
 
-
-    public LightBulbStandEvent(String eventString){
-        super((byte)0);
-        POSSESSOR_ID = Byte.valueOf(eventString.substring(eventString.indexOf('p') + 1, eventString.indexOf('s')));;
-        STAND_ID = Byte.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
-    }
-
     public LightBulbStandEvent(LightBulbStandServerEvent lightBulbStandServerEvent){
         super((byte)0);
         POSSESSOR_ID = lightBulbStandServerEvent.getSenderID();
         STAND_ID = lightBulbStandServerEvent.STAND_ID;
+    }
+    public LightBulbStandEvent(String eventString){
+        super((byte)0);
+        POSSESSOR_ID = Byte.valueOf(eventString.substring(eventString.indexOf('p') + 1, eventString.indexOf('s')));;
+        STAND_ID = Byte.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
     }
 
     @Override

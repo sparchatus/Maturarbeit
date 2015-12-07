@@ -1,22 +1,18 @@
 package ch.imlee.maturarbeit.events.gameStateEvents;
 
-import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Lukas on 18.06.2015.
- */
+// this game is sent by the host when he ends an ongoing game. This Event is not implemented yet
 public class GameCancelledEvent extends GameStateEvent {
-
-    public GameCancelledEvent() {
-        super(GameThread.getUser().getID());
-    }
-
-    public GameCancelledEvent(String eventString){
-        super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
-    }
 
     @Override
     public String toString(){
-        return super.toString() + 'C' + 'i' + senderID;
+        return super.toString() + 'C';
+    }
+    @Override
+    public boolean handle(byte i){
+        // TODO: implement
+        return true;
     }
 }

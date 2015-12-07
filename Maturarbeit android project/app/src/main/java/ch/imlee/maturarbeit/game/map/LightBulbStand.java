@@ -2,21 +2,22 @@ package ch.imlee.maturarbeit.game.map;
 
 import android.graphics.Bitmap;
 
-/**
- * Created by Sandro on 27.08.2015.
- */
 public class LightBulbStand extends Tile {
+
     public final byte TEAM;
     public final float CENTER_X, CENTER_Y;
     public final byte ID;
 
+    // tells if a LightBulb can be put on this LightBulbStand, respectively if a LightBulb is already on this LightBulbStand
     private boolean isFree;
 
     public LightBulbStand(int xCoordinate, int yCoordinate, Bitmap bmp, byte team, byte id) {
         super(bmp, true, false);
         TEAM = team;
+        // the position the LightBulb moves to when on this LightBulbStand
         CENTER_X = xCoordinate + 0.5f;
         CENTER_Y = yCoordinate + 0.5f;
+
         isFree = true;
         ID = id;
     }

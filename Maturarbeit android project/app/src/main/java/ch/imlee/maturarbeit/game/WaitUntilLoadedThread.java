@@ -4,9 +4,6 @@ import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 
-/**
- * Created by Lukas on 28.06.2015.
- */
 public class WaitUntilLoadedThread extends Thread {
     private static int ready = 0;
 
@@ -29,5 +26,4 @@ public class WaitUntilLoadedThread extends Thread {
         new GameLoadedEvent().send();
         GameClient.startSynchronizedTick();
     }
-
 }

@@ -2,12 +2,6 @@
 - parent of gameClient activity should be StartActivity (maybe fixed)
 - bitmap of SlimeTrail should be scaled to radius (should be fixed)
 - player names
+
 - Tick event
 - Explode
-- Continue
-- exit button
-- hitbox corrections/can get bigger
-
-btw my comments are like this
-// blabla
-beginning with a space and a small letter except when the first word is a class name or similar

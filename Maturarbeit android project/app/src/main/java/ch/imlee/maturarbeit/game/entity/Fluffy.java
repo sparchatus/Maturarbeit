@@ -1,16 +1,10 @@
 package ch.imlee.maturarbeit.game.entity;
 
-import android.graphics.Canvas;
-import android.util.Log;
-
-import ch.imlee.maturarbeit.game.Controller.FluffyGameSurfaceController;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.StunEvent;
+import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Sandro on 07.06.2015.
- */
 public class Fluffy extends User {
 
     private int MANA_CONSUMPTION = MAX_MANA;
@@ -22,18 +16,25 @@ public class Fluffy extends User {
     @Override
     public void update() {
         super.update();
-        mana += 2* speed / maxSpeed;
+        // this player type generates mana by moving around. the faster he moves the more mana he gets
+        mana += 2* speed / MAX_SPEED;
+        // the mana is capped at MAX_MANA
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
         }
     }
 
     public void skillActivation() {
-        Player focusedPlayer = FluffyGameSurfaceController.getFocusedPlayer();
+        // getting the focused player from the corresponding controller
+        Player focusedPlayer = GameSurface.getFocusedPlayer();
+        //only with sufficient mana and a player as focus this player type is able to activate his skill
         if (mana == MAX_MANA && focusedPlayer != null) {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
+            // sending the information to the other devices
             new StunEvent(ID, focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
-            FluffyGameSurfaceController.nullFocusedPlayer();
+            // reset the focus
+            GameSurface.nullFocusedPlayer();
+            // consuming the mana
             mana -= MANA_CONSUMPTION;
         }
     }

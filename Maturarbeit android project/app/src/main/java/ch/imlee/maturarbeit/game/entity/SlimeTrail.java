@@ -11,9 +11,6 @@ import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Lukas on 21.08.2015.
- */
 public class SlimeTrail extends Entity {
     private final Bitmap SLIME_TRAIL_BITMAP;
     private static final double LIFETIME = Tick.TICK * 5;
@@ -38,6 +35,7 @@ public class SlimeTrail extends Entity {
 
     }
 
+    // the Objects are generally drawn in relation to the User position on the Map because the User's position on the screen is constant
     public void render(Canvas c){
         c.drawBitmap(SLIME_TRAIL_BITMAP,
                 GameSurface.getSurfaceWidth() / 2+ (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,

@@ -1,12 +1,8 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
-import ch.imlee.maturarbeit.activities.GameClient;
-import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 
-/**
- * Created by Sandro on 18.06.2015.
- */
+// this Event gets created and sent by a Ghost that switches between invisible and visible
 public class InvisibilityEvent extends GameActionEvent{
     public final boolean INVISIBLE;
 
@@ -22,9 +18,7 @@ public class InvisibilityEvent extends GameActionEvent{
 
     @Override
     public String toString() {
-        char invisibleBit = '0';
-        if(INVISIBLE) invisibleBit = '1';
-        return super.toString() + 'I' + invisibleBit + 'i' + senderID;
+        return super.toString() + 'I' + ((INVISIBLE) ? 1 : 0) + 'i' + senderID;
     }
 
     @Override

@@ -6,15 +6,12 @@ import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
 
-/**
- * Created by Lukas on 20.06.2015.
- */
+// this Event is sent by the clients when they are done loading the game and then by the host when everyone is done loading
 public class GameLoadedEvent extends GameStateEvent{
-    // this Event is used by the Client to notify the Host that it's finished loading and by the Host to notify the clients that every device has finished loading.
+
     public GameLoadedEvent() {
         super(GameThread.getUser().getID());
     }
-
     public GameLoadedEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
     }
@@ -23,7 +20,6 @@ public class GameLoadedEvent extends GameStateEvent{
     public String toString(){
         return super.toString() + 'l' + 'i' + senderID;
     }
-
     @Override
     public boolean handle(byte i){
         if(StartActivity.deviceType == DeviceType.CLIENT){

@@ -1,8 +1,6 @@
 package ch.imlee.maturarbeit.events;
 
-/**
- * Created by Lukas on 17.06.2015.
- */
 public enum EventType {
+    // these are the two different EventTypes
     GAMEACTION, GAMESTATE
 }

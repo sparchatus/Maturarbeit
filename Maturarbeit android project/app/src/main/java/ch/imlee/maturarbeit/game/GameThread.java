@@ -81,7 +81,6 @@ public class GameThread extends Thread implements Tick{
                 }
                 lastTime = System.currentTimeMillis();
                 ++synchronizedTick;
-                new ErrorEvent("GameThread run()", "t").send();
             }
             Log.e("GameThread run", "main loop quit");
             if (StartActivity.deviceType == DeviceType.HOST) {
@@ -177,7 +176,8 @@ public class GameThread extends Thread implements Tick{
                         DeathScreen.render(c);
                     }
                 }else{
-                    new ErrorEvent("GameThread render()", "canvas is null");
+                    new ErrorEvent("GameThread render()", "canvas is null").send();
+                    new ErrorEvent("GameThread render()", "canvas is null").apply();
                 }
             }
             // todo: remove in end product

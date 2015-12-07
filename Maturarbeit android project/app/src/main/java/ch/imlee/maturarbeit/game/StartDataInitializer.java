@@ -22,7 +22,7 @@ import ch.imlee.maturarbeit.views.MiniMap;
 public class StartDataInitializer {
 
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
-        Sound.setup();
+        Sound.initialize();
         Sound.play(Sound.BACKGROUND);
         gameThread.map = new Map(startData.getMapID());
         gameThread.playerArray = new Player[startData.getPlayerCount()];

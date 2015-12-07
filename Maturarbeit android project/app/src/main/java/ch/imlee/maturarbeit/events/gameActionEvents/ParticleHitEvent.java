@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 
 // this Event gets sent by the host when a Particle has hit either a wall or a player
 public class ParticleHitEvent extends GameActionEvent{
@@ -31,5 +32,6 @@ public class ParticleHitEvent extends GameActionEvent{
         if (PLAYER_HIT_ID !=-1){
             GameThread.getPlayerArray()[PLAYER_HIT_ID].particleHit();
         }
+        Sound.play(Sound.PARTICLE_HIT);
     }
 }

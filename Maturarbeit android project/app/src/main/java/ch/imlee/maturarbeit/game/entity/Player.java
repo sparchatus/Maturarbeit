@@ -9,7 +9,7 @@ import android.graphics.Paint;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.Sound.StunSound;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -147,7 +147,7 @@ public class Player extends Entity implements Tick {
 
     // getting stunned activates stunned, plays a sound and activates the stun timer
     public void stun(double stunTick){
-        new StunSound().start(TIME_PER_TICK * STUN_TIME);
+        Sound.play(Sound.STUN, TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
     }

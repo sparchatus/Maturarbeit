@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 
 // this Event gets sent by a Fluffy that activates his special skill an thus stuns another player for a certain amount of time
 public class StunEvent extends GameActionEvent {
@@ -26,5 +27,6 @@ public class StunEvent extends GameActionEvent {
     @Override
     public void apply() {
         GameThread.getPlayerArray()[STUNNED_PLAYER_ID].stun(STUN_TICK);
+        Sound.play(Sound.STUN);
     }
 }

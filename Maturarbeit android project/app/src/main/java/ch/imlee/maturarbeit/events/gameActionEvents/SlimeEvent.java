@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 
 // this Event gets sent when a Slime activates his special skill and thus leaves a continuous SlimeTrail
 public class SlimeEvent extends GameActionEvent{
@@ -25,12 +26,11 @@ public class SlimeEvent extends GameActionEvent{
     @Override
     public void apply() {
         GameThread.getPlayerArray()[senderID].setSlimy(SLIMY);
-        /*
-        if(slimy){
-            GameThread.getPlayerArray()[senderID].getSlimeSound().start();
+        if(SLIMY){
+            Sound.play(Sound.SLIME);
         } else{
-            GameThread.getPlayerArray()[senderID].getSlimeSound().stop();
+            Sound.stop(Sound.SLIME);
         }
-        */
+
     }
 }

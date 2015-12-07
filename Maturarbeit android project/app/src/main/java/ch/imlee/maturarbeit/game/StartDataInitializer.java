@@ -8,6 +8,7 @@ import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.entity.Fluffy;
 import ch.imlee.maturarbeit.game.entity.Ghost;
 import ch.imlee.maturarbeit.game.entity.LightBulb;
@@ -21,6 +22,8 @@ import ch.imlee.maturarbeit.views.MiniMap;
 public class StartDataInitializer {
 
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
+        Sound.setup();
+        Sound.play(Sound.BACKGROUND);
         gameThread.map = new Map(startData.getMapID());
         gameThread.playerArray = new Player[startData.getPlayerCount()];
         gameThread.particleListArray = new ArrayList[startData.getPlayerCount()];

@@ -33,6 +33,7 @@ public class ParticleShotEvent extends GameActionEvent{
     }
     @Override
     public void apply() {
+        // add the particle to the list
         GameThread.addParticle(this);
     }
 }

@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game.entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
@@ -38,13 +39,14 @@ public class Player extends Entity implements Tick {
     protected double angle;
 
     public final String NAME;
+    private static Paint namePaint = new Paint();
 
     protected final Paint BAR_BACKGROUND_COLOR;
     protected final Paint STRENGTH_BAR_COLOR;
     protected final Bitmap STUN_BMP;
     protected final PlayerType TYPE;
     protected LightBulb lightBulb;
-    protected User user;
+    protected static User user;
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
     protected  Bitmap scaledStunBmp;
@@ -70,7 +72,6 @@ public class Player extends Entity implements Tick {
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
-        user = GameThread.getUser();
         if (user == null || TEAM == user.TEAM){
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else {
@@ -80,11 +81,12 @@ public class Player extends Entity implements Tick {
         NAME = name;
         halfGameSurfaceWidth = GameSurface.getSurfaceWidth() / 2f;
         halfGameSurfaceHeight = GameSurface.getSurfaceHeight() / 2f;
+        namePaint.setTextAlign(Paint.Align.CENTER);
     }
 
 
     public void update(){
-        // the PLayer removes the stun at the right time
+        // the Player removes the stun at the right time
         if (stunned && stunTick <= GameThread.getSynchronizedTick()) {
             stunned = false;
         }
@@ -103,28 +105,43 @@ public class Player extends Entity implements Tick {
         //render coordinates rx and ry are just used to better understand the code and shorten the code lines.
         float rx, ry;
         // if the Player isn't invisible nor dead he is rendered
-        if (!invisible && !dead) {
-            // rotating the Player Bitmap before rendering it.
-            Matrix matrix = new Matrix();
-            matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
-            Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
-            // for better overview the coordinates are first calculated and then used in a later step
-            rx = (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + halfGameSurfaceWidth - rotated.getWidth() / 2f;
-            ry = (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + halfGameSurfaceHeight - rotated.getHeight() / 2f;
-            //this is the actual rendering
-            canvas.drawBitmap(rotated, rx, ry, null);        }
-        // if the Player is stunned he gets an overlay
-        if (stunned){
-            rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
-            ry = (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
-            canvas.drawBitmap(scaledStunBmp, rx, ry, null);
-        }
-        // if the Player is in possession of a LightBulb, he renders his strength bar below himself
-        if (lightBulb != null) {
-            rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
-            ry = (yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
-            canvas.drawRect(rx,ry,rx + 2 * playerRadius * Map.TILE_SIDE,ry + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
-            canvas.drawRect(rx,ry,rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE,ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+        if (!dead) {
+            if (!invisible) {
+                // rotating the Player Bitmap before rendering it.
+                Matrix matrix = new Matrix();
+                matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
+                Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
+                // for better overview the coordinates are first calculated and then used in a later step
+                rx = (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + halfGameSurfaceWidth - rotated.getWidth() / 2f;
+                ry = (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + halfGameSurfaceHeight - rotated.getHeight() / 2f;
+                //this is the actual rendering
+                canvas.drawBitmap(rotated, rx, ry, null);
+                // if the Player is stunned he gets an overlay
+                if (stunned) {
+                    rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
+                    ry = (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
+                    canvas.drawBitmap(scaledStunBmp, rx, ry, null);
+                }
+                // render the name
+                // team members should have a green nametag, enemies a red one
+                if (this.getTeam() == user.getTeam()) {
+                    namePaint.setColor(Color.GREEN);
+                } else {
+                    namePaint.setColor(Color.RED);
+                }
+                namePaint.setTextSize(this.getPlayerRadius() * Map.TILE_SIDE);
+                // don't draw the name for your own Player
+                if (this.getID() != user.getID())
+                    canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2, namePaint);
+
+            }
+            // if the Player is in possession of a LightBulb, he renders his strength bar below himself
+            if (lightBulb != null) {
+                rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
+                ry = (yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
+                    canvas.drawRect(rx, ry, rx + 2 * playerRadius * Map.TILE_SIDE, ry + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
+                canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+            }
         }
     }
 
@@ -133,6 +150,10 @@ public class Player extends Entity implements Tick {
         new StunSound().start(TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
+    }
+
+    public static void setUser(User user1){
+        user = user1;
     }
 
     public void particleHit(){

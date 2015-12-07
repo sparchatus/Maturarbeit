@@ -53,6 +53,7 @@ public class StartActivity extends Activity {
     }
     private void initialize(){
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
+        startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // making objects of the Views from activity_start.xml to manipulate them
         progressBar = (ProgressBar) this.findViewById(R.id.progressBar); // this is a rotating indicator. It shows when your device is connecting to a host or when it's searching for hosts.
@@ -122,7 +123,7 @@ public class StartActivity extends Activity {
                         }
                     }
                 }
-                Util.ba.setName(usernameEditText.getText().toString());
+                //Util.ba.setName(usernameEditText.getText().toString());
                 host.cancelAcceptReceiver();
                 // starts the ChooseActivity
                 // this has to be checked again

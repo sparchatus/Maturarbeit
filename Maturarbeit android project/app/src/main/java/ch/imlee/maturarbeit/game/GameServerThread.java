@@ -48,7 +48,7 @@ public class GameServerThread extends GameThread{
                     if (particle.getXCoordinate() < 0 || particle.getYCoordinate() < 0 || particle.getXCoordinate() >= Map.TILES_IN_MAP_WIDTH || particle.getYCoordinate() >= Map.TILES_IN_MAP_HEIGHT) {
                         // if the particle is inside a wall
                         if(map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
-                            //id -1 means that it didn't hti a player
+                            //id -1 means that it didn't hit a player
                             ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte) -1, (byte) i);
                             particleHitEvent.send();
                             particleHitEvent.apply();

@@ -211,7 +211,6 @@ public class Client extends StartActivity {
                         receivedString = Util.receiveString(inputStream);
                         if(receivedString.indexOf(0) >= 0){
                             // if you receive a '0', proceed to the ChooseActivity
-                            startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             c.startActivity(startChooseActivity);
                             finish();
                             break;

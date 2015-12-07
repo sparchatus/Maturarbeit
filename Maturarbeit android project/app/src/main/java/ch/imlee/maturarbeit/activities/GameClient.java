@@ -18,9 +18,9 @@ public class GameClient extends Activity {
     private static boolean gameSurfaceLoaded = false;
     private static boolean joystickSurfaceLoaded = false;
     private static boolean miniMapSurfaceLoaded = false;
+    private static GameStartEvent gameStartEventSave;
     private static GameSurface gameSurface;
     private static GameThread gameThread;
-    private static MiniMap miniMap;
     private static Context context;
 
     // system called method. The layout and thus the views are initialized and a reference is saved for later use in the GameThread.
@@ -28,7 +28,6 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        miniMap = (MiniMap) findViewById(R.id.mini_map_surface);
         context = getApplicationContext();
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
         activityLoaded = true;
@@ -58,8 +57,14 @@ public class GameClient extends Activity {
         }
     }
 
+    // this method is for the restart
+    public static void initializeStartData(){
+        initializeStartData(gameStartEventSave);
+    }
+
     // The gameThread object gets initialized and the start data is set.
     public static void initializeStartData(GameStartEvent gameStartEvent) {
+        gameStartEventSave = gameStartEvent;
         gameThread = gameSurface.getGameThread();
         StartDataInitializer.setStartData(gameStartEvent, gameThread);
     }
@@ -72,11 +77,6 @@ public class GameClient extends Activity {
     public static synchronized boolean getLoaded(){
         return activityLoaded&&miniMapSurfaceLoaded&&joystickSurfaceLoaded&&gameSurfaceLoaded;
     }
-
-    public static MiniMap getMiniMap(){
-        return miniMap;
-    }
-
     public static Context getContext(){
         return  context;
     }

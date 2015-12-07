@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.events.gameStateEvents;
 
+import ch.imlee.maturarbeit.views.GameSurface;
+
 // this Event gets sent by the host when the game is finished and should be restarted. It is not implemented yet
 public class RestartGameEvent extends GameStateEvent {
 
@@ -10,7 +12,7 @@ public class RestartGameEvent extends GameStateEvent {
 
     @Override
     public boolean handle(byte i){
-        // TODO: implement
+        GameSurface.restart();
         return true;
     }
 }

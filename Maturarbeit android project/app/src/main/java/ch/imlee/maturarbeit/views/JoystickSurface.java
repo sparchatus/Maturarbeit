@@ -35,11 +35,10 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         GameClient.joystickSurfaceLoaded();
     }
 
+    // the surface does not change in size during the game
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // needs to be called to get the real width and height
-        invalidate();
-        this.halfJoystickWidth = getWidth()/2;
+
     }
 
     @Override

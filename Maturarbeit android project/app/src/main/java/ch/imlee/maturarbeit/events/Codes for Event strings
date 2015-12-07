@@ -16,6 +16,7 @@ Starting characters:
         W - Sweet Spawned
         E - Sweet Eaten
         R - Radius Changed
+        Z - Error
 
     G - Game state changed
         C - Game cancelled

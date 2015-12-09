@@ -18,7 +18,7 @@ public class Event {
     public boolean serverEvent = false;
     private static final String invalidEvent = "INVALID EVENT";
     //senderID = -1 happens when the event is invalid, otherwise it's the device ID of the sender
-    protected byte senderID;
+    protected byte senderID = 0; // this is overwritten in most events. If not, 0 is correct
 
     public Event(){}
 

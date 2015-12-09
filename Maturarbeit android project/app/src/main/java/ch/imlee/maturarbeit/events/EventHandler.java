@@ -37,7 +37,7 @@ public class EventHandler extends Thread {
             Log.v("Event", "Event " + event.toString() + "handled itself, going on...");
     }
 
-    private static synchronized void synchronizedAdd(Event event, byte id) {
+    public static synchronized void synchronizedAdd(Event event, byte id) {
         // this method adds the Event to the ArrayList of Queues of Events described in the EventReceiver class
         if(StartActivity.deviceType == DeviceType.HOST) --id;
         EventReceiver.events.get(id).add(event);

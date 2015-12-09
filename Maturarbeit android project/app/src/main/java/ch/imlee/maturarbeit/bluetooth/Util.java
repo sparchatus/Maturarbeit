@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.events.Event;
 import ch.imlee.maturarbeit.events.EventHandler;
@@ -89,7 +90,17 @@ public class Util{
                 if(c == '|'){
                     // '|' is the terminating char of every Event
                     Log.v("events", "Event received: " + string);
-                    new EventHandler(Event.fromString(string), id).start();
+                    Event event = Event.fromString(string);
+                    if(StartActivity.deviceType == DeviceType.HOST){
+                        event.send();
+                    }
+                    // handle / apply the received event
+                    if(!event.handle(id)){
+                        EventHandler.synchronizedAdd(event, id);
+                    }
+
+
+                    //new EventHandler(Event.fromString(string), id).start();
                     string = "";
                 } else{
                     string += c;

@@ -21,6 +21,6 @@ public class DeathScreen implements Tick{
         canvas.drawText("YOU DIED! (shame on you)", 20, 120, textPaint);
         textPaint.setTextSize(30);
         textPaint.setColor(Color.WHITE);
-        canvas.drawText("Respawn in " + (int) (GameThread.getUser().getReviveTick() - GameThread.getSynchronizedTick()) / TICK + " seconds", 20, 200, textPaint);
+        canvas.drawText("Respawn in " + ((GameThread.getUser().getReviveTick() - GameThread.getSynchronizedTick()) / TICK + 1) + " seconds", 20, 200, textPaint);
     }
 }

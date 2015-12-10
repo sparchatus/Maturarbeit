@@ -4,28 +4,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
-import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
+import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 public class ServerEndGameScreen extends EndGameScreen {
 
+    private boolean threadStarted = true;
     @Override
     protected void subRender(Canvas canvas) {
         super.subRender(canvas);
         // draw the buttons
         Paint buttonColors = new Paint();
-        buttonColors.setAlpha(0x99);
-        if(isExit){
-            buttonColors.setAlpha(0xff);
-        }
         buttonColors.setColor(Color.RED);
         canvas.drawRect(exitButtonCoords[0], exitButtonCoords[1], exitButtonCoords[2], exitButtonCoords[3], buttonColors);
-        buttonColors.setAlpha(0x99);
-        if(isRestart){
-            buttonColors.setAlpha(0xff);
-        }
         buttonColors.setColor(Color.GREEN);
         canvas.drawRect(restartButtonCoords[0], restartButtonCoords[1], restartButtonCoords[2], restartButtonCoords[3], buttonColors);
 
@@ -42,13 +34,15 @@ public class ServerEndGameScreen extends EndGameScreen {
         if(isExit){
             new GameCancelledEvent().send();
             System.exit(0);
-        }else if(isRestart){
+        }else if(isRestart&&!threadStarted){
             new Thread(){
                 @Override
                 public void run() {
                     GameSurface.restart();
                 }
             }.start();
+            threadStarted = true;
+            GameThread.stopEndGame();
         }
     }
 }

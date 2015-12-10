@@ -21,7 +21,7 @@ public class LogView {
     private static final int LOG_TIME = Tick.TICK * 10;
     private static Paint logPaint = new Paint();
     private static final float TEXT_SIZE = 24;
-    private static boolean active = false;
+    private static boolean active = true;
 
     public static void addLog(String message){
         logs.add(0, message);

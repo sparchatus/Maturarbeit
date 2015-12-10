@@ -48,7 +48,7 @@ public class LightBulb extends Entity{
     // when possessed by a Player it appears as a small icon above
     // the Objects are generally drawn in relation to the User position on the Map because the User's position on the screen is constant
     public Canvas render(Canvas canvas){
-        if (possessor!=null){
+        if (possessor!=null && possessor.getInvisible()){
             // Fluffy is electric thus the LightBulb is on when possessed by him
             if (possessor.getClass() == Fluffy.class){
                 canvas.drawBitmap(LIGHT_BULB_ON_SMALL, (xCoordinate - GameThread.getUser().getXCoordinate()) * SIDE + GameSurface.getSurfaceWidth() / 2 - SIDE / 3f, (yCoordinate - GameThread.getUser().getYCoordinate()) * SIDE + GameSurface.getSurfaceHeight() / 2  - SIDE, null);

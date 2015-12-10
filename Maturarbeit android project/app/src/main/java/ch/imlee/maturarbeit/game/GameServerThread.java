@@ -9,15 +9,15 @@ import ch.imlee.maturarbeit.game.entity.Sweet;
 import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 
-public class GameServerThread extends GameThread{
+public class GameServerThread extends GameThread {
 
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;
     private static int currentSweetId = 0;
 
     private static double lastSweetSpawn = 0;
 
-    private static int nextTimeTickSend = 0 ;
-    private final int TICK_SEND_PERIOD = 5000 / TIME_PER_TICK;
+    private static int nextTimeTickSend = 0;
+    private final int TICK_SEND_PERIOD = 3000 / TIME_PER_TICK;
 
     public GameServerThread(SurfaceHolder holder) {
         super(holder);
@@ -26,43 +26,41 @@ public class GameServerThread extends GameThread{
     @Override
     protected void update() {
         super.update();
-        if(lastSweetSpawn + SWEET_SPAWN_RATE <= getSynchronizedTick()){
+        if (lastSweetSpawn + SWEET_SPAWN_RATE <= getSynchronizedTick()) {
             spawnSweet();
             lastSweetSpawn = getSynchronizedTick();
         }
         // checks if the particles hit anything
         particlePhysics();
-        if(nextTimeTickSend <= synchronizedTick){
+        if (nextTimeTickSend <= synchronizedTick) {
             new TickEvent().send();
             nextTimeTickSend = synchronizedTick + TICK_SEND_PERIOD;
         }
     }
 
-    public void particlePhysics(){
+    public void particlePhysics() {
         // checks all the lists
         for (int i = 0; i < particleListArray.length; i++) {
             // checks every particle in the list
-            for (Particle particle:particleListArray[i]) {
-                if (particle != null) {
-                    // the particles can get an X or Y coordinate below zero, so we have to check that first to not get an ArrayIndexOutOfBoundsException
-                    if (particle.getXCoordinate() < 0 || particle.getYCoordinate() < 0 || particle.getXCoordinate() >= Map.TILES_IN_MAP_WIDTH || particle.getYCoordinate() >= Map.TILES_IN_MAP_HEIGHT) {
-                        // if the particle is inside a wall
-                        if(map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
-                            //id -1 means that it didn't hit a player
-                            ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte) -1, (byte) i);
-                            particleHitEvent.send();
-                            particleHitEvent.apply();
-                            continue;
-                        }
-                    }
-                    // if the particle hit a player
-                    for (Player player : playerArray) {
-                        if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
-                            ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), player.getID(), (byte)i);
-                            particleHitEvent.send();
-                            particleHitEvent.apply();
-                            break;
-                        }
+            for (Particle particle : particleListArray[i]) {
+                if(particle == null){
+                    continue;
+                }
+                // if the particle is inside a wall or out of the map
+                if (Map.getSolid((int) particle.getXCoordinate(), (int) particle.getYCoordinate())) {
+                    // id -1 means that it didn't hit a player but something else
+                    ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), (byte) -1, (byte) i);
+                    particleHitEvent.send();
+                    particleHitEvent.apply();
+                    continue;
+                }
+                // if the particle hit a player
+                for (Player player : playerArray) {
+                    if (player.TEAM != particle.TEAM && Math.pow(player.getXCoordinate() - particle.getXCoordinate(), 2) + Math.pow(player.getYCoordinate() - particle.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
+                        ParticleHitEvent particleHitEvent = new ParticleHitEvent(particle.getID(), player.getID(), (byte) i);
+                        particleHitEvent.send();
+                        particleHitEvent.apply();
+                        break;
                     }
                 }
             }

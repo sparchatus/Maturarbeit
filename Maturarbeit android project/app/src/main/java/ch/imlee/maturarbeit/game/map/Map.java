@@ -58,8 +58,9 @@ public class Map implements MapDimensions {
         User user = GameThread.getUser();
         // bitmap of the currently rendering Tile
         Bitmap currentBmp;
-        int  userXCoordinateInt = (int)(user.getXCoordinate());
+        int userXCoordinateInt = (int)(user.getXCoordinate());
         int userYCoordinateInt = (int)(user.getYCoordinate());
+        float dx, dy;
 
         // distance of the user to the tile origin(top left corner of the tile)
         float userXTranslation = userXCoordinateInt - user.getXCoordinate();
@@ -73,7 +74,9 @@ public class Map implements MapDimensions {
                 }else {
                     currentBmp = TILE_MAP[userXCoordinateInt + x][userYCoordinateInt + y].BMP;
                 }
-                canvas.drawBitmap(currentBmp, halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE, halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE, null);
+                dx = halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE;
+                dy = halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE;
+                canvas.drawBitmap(currentBmp, dx, dy, null);
             }
         }
     }
@@ -138,7 +141,7 @@ public class Map implements MapDimensions {
     // returns if the Tile at the targeted location is SOLID
     public static boolean getSolid(int xTileCoordinate, int yTileCoordinate){
         if (xTileCoordinate < 0 || yTileCoordinate < 0 || xTileCoordinate >= TILE_MAP.length || yTileCoordinate >= TILE_MAP[0].length) {
-            return false;
+            return true;
         }
         return TILE_MAP[xTileCoordinate][yTileCoordinate].SOLID;
     }

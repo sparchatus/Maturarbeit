@@ -179,9 +179,9 @@ public class GameThread extends Thread implements Tick{
                     new ErrorEvent("GameThread render()", "canvas is null").send();
                     new ErrorEvent("GameThread render()", "canvas is null").apply();
                 }
+                LogView.render(c);
             }
             // todo: remove in end product
-            //LogView.render(c);
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);
@@ -209,7 +209,7 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void removeParticle(ParticleHitEvent pHE){
-        //particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
+        particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
     }
 
     public static int getCurrentFreeParticleID(){

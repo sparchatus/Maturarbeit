@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.ControllerState;
 import ch.imlee.maturarbeit.activities.GameClient;
@@ -110,6 +111,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public static void restart(){
+        new ErrorEvent("GameSurface", "restarting").send();
         gameThread.stopEndGame();
         if(StartActivity.deviceType == DeviceType.HOST){
             restartServer();

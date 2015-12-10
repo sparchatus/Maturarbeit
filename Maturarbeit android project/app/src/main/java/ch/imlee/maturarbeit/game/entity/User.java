@@ -36,7 +36,7 @@ public class User extends Player {
 
     // the maximum amount of mana a player can store
     protected final int MAX_MANA = 1000;
-    protected final int PARTICLE_COOL_DOWN = 700 / TIME_PER_TICK;
+    protected final int PARTICLE_COOL_DOWN = 400 / TIME_PER_TICK;
     // the range in which the LightBulb can be picked up
     protected final int PICK_UP_RANGE = 1;
     // the time it takes to pick up the LightBulb
@@ -58,7 +58,7 @@ public class User extends Player {
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
     // should be strictly smaller than Tick.TICK * MIN_RADIUS / SLOW_AMOUNT
-    protected final float MAX_SPEED = 10f / Tick.TICK;
+    protected final float MAX_SPEED = 7f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 
@@ -172,6 +172,7 @@ public class User extends Player {
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving colissions with walls
         physicEngine(false);
+        physicEngine(true);
         // calculating the distance the User travelled
         speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
         // if the User has moved the coordinates get updated and the other devices get informed
@@ -236,7 +237,7 @@ public class User extends Player {
         // checks the wall to the right bottom of the User
         if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
+            l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
                 repelVec.addX(tempVec.x);
@@ -246,7 +247,7 @@ public class User extends Player {
         // checks the wall to the right top of the User
         if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
+            l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
                 repelVec.addX(tempVec.x);
@@ -256,7 +257,7 @@ public class User extends Player {
         // checks the wall to the left top of the User
         if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
+            l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
                 repelVec.addX(tempVec.x);
@@ -266,7 +267,7 @@ public class User extends Player {
         // checks the wall to the left bottom of the User
         if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
-            l = (float) tempVec.getLength();
+            l =  tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
                 repelVec.addX(tempVec.x);
@@ -276,8 +277,7 @@ public class User extends Player {
         // resolving the repel
         if(!explode) {
             newPosition.add(repelVec);
-            physicEngine(true);
-        }else if(repelVec.getLength()>=0.5f){
+        }else if(repelVec.getLength()>=0.1f){
             exploding();
         }
     }

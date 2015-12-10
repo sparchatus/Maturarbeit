@@ -18,7 +18,7 @@ public class EndGameScreen {
     protected static final int exitButtonCoords[] = {0, GameSurface.getSurfaceHeight() * 2 / 3, GameSurface.getSurfaceWidth() / 2, GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight() / 6};
     protected static final int restartButtonCoords[] = {GameSurface.getSurfaceWidth() / 2, GameSurface.getSurfaceHeight() * 2 / 3, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight() / 6};
 
-    private static final int OVERLAY_COLOR = 0xcc000000;
+    private static final int OVERLAY_COLOR = 0x99000000;
     private static SurfaceHolder holder;
     protected static boolean isHost, isExit, isRestart;
 
@@ -47,7 +47,6 @@ public class EndGameScreen {
                 }
             }
             // todo:remove in end product
-            LogView.render(c);
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);

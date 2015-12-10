@@ -28,6 +28,7 @@ public class Player extends Entity implements Tick {
     protected final int BAR_HEIGHT;
     protected final int MAX_STRENGTH = 100;
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
+    protected final int STRENGTH_LOSS_ON_HIT = 7;
     protected static float halfGameSurfaceWidth, halfGameSurfaceHeight;
     protected int strength;
 
@@ -133,15 +134,15 @@ public class Player extends Entity implements Tick {
                 // don't draw the name for your own Player
                 if (this.getID() != user.getID())
                     canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2, namePaint);
-
-            }
-            // if the Player is in possession of a LightBulb, he renders his strength bar below himself
-            if (lightBulb != null) {
-                rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
-                ry = (yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
+                // if the Player is in possession of a LightBulb, he renders his strength bar below himself
+                if (lightBulb != null) {
+                    rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
+                    ry = (yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
                     canvas.drawRect(rx, ry, rx + 2 * playerRadius * Map.TILE_SIDE, ry + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
-                canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+                    canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+                }
             }
+
         }
     }
 
@@ -157,7 +158,7 @@ public class Player extends Entity implements Tick {
     }
 
     public void particleHit(){
-        strength -= 10;
+        strength -= STRENGTH_LOSS_ON_HIT;
         if (strength < 0){
             strength = 0;
         }

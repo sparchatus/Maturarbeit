@@ -250,7 +250,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 if(Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE) {
                     focusedPlayer = null;
                 }
-                if (lastPlayerRadius != focusedPlayer.getPlayerRadius()) {
+                else if (lastPlayerRadius != focusedPlayer.getPlayerRadius()) {
                     lastPlayerRadius = focusedPlayer.getPlayerRadius();
                     scaledFocusBmp = Bitmap.createScaledBitmap(FOCUS_BMP, (int) (lastPlayerRadius * Map.TILE_SIDE * 2), (int) (lastPlayerRadius * Map.TILE_SIDE * 2), false);
                 }

@@ -1,8 +1,6 @@
 package ch.imlee.maturarbeit.game.Sound;
 
-import android.content.Context;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import java.util.HashSet;
@@ -18,22 +16,22 @@ public class Sound {
     // http://developer.android.com/reference/android/media/SoundPool.html
     private static SoundPool soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 
-    private static boolean soundsLoaded = false;
-
     // these should be final, but we can't initialize static final variables after their creation
     public static int PARTICLE_HIT;
     public static int SLIME;
     public static int STUN;
     public static int BACKGROUND;
 
+    private static int completeSounds = 0;
+
     private static Set<Integer> loopedIDs = new HashSet<>();
 
     public static void initialize(){
-        // setOnLoadCompleteListener requires a min SDK of 8, so we have to set this the build.gradle file
+        // setOnLoadCompleteListener requires a min SDK of 8, so we have to set this in the build.gradle file
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                Sound.setSoundsLoaded(true);
+                Sound.loadComplete();
             }
         });
 
@@ -47,13 +45,19 @@ public class Sound {
         loopedIDs.add(SLIME);
 
         // block until all sounds are loaded
-        while(!soundsLoaded){
+        // the 4 has to be changed when more sounds are added
+        // TODO: change 4 to the number of distinct sounds if more are added
+        while(completeSounds < 4){
             try {
                 Thread.sleep(50);
             } catch (Exception e){
                 // ignore
             }
         }
+    }
+
+    private static void loadComplete(){
+        ++completeSounds;
     }
 
     public static void play(int id){
@@ -84,10 +88,6 @@ public class Sound {
         // -1 stands for an infinite loop, 0 stands for a single playback
         if(loopedIDs.contains(id)) return -1;
         return 0;
-    }
-
-    private static void setSoundsLoaded(boolean soundsLoaded1){
-        soundsLoaded = soundsLoaded1;
     }
 
 

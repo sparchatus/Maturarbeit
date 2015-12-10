@@ -440,12 +440,13 @@ public class User extends Player {
 
     // upon death the User has to reset his radius and inform the other devices
     protected void death() {
-        reviveTick = (int) GameThread.getSynchronizedTick() + DEATH_TIME;
+        reviveTick = GameThread.getSynchronizedTick() + DEATH_TIME;
         new DeathEvent(true).send();
         new DeathEvent(true).apply();
         setPlayerRadius(START_RADIUS);
         new RadiusChangedEvent(START_RADIUS).send();
         bulbLost();
+        mana = 0;
     }
 
     public void exploding(){

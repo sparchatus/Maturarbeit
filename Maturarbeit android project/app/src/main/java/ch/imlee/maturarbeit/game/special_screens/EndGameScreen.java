@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
-import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.utils.LogView;
@@ -19,14 +18,12 @@ public class EndGameScreen {
     protected static final int exitButtonCoords[] = {0, GameSurface.getSurfaceHeight() * 2 / 3, GameSurface.getSurfaceWidth() / 2, GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight() / 6};
     protected static final int restartButtonCoords[] = {GameSurface.getSurfaceWidth() / 2, GameSurface.getSurfaceHeight() * 2 / 3, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight() / 6};
 
-    private static final int OVERLAY_COLOR = 0x99000000;
     private static SurfaceHolder holder;
     protected static boolean isHost, isExit, isRestart;
 
     public void endGameLoop(SurfaceHolder surfaceHolder){
         holder = surfaceHolder;
         isHost = StartActivity.deviceType == DeviceType.HOST;
-        GameClient.hideButtons();
         while(GameThread.getEndGameActive()){
             update();
             render();
@@ -62,7 +59,7 @@ public class EndGameScreen {
 
     protected void subRender(Canvas canvas){
         // some transparent black ove every thing
-        canvas.drawColor(OVERLAY_COLOR);
+        canvas.drawColor(Color.BLACK);
         Paint paint = new Paint();
         paint.setTextSize(64);
         paint.setColor(Color.WHITE);
@@ -79,6 +76,7 @@ public class EndGameScreen {
     }
 
     public static boolean onTouch(MotionEvent event){
+        isRestart = true;
         if(!isHost || isExit || isRestart){
             return false;
         }else{

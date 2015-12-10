@@ -66,7 +66,6 @@ public class GameThread extends Thread implements Tick{
     @Override
     public void run() {
         loading = true;
-        //todo:sound rework
         LoadingScreen.loadingLoop(holder);
         try {
             while (running) {
@@ -221,11 +220,24 @@ public class GameThread extends Thread implements Tick{
         return particleListArray[user.getID()].size();
     }
 
+    public static void reset() {
+        endGameActive = false;
+        winningTeam = -1;
+        lightBulbArray = null;
+        map = null;
+        user = null;
+        playerArray = null;
+        slimeTrailList = null;
+        particleListArray = null;
+        sweets = null;
+        sweetsToRemove = null;
+    }
+
     public static void activateEndGame(){
         endGameActive = true;
     }
 
-    public void stopEndGame(){endGameActive = false;}
+    public static void stopEndGame(){endGameActive = false;}
 
     public static void setRunning(boolean isRunning){
         running = isRunning;

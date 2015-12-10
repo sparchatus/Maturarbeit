@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,11 +20,13 @@ import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
+import ch.imlee.maturarbeit.game.special_screens.LoadingScreen;
 import ch.imlee.maturarbeit.utils.LogView;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
@@ -83,8 +86,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         gameSurfaceController.update();
     }
 
-    public static Canvas render(Canvas canvas){
-        return gameSurfaceController.render(canvas);
+    public static void render(Canvas canvas){
+        gameSurfaceController.render(canvas);
     }
 
     public static void setup(){
@@ -96,28 +99,31 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public static void restart(){
-        LogView.addLog("restart soon");
+        Log.e("GameSurface", "restart soon");
         try{
             Thread.sleep(1000);
         }catch(Exception e){
             e.printStackTrace();
         }
         gameThread.stopEndGame();
+        LoadingScreen.setRestart();
         if(StartActivity.deviceType == DeviceType.HOST){
-            restartServer();
+            setupThread();
+            GameThread.reset();
+            GameClient.initializeStartData();
+            new WaitUntilLoadedThread().start();
+            new RestartGameEvent().send();
         }else{
             setupThread();
+            GameThread.reset();
+            GameClient.initializeStartData();
         }
-        GameClient.unhideButtons();
-    }
-    public static void restartServer(){
-        new RestartGameEvent().send();
-        setupThread();
-        new WaitUntilLoadedThread().start();
-        new RestartGameEvent().send();
     }
 
     public static void destroy(){
+        if(gameThread == null){
+            return;
+        }
         gameThread.setRunning(false);
         boolean retry = true;
         while(retry){
@@ -128,7 +134,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 e.printStackTrace();
             }
         }
-        gameThread = null;
     }
 
     public static void setupThread(){
@@ -194,8 +199,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }
 
         // required for the subclass called FluffyGameSurfaceController so we can easily call it's render method in the game thread
-        public Canvas render(Canvas canvas){
-            return canvas;
+        public void render(Canvas canvas){
+
         }
 
         // this method decides if the event is
@@ -259,11 +264,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         // only the stun overlay has to be rendered here
         @Override
-        public Canvas render(Canvas canvas) {
+        public void render(Canvas canvas) {
             if (focusedPlayer != null){
                 canvas.drawBitmap(scaledFocusBmp, (float) ((focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate() - lastPlayerRadius) * Map.TILE_SIDE + halfSurfaceWidth), (float) ((focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate() - lastPlayerRadius) * Map.TILE_SIDE + halfSurfaceHeight), null);
             }
-            return canvas;
         }
 
         // in this system called method the it's checked whether the user has clicked an enemy player.

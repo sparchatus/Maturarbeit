@@ -91,7 +91,7 @@ public class GameThread extends Thread implements Tick{
         }catch (Exception e){
             e.printStackTrace();
         }
-        //todo:sound rework
+        Log.e("GameThread run", "exiting run");
     }
 
 

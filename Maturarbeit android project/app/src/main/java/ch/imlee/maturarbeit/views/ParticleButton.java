@@ -18,7 +18,8 @@ public class ParticleButton extends Button {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (GameThread.getEndGameActive()){
-            return EndGameScreen.onTouch(event);
+            EndGameScreen.onTouch(event);
+            return super.onTouchEvent(event);
         }
         // if the GameThread wasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()){

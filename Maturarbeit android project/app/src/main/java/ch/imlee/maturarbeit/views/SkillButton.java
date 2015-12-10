@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import ch.imlee.maturarbeit.game.GameThread;
@@ -21,7 +22,8 @@ public class SkillButton extends Button{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (GameThread.getEndGameActive()){
-            return EndGameScreen.onTouch(event);
+            EndGameScreen.onTouch(event);
+            return super.onTouchEvent(event);
         }
         // if the GameThread wasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()){
@@ -35,5 +37,4 @@ public class SkillButton extends Button{
         }
         return super.onTouchEvent(event);
     }
-
 }

@@ -24,7 +24,7 @@
         android:layout_marginBottom="70dp" />
 
     <ch.imlee.maturarbeit.views.JoystickSurface
-        android:layout_width="170dp"
+        android:layout_width="150dp"
         android:layout_height="fill_parent"
         android:id="@+id/joystick"
         android:layout_gravity="left|bottom" />

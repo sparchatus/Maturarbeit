@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -37,12 +38,17 @@ public class ServerEndGameScreen extends EndGameScreen {
 
     @Override
     protected void update() {
+        super.update();
         if(isExit){
             new GameCancelledEvent().send();
             System.exit(0);
         }else if(isRestart){
-            new RestartGameEvent().send();
-            GameSurface.restart();
+            new Thread(){
+                @Override
+                public void run() {
+                    GameSurface.restart();
+                }
+            }.start();
         }
     }
 }

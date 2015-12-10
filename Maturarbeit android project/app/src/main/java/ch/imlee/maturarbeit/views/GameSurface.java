@@ -24,6 +24,7 @@ import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
+import ch.imlee.maturarbeit.utils.LogView;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
@@ -44,13 +45,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if(StartActivity.deviceType == DeviceType.HOST) {
-            gameThread = new GameServerThread(holder);
-        }else{
-            gameThread = new GameThread(holder);
-        }
-        gameThread.setRunning(true);
-        gameThread.start();
+        setupThread();
         rec = getResources();
         // needs to be called to get the real width and height
         invalidate();
@@ -69,17 +64,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // ends the main game thread
-        gameThread.setRunning(false);
-        boolean retry = true;
-        while(retry){
-            try {
-                gameThread.join();
-                retry = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.exit(0);
+        destroy();
     }
 
     @Override
@@ -111,25 +96,47 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public static void restart(){
-        new ErrorEvent("GameSurface", "restarting").send();
+        LogView.addLog("restart soon");
+        try{
+            Thread.sleep(1000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         gameThread.stopEndGame();
         if(StartActivity.deviceType == DeviceType.HOST){
             restartServer();
         }else{
-            restartClient();
+            setupThread();
         }
+        GameClient.unhideButtons();
     }
     public static void restartServer(){
-        RestartGameEvent restartGameEvent = new RestartGameEvent();
-        restartGameEvent.send();
-        gameThread = new GameServerThread(holder);
-        gameThread.setRunning(true);
-        gameThread.start();
+        new RestartGameEvent().send();
+        setupThread();
         new WaitUntilLoadedThread().start();
+        new RestartGameEvent().send();
     }
 
-    public static void restartClient(){
-        gameThread = new GameThread(holder);
+    public static void destroy(){
+        gameThread.setRunning(false);
+        boolean retry = true;
+        while(retry){
+            try {
+                gameThread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        gameThread = null;
+    }
+
+    public static void setupThread(){
+        if(StartActivity.deviceType == DeviceType.HOST){
+            gameThread = new GameServerThread(holder);
+        }else {
+            gameThread = new GameThread(holder);
+        }
         gameThread.setRunning(true);
         gameThread.start();
     }

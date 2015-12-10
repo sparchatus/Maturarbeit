@@ -4,13 +4,14 @@ package ch.imlee.maturarbeit.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.views.GameSurface;
-import ch.imlee.maturarbeit.views.MiniMap;
 
 public class GameClient extends Activity {
 
@@ -22,6 +23,7 @@ public class GameClient extends Activity {
     private static GameSurface gameSurface;
     private static GameThread gameThread;
     private static Context context;
+    private static Button particle, skill;
 
     // system called method. The layout and thus the views are initialized and a reference is saved for later use in the GameThread.
     @Override
@@ -30,12 +32,9 @@ public class GameClient extends Activity {
         setContentView(R.layout.activity_game);
         context = getApplicationContext();
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
+        particle = (Button) findViewById(R.id.button_particle);
+        skill = (Button) findViewById(R.id.button_skill);
         activityLoaded = true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     // This method destroys the gameSurface when for example the screen is locked to avoid glitches
@@ -53,7 +52,7 @@ public class GameClient extends Activity {
         super.onStop();
         ChooseActivity.eventReceiver.setRunning(false);
         if(gameSurfaceLoaded){
-            gameSurface.surfaceDestroyed(gameSurface.getHolder());
+            gameSurface.destroy();
         }
     }
 
@@ -89,5 +88,15 @@ public class GameClient extends Activity {
     }
     public static void miniMapSurfaceLoaded(){
         miniMapSurfaceLoaded = true;
+    }
+
+    public static void hideButtons(){
+        particle.setVisibility(View.GONE);
+        skill.setVisibility(View.GONE);
+    }
+
+    public static void unhideButtons(){
+        particle.setVisibility(View.VISIBLE);
+        skill.setVisibility(View.VISIBLE);
     }
 }

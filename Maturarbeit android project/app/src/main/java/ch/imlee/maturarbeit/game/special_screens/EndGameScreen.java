@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.utils.LogView;
@@ -25,6 +26,7 @@ public class EndGameScreen {
     public void endGameLoop(SurfaceHolder surfaceHolder){
         holder = surfaceHolder;
         isHost = StartActivity.deviceType == DeviceType.HOST;
+        GameClient.hideButtons();
         while(GameThread.getEndGameActive()){
             update();
             render();

@@ -99,4 +99,8 @@ public class LoadingScreen implements Tick{
             }
         }
     }
+
+    public static void setRestart(){
+        loadingText = "Restarting...";
+    }
 }

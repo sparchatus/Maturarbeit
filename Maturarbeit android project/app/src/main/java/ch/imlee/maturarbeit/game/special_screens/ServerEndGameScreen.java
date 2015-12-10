@@ -10,7 +10,6 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class ServerEndGameScreen extends EndGameScreen {
 
-    private boolean threadStarted = true;
     @Override
     protected void subRender(Canvas canvas) {
         super.subRender(canvas);
@@ -34,15 +33,14 @@ public class ServerEndGameScreen extends EndGameScreen {
         if(isExit){
             new GameCancelledEvent().send();
             System.exit(0);
-        }else if(isRestart&&!threadStarted){
+        }else if(isRestart){
+            GameThread.stopEndGame();
             new Thread(){
                 @Override
                 public void run() {
                     GameSurface.restart();
                 }
             }.start();
-            threadStarted = true;
-            GameThread.stopEndGame();
         }
     }
 }

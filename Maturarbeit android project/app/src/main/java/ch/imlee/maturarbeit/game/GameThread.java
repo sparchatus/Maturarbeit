@@ -221,6 +221,7 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void reset() {
+        loading = true;
         endGameActive = false;
         winningTeam = -1;
         lightBulbArray = null;

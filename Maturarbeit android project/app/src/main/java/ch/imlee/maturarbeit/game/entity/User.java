@@ -57,7 +57,7 @@ public class User extends Player {
     private final float MAX_RADIUS = 1;
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
-    // should be strictly smaller than Tick.TICK * MIN_RADIUS / SLOW_AMOUNT
+    // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
     protected final float MAX_SPEED = 7f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
@@ -171,8 +171,8 @@ public class User extends Player {
         // the desired position of the User
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving colissions with walls
-        physicEngine(false);
-        physicEngine(true);
+        collisionResolution();
+        forceDetection();
         // calculating the distance the User travelled
         speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
         // if the User has moved the coordinates get updated and the other devices get informed
@@ -199,7 +199,7 @@ public class User extends Player {
 
     // detecting and resolving collisions with walls
     // the different checks aren't in a for loop to make it more readable
-    private void physicEngine(boolean explode){
+    private void collisionResolution(){
         // variable to determine the amount by which the User is inside a block
         double l;
         //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
@@ -275,9 +275,70 @@ public class User extends Player {
             }
         }
         // resolving the repel
-        if(!explode) {
-            newPosition.add(repelVec);
-        }else if(repelVec.getLength()>=0.1f){
+        newPosition.add(repelVec);
+    }
+
+    private void forceDetection(){
+        // variable to determine the amount by which the User is inside a block and the complete amount of forces
+        double l, s;
+        //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
+        boolean right, left, bottom, top;
+        right = left = bottom = top = false;
+        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
+        s = 0;
+        // checks the wall to the right of the User
+        if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
+            l = 1 - newPosition.xMod1() - playerRadius;
+            s += Math.abs(l);
+            right = true;
+        }
+        // checks the wall to the left of the User
+        if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
+            l = -newPosition.xMod1() + playerRadius;
+            s += Math.abs(l);
+            left = true;
+        }
+        // checks the wall at the bottom of the User
+        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
+            l = 1 - newPosition.yMod1() - playerRadius;
+            s += Math.abs(l);
+            bottom = true;
+        }
+        // checks the wall at the top of the User
+        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
+            l = -newPosition.yMod1() + playerRadius;
+            s += Math.abs(l);
+            top = true;
+        }
+        // checks the wall to the right bottom of the User
+        if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+            l  = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y).getLength();
+            if (l < playerRadius) {
+                s += Math.abs(playerRadius - l);
+            }
+        }
+        // checks the wall to the right top of the User
+        if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
+            l = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y).getLength();
+            if (l < playerRadius) {
+                s += Math.abs(playerRadius - l);
+            }
+        }
+        // checks the wall to the left top of the User
+        if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
+            l = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y).getLength();
+            if (l < playerRadius) {
+                s += Math.abs(playerRadius - l);
+            }
+        }
+        // checks the wall to the left bottom of the User
+        if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
+            l = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y).getLength();
+            if (l < playerRadius) {
+                s += Math.abs(playerRadius - l);
+            }
+        }
+        if(s > 0.1f){
             exploding();
         }
     }

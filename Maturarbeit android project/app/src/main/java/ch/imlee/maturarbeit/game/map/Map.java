@@ -78,6 +78,11 @@ public class Map implements MapDimensions {
                 dx = halfGameSurfaceWidth + (userXTranslation + x) * TILE_SIDE;
                 dy = halfGameSurfaceHeight + (userYTranslation + y) * TILE_SIDE;
                 canvas.drawBitmap(currentBmp, dx, dy, null);
+                // this if is used to hinder dx from getting NaN. When removing this statement some kind of java compiler bug causes dx to change to NaN on some devices which will result in incomplete rendered maps
+                // the parameters need to be ther for it to work even though the statement inside is never reached.
+                if(dx!=dx){
+                    LogView.addLog("" + userXTranslation);
+                }
             }
         }
     }

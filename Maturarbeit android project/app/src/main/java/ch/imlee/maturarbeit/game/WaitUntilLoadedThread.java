@@ -5,7 +5,7 @@ import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 
 public class WaitUntilLoadedThread extends Thread {
-    private static int ready = 0;
+    private static int ready;
 
     public static synchronized void incrementReady(){
         ++ready;
@@ -15,6 +15,7 @@ public class WaitUntilLoadedThread extends Thread {
     }
 
     public void run(){
+        ready = 0;
         while(getReady() <= Host.sockets.size()){
             try {
                 Thread.sleep(10);

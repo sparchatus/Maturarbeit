@@ -2,17 +2,15 @@ package ch.imlee.maturarbeit.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.app.Activity;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
@@ -22,9 +20,8 @@ import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.events.EventReceiver;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.PlayerStatsSelectedEvent;
-import ch.imlee.maturarbeit.utils.LogView;
 
-public class ChooseActivity extends ActionBarActivity implements View.OnClickListener{
+public class ChooseActivity extends Activity implements View.OnClickListener{
     ImageView fluffImage;
     RadioGroup fluffGroup;
     public static int playersReady = 0;
@@ -37,7 +34,7 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
     //TODO: DEBUG
     String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
-    public static EventReceiver eventReceiver = new EventReceiver();
+    public static EventReceiver eventReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +59,8 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
     @Override
     public void onStart(){
         super.onStart();
-        if(eventReceiver.getRunning()){
-            eventReceiver = new EventReceiver();
-        }
-        try {
-            eventReceiver.start();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        eventReceiver = new EventReceiver();
+        eventReceiver.start();
     }
 
     @Override
@@ -137,17 +128,4 @@ public class ChooseActivity extends ActionBarActivity implements View.OnClickLis
 
     //TODO: onBackPressed: send cancelling Event. If you were the host, cancel the game, otherwise show a Toast that a player left. If only the host remains, cancel the game
     //TODO: if only two players, automatically assign teams
-    //TODO: actually start the game
-
-
-
-
-
-
-
-
-
-
-
-
 }

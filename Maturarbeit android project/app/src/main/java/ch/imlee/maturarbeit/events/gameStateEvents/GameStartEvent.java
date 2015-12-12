@@ -44,7 +44,7 @@ public class GameStartEvent extends GameStateEvent {
     // this toString method returns a different String for every userID
     public String toString() {
         String playerInfo = "";
-        for (int i = 0; i < types.size(); i++) {
+        for (int i = 0; i < types.size(); ++i) {
             playerInfo += types.get(i).ordinal();
             playerInfo += teams.get(i);
             playerInfo += names.get(i) + '\n';

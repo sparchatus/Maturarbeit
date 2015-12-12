@@ -118,7 +118,7 @@ public class StartActivity extends Activity {
                             Host.outputStreams.remove(i);
                             Host.deviceNames.remove(i);
                             Host.adapter.notifyDataSetChanged();
-                            // all elements in the outputStreams List got shifted to the left, so i gets decremented
+                            // all elements in the outputStreams List got shifted to the left, so i needs to get decremented
                             --i;
                         }
                     }

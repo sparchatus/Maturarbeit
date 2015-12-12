@@ -24,6 +24,12 @@ public class EventReceiver extends Thread {
             // the client has only one InputStream it has to listen to
             events.add(new LinkedBlockingQueue<Event>() {
             });
+            // first, clear out the inputStream
+            try {
+                while (Client.inputStream.available() > 0){
+                    Client.inputStream.read();
+                }
+            } catch (Exception e){}
             while(running){
                 receiveEvents(Client.inputStream, (byte) 0);
             }

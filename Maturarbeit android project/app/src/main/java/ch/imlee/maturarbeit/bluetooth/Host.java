@@ -33,7 +33,7 @@ public class Host extends StartActivity {
         @Override
         public void run() {
             int i = 0;
-            while(true) {
+            while(i < 7) {
                 // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
                 while(serverSocket == null) {
                     try {

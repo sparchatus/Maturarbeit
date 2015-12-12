@@ -70,6 +70,7 @@ public class Util{
         for(int i = 0; i < 7; ++i){
             // the UUID formed contains the version number at the beginning, then a number from 0-6 for all the possible connections because bluetooth
             // supports a maximum of 7 connections and then it fills the String up with the standard UUID
+            // the log10 casted to int stands for the number of characters taken up by the version code -1
             temp[i] = UUID.fromString(version + (i + standardUUID.substring((int)Math.log10(version)+2)));
             Log.i("UUID", "UUID created: " + temp[i]);
         }

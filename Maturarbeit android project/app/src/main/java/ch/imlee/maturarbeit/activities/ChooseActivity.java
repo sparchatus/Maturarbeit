@@ -1,14 +1,21 @@
 package ch.imlee.maturarbeit.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
 
@@ -22,18 +29,19 @@ import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.PlayerStatsSelectedEvent;
 
 public class ChooseActivity extends Activity implements View.OnClickListener{
-    ImageView fluffImage;
-    RadioGroup fluffGroup;
+    public static ImageView playerTypeImage;
+    public static RadioGroup playerTypeGroup;
+    public static TextView playerTypeDescription;
     public static int playersReady = 0;
     public static Button startGameButton;
+    public static RelativeLayout relativeLayout;
+    public static PlayerTypeInfo[] playerTypeInfos;
 
     private byte selectedTeam = -1;
-    private int selectedPlayerType = -1;
+    public int selectedPlayerType = -1;
 
     public static GameStartEvent gameStartEvent = new GameStartEvent();
 
-    //TODO: DEBUG
-    String[] fluffButtons = {"Ghost", "Slime", "Fluffy"};
     public static EventReceiver eventReceiver;
 
     @Override
@@ -43,8 +51,10 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_choose);
 
-        fluffImage = (ImageView) findViewById(R.id.fluffImage);
+        playerTypeImage = (ImageView) findViewById(R.id.playerTypeImage);
         startGameButton = (Button) findViewById(R.id.startGameButton);
+        playerTypeDescription = (TextView) findViewById(R.id.playerTypeDescription);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
         if(StartActivity.deviceType == DeviceType.HOST){
             startGameButton.setText("Clients Ready: " + playersReady + '/' + Host.sockets.size());
@@ -52,13 +62,21 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         } else{
             startGameButton.setText("Ready?");
         }
-        createFluffRadioButtons();
-
     }
 
     @Override
     public void onStart(){
         super.onStart();
+
+        int screenWidth = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
+        PlayerTypeInfo[] temp = {
+                new PlayerTypeInfo("Ghost", "The Ghost can become invisible for a while", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ghost), screenWidth/4, screenWidth/4, false)),
+                new PlayerTypeInfo("Slime", "The Slime can leave a slimetrail behind which makes himself faster, but the others slower", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime), screenWidth/4, screenWidth/4, false)),
+                new PlayerTypeInfo("Fluffy", "The Fluffy charges itself electorstatically by rolling around, allowing it to stun its opponents", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fluffy), screenWidth/4, screenWidth/4, false))
+        };
+        playerTypeInfos = temp.clone();
+        createPlayerTypeRadioButtons();
+
         eventReceiver = new EventReceiver();
         eventReceiver.start();
     }
@@ -70,29 +88,30 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         return true;
     }
 
-    private void createFluffRadioButtons(){
-        fluffGroup = (RadioGroup) findViewById(R.id.fluffGroup);
-        RadioButton fluffRadioButton;
-        for(int i = 0; i < fluffButtons.length; ++i){
-            fluffRadioButton = new RadioButton(this);
-            fluffRadioButton.setText(fluffButtons[i]);
+    private void createPlayerTypeRadioButtons(){
+        playerTypeGroup = (RadioGroup) findViewById(R.id.playerTypeGroup);
+        RadioButton playerTypeRadioButton;
+        for(int i = 0; i < playerTypeInfos.length; ++i){
+            playerTypeRadioButton = new RadioButton(this);
+            playerTypeRadioButton.setText(playerTypeInfos[i].getName());
             // to identify the button later
-            fluffRadioButton.setId(i);
-            fluffGroup.addView(fluffRadioButton);
-            fluffRadioButton.setOnClickListener(this);
+            playerTypeRadioButton.setId(i);
+            playerTypeGroup.addView(playerTypeRadioButton);
+            playerTypeRadioButton.setOnClickListener(this);
         }
     }
 
     public void onClick(View v){
         v.setSelected(true);
 
-        // check whether clicked button is in the teamGroup or fluffGroup
+        // check whether clicked button is in the teamGroup or playerTypeGroup
         if(((RadioButton)v).getText().toString().startsWith("Team ")){
-            // to get 0 for 'A' and 1 for 'B', we have to do the following. This is because we cast a char to an int, so it takes the ASCII value, which is 65 for 'A' and 66 for 'B'
+            // to get 0 for 'A' and 1 for 'B', we have to take their ASCII values by casting them to byte and subtract 65
             selectedTeam = (byte)(((RadioButton) v).getText().charAt(5)-65);
         }
         else{
             selectedPlayerType = (byte)v.getId();
+            playerTypeInfos[v.getId()].setActive();
         }
     }
 

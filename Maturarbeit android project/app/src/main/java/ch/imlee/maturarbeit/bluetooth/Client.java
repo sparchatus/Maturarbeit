@@ -5,6 +5,7 @@ import ch.imlee.maturarbeit.activities.StartActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
@@ -47,26 +48,29 @@ public class Client extends StartActivity {
                 // probably already registered
             }
             connecting = true;
-            try{
-                socket = device.createRfcommSocketToServiceRecord(Util.generateUUID());
-                // the generated UUID contains the version name and code, so only players with the same game version can play together.
-            } catch (Exception e){
-                e.printStackTrace();
-            }
             Log.d("bluetooth", "attempting to connect");
 
             // because the connection doesn't always work at the first try
-            final int MAX_ATTEMPTS = 5;
+            final int MAX_ATTEMPTS = 2;
             boolean connectionSuccessful = false;
-            for(int i = 0; i < MAX_ATTEMPTS; ++i) {
-                try {
-                    socket.connect();
-                    connectionSuccessful = true;
-                    break;
-                } catch (Exception e) {
-                    Log.d("bluetooth", "connection attempt " + (i+1) + '/' + MAX_ATTEMPTS + " failed");
+            breakpoint:
+            for(int j = 0; j < 7; ++j) {
+                try{
+                    socket = device.createRfcommSocketToServiceRecord(Util.getUUID(j));
+                    // the generated UUID contains the version name and code, so only players with the same game version can play together.
+                } catch (Exception e){
                     e.printStackTrace();
-                    //try again
+                }
+                for (int i = 0; i < MAX_ATTEMPTS; ++i) {
+                    try {
+                        socket.connect();
+                        connectionSuccessful = true;
+                        break breakpoint;
+                    } catch (Exception e) {
+                        Log.d("bluetooth", "connection attempt " + (i + 1) + '/' + MAX_ATTEMPTS + " failed with UUID " + Util.getUUID(j));
+                        e.printStackTrace();
+                        //try again
+                    }
                 }
             }
             connecting = false;

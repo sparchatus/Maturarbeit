@@ -32,11 +32,23 @@ public class Host extends StartActivity {
     private Thread acceptThread = new Thread(new Runnable() {
         @Override
         public void run() {
+            int i = 0;
             while(true) {
+                // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
+                while(serverSocket == null) {
+                    try {
+                        // the serverSocket is used to listen for incoming connections
+                        serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 try {
                     // this method blocks until the Thread gets interrupted or a client connects
                     sockets.add(serverSocket.accept());
                     manageConnection(sockets.get(sockets.size()-1));
+                    ++i;
                 } catch (Exception e) {
                     e.printStackTrace();
                     // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button and the acceptThread gets interrupted
@@ -62,16 +74,6 @@ public class Host extends StartActivity {
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
-        // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
-        while(serverSocket == null) {
-            try {
-                // the serverSocket is used to listen for incoming connections
-                serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.generateUUID());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
         acceptThread.start();

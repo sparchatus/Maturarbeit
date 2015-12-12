@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -18,10 +19,20 @@ import ch.imlee.maturarbeit.events.EventHandler;
 public class Util{
     public static BluetoothAdapter ba;
     public static Context c;
+    private static int version;
+    private static UUID[] uuids = new UUID[7];
 
     public static void initBluetooth(Context context) {
         c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
+        try {
+            version = c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode;
+            Log.i("version", "version number: " + version);
+        } catch (PackageManager.NameNotFoundException e){
+            Log.e("version", e.getMessage());
+            System.exit(1);
+        }
+        uuids = generateUUIDs();
 
         // BluetoothAdapter.getDefaultAdapter() returns null if the device doesn't support bluetooth. If this is the case, an info message will be displayed and the app exits when "OK" is clicked
         if (ba == null) {
@@ -52,10 +63,18 @@ public class Util{
         }
     }
 
-    public static UUID generateUUID(){
-        // this is a randomly generated UUID, so only devices running this very app will be able to connect to each other
-        // if the app is released, we'll update the UUID with each new version, assuring that only devices running the same version of the game can play with each other
-        return UUID.fromString("2053c9be-5702-11e5-885d-feff819cdc9f");
+    public static UUID[] generateUUIDs(){
+        // these UUIDs are generated in a way which makes them unique to their version code, which only allows players with the same app version to play together
+        UUID[] temp = new UUID[7];
+        String standardUUID = "2053c9be-5702-11e5-885d-feff819cdc9f";
+        for(int i = 0; i < 7; ++i){
+            // the UUID formed contains the version number at the beginning, then a number from 0-6 for all the possible connections because bluetooth
+            // supports a maximum of 7 connections and then it fills the String up with the standard UUID
+            temp[i] = UUID.fromString(version + (i + standardUUID.substring((int)Math.log10(version)+2)));
+            Log.i("UUID", "UUID created: " + temp[i]);
+        }
+        return temp;
+        //return UUID.fromString("2053c9be-5702-11e5-885d-feff819cdc9a");
     }
 
     public static synchronized void sendString(OutputStream outputStream, String text){
@@ -114,6 +133,9 @@ public class Util{
                 // if host: connection to one client lost, if it was the only client, stop game, else send GameLeftEvent and handle it
             }
         }
+    }
+    public static UUID getUUID(int i){
+        return uuids[i];
     }
 
 }

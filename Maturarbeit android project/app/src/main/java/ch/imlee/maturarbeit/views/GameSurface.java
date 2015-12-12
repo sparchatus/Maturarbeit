@@ -122,12 +122,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         if(gameThread == null){
             return;
         }
-        gameThread.setRunning(false);
-        boolean retry = true;
-        while(retry){
+        GameThread.setRunning(false);
+        while(true){
             try {
                 gameThread.join();
-                retry = false;
+                break;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

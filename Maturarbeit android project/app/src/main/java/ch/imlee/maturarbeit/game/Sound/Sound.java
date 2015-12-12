@@ -2,6 +2,7 @@ package ch.imlee.maturarbeit.game.Sound;
 
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class Sound {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                 Sound.loadComplete();
+                Log.i("sound", "sound id " + sampleId + " loaded with status " + status);
             }
         });
 

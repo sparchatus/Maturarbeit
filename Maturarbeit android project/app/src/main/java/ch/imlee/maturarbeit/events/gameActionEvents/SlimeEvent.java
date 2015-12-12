@@ -15,7 +15,7 @@ public class SlimeEvent extends GameActionEvent{
     public SlimeEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         senderID = Byte.valueOf(eventString.substring(2, 3));
-        SLIMY = eventString.charAt(3) == '0';
+        SLIMY = eventString.charAt(3) == '1';
     }
 
     @Override

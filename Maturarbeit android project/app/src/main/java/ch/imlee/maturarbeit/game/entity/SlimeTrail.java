@@ -38,8 +38,8 @@ public class SlimeTrail extends Entity {
     // the Objects are generally drawn in relation to the User position on the Map because the User's position on the screen is constant
     public void render(Canvas c){
         c.drawBitmap(SLIME_TRAIL_BITMAP,
-                GameSurface.getSurfaceWidth() / 2 + (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
-                GameSurface.getSurfaceHeight() / 2 + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS * Map.TILE_SIDE,
+                GameSurface.getSurfaceWidth() / 2 + (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS,
+                GameSurface.getSurfaceHeight() / 2 + (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE - TRAIL_RADIUS,
                 null);
     }
 

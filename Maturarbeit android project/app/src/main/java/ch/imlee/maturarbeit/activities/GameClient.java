@@ -36,9 +36,11 @@ public class GameClient extends Activity {
     @Override
     protected void onPause(){
         super.onPause();
+        ChooseActivity.eventReceiver.setRunning(false);
         if(gameSurfaceLoaded){
-            gameSurface.surfaceDestroyed(gameSurface.getHolder());
+            GameSurface.destroy();
         }
+        gameSurface = null;
     }
 
     // This function properly stops the eventReceiver Thread when the Activity ends.
@@ -47,8 +49,9 @@ public class GameClient extends Activity {
         super.onStop();
         ChooseActivity.eventReceiver.setRunning(false);
         if(gameSurfaceLoaded){
-            gameSurface.destroy();
+            GameSurface.destroy();
         }
+        gameSurface = null;
     }
 
     // this method is for the restart

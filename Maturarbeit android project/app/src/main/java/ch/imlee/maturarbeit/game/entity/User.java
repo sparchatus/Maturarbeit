@@ -170,7 +170,7 @@ public class User extends Player {
         }
         // the desired position of the User
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
-        // detecting and resolving colissions with walls
+        // detecting and resolving collisions with walls
         collisionResolution();
         forceDetection();
         // calculating the distance the User travelled
@@ -234,46 +234,62 @@ public class User extends Player {
             repelVec.addY(l);
             top = true;
         }
+        double hx, hy, lx, ly;
+        hx=hy=lx=ly=0;
+
         // checks the wall to the right bottom of the User
         if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.addX(tempVec.x);
-                repelVec.addY(tempVec.y);
+                lx = tempVec.x;
+                ly = tempVec.y;
             }
         }
+
         // checks the wall to the right top of the User
         if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.addX(tempVec.x);
-                repelVec.addY(tempVec.y);
+                if(lx > tempVec.x){
+                    lx = tempVec.x;
+                }
+                hy = tempVec.y;
             }
         }
+
         // checks the wall to the left top of the User
         if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.addX(tempVec.x);
-                repelVec.addY(tempVec.y);
+                hx = tempVec.x;
+                if(hy < tempVec.y){
+                    hy = tempVec.y;
+                }
             }
         }
+
         // checks the wall to the left bottom of the User
         if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.addX(tempVec.x);
-                repelVec.addY(tempVec.y);
+                if(hx > tempVec.x){
+                    hx = tempVec.x;
+                }
+                if(ly > tempVec.y){
+                    ly = tempVec.y;
+                }
             }
         }
+        repelVec.add(hx,hy);
+        repelVec.add(lx,ly);
         // resolving the repel
         newPosition.add(repelVec);
     }
@@ -338,7 +354,7 @@ public class User extends Player {
                 s += Math.abs(playerRadius - l);
             }
         }
-        if(s > 0.1f){
+        if(s > 0.2f){
             exploding();
         }
     }

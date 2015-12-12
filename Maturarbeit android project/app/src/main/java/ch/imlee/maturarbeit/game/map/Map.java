@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -16,7 +17,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
 public class Map implements MapDimensions {
 
     public static int TILE_SIDE, TILES_IN_MAP_WIDTH, TILES_IN_MAP_HEIGHT;
-    private int halfGameSurfaceWidth, halfGameSurfaceHeight;
+    private final int halfGameSurfaceWidth, halfGameSurfaceHeight;
 
     // used to distribute the different spawn points
     private static int blueCoordinateDistributionIndex, greenCoordinateDistributionIndex;
@@ -63,11 +64,11 @@ public class Map implements MapDimensions {
         float dx, dy;
 
         // distance of the user to the tile origin(top left corner of the tile)
-        float userXTranslation = userXCoordinateInt - user.getXCoordinate();
-        float userYTranslation = userYCoordinateInt - user.getYCoordinate();
+        final float userXTranslation = userXCoordinateInt - user.getXCoordinate();
+        final float userYTranslation = userYCoordinateInt - user.getYCoordinate();
         // renders the amount of Tiles defined in MapDimensions
-        for (int y = - (TILES_IN_SCREEN_HEIGHT / 2 + 1); y <= (TILES_IN_SCREEN_HEIGHT / 2 + 1); y++){
-            for (int x = - (TILES_IN_SCREEN_WIDTH / 2 + 1); x <= (TILES_IN_SCREEN_WIDTH / 2 + 1); x++){
+        for (int y = - TILES_IN_SCREEN_HEIGHT / 2 - 1; y <= TILES_IN_SCREEN_HEIGHT / 2 + 1; ++y){
+            for (int x = - TILES_IN_SCREEN_WIDTH / 2 - 1; x <= TILES_IN_SCREEN_WIDTH / 2 + 1; ++x){
                 // catch all the Tiles that aren't on the map to avoid a NullPointerException
                 if (userXCoordinateInt + x < 0 || userYCoordinateInt + y < 0 || userXCoordinateInt + x >= TILES_IN_MAP_WIDTH || userYCoordinateInt + y >= TILES_IN_MAP_HEIGHT){
                     currentBmp = voidTile.BMP;
@@ -194,3 +195,16 @@ public class Map implements MapDimensions {
         return pixelMap;
     }
 }
+/**
+ [-74.00012, -72.00012], [5.999878, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012], [NaN, -72.00012],
+ [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878], [NaN, 7.999878],
+ [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988], [NaN, 87.99988],
+ [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988], [NaN, 167.99988],
+ [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988], [NaN, 247.99988],
+ [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988], [NaN, 327.99988],
+ [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988], [NaN, 407.99988],
+ [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988], [NaN, 487.99988],
+ [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999], [NaN, 567.9999],
+ [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999], [NaN, 647.9999],
+ [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999], [NaN, 727.9999],
+ */

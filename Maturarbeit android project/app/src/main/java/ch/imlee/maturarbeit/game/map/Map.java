@@ -115,26 +115,26 @@ public class Map implements MapDimensions {
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[blueCoordinateDistributionIndex][0] = x + 0.5f;
                     playerStartCoordinates[blueCoordinateDistributionIndex][1] = y + 0.5f;
-                    blueCoordinateDistributionIndex++;
+                    ++blueCoordinateDistributionIndex;
                 }
                 // not just the Tile has to be set but it's coordinates also have to be registered
                 else if (pixelMap.getPixel(x, y) == 0xff01ffff){
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][0] = x + 0.5f;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][1] = y + 0.5f;
-                    greenCoordinateDistributionIndex++;
+                    ++greenCoordinateDistributionIndex;
                 }
                 // not just the Tile has to be set but a reference to it has to be saved
                 else if (pixelMap.getPixel(x, y) == 0xffffff00){
                     TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, (byte) 0, (byte)blueLightBulbStandDistributionIndex);
                     blueLightBulbStandArray[blueLightBulbStandDistributionIndex] = (LightBulbStand)TILE_MAP[x][y];
-                    blueLightBulbStandDistributionIndex++;
+                    ++blueLightBulbStandDistributionIndex;
                 }
                 // not just the Tile has to be set but a reference to it has to be saved
                 else if (pixelMap.getPixel(x, y) == 0xffffff01){
                     TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, (byte) 1, (byte) greenLightBulbStandDistributionIndex);
                     greenLightBulbStandArray[greenLightBulbStandDistributionIndex] = (LightBulbStand) TILE_MAP[x][y];
-                    greenLightBulbStandDistributionIndex++;
+                    ++greenLightBulbStandDistributionIndex;
                 }
                 // the default Tile
                 else{

@@ -12,15 +12,20 @@ public class DeathScreen implements Tick{
     // transparent black
     private static final int OVERLAY_COLOR = 0x99000000;
     private static final Paint textPaint = new Paint();
+    private static String deathReason = "defaultReason, also named 'we failed ^^'";
 
     // draws a transparent overlay over the normal GameSurface informing the player that he died and how long it will take until  respawn
     public static void render(Canvas canvas){
         canvas.drawColor(OVERLAY_COLOR);
         textPaint.setTextSize(64);
         textPaint.setColor(Color.RED);
-        canvas.drawText("YOU DIED! (shame on you)", 20, 120, textPaint);
+        canvas.drawText("YOU" + deathReason + "! (shame on you)", 20, 120, textPaint);
         textPaint.setTextSize(30);
         textPaint.setColor(Color.WHITE);
         canvas.drawText("Respawn in " + ((GameThread.getUser().getReviveTick() - GameThread.getSynchronizedTick()) / TICK + 1) + " seconds", 20, 200, textPaint);
+    }
+
+    public static void setDeathReason(String reason){
+        deathReason = reason;
     }
 }

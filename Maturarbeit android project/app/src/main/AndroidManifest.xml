@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +23,8 @@
             android:name=".activities.GameClient"
             android:label="@string/title_activity_game"
             android:screenOrientation="landscape"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@style/FullscreenTheme"
+            android:keepScreenOn="true" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.imlee.maturarbeit.activities.StartActivity" />

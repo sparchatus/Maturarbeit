@@ -15,6 +15,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.SweetEatenEvent;
 import ch.imlee.maturarbeit.game.map.LightBulbStand;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
+import ch.imlee.maturarbeit.game.special_screens.DeathScreen;
 import ch.imlee.maturarbeit.utils.Vector2D;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.activities.DeviceType;
@@ -123,6 +124,7 @@ public class User extends Player {
             for (Sweet sweet : GameThread.sweets) {
                 if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
                     eatSweet(sweet);
+                    forceDetection();
                     lastWeightLoss = GameThread.getSynchronizedTick();
                 }
             }
@@ -137,7 +139,7 @@ public class User extends Player {
             new RadiusChangedEvent(playerRadius).send();
             // after some time falling the Player dies
             if (playerRadius <= 0.05) {
-                death();
+                death("FELL");
                 falling = false;
             }
         }
@@ -172,7 +174,6 @@ public class User extends Player {
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving collisions with walls
         collisionResolution();
-        forceDetection();
         // calculating the distance the User travelled
         speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
         // if the User has moved the coordinates get updated and the other devices get informed
@@ -300,6 +301,8 @@ public class User extends Player {
         //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
         boolean right, left, bottom, top;
         right = left = bottom = top = false;
+
+        Vector2D tempVec;
         // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         s = 0;
         // checks the wall to the right of the User
@@ -326,35 +329,62 @@ public class User extends Player {
             s += Math.abs(l);
             top = true;
         }
+        double hx, hy, lx, ly;
+        hx=hy=lx=ly=0;
+
         // checks the wall to the right bottom of the User
         if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
-            l  = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y).getLength();
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l = tempVec.getLength();
             if (l < playerRadius) {
-                s += Math.abs(playerRadius - l);
+                tempVec.scaleTo(playerRadius - l);
+                lx = tempVec.x;
+                ly = tempVec.y;
             }
         }
+
         // checks the wall to the right top of the User
         if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
-            l = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y).getLength();
+            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = tempVec.getLength();
             if (l < playerRadius) {
-                s += Math.abs(playerRadius - l);
+                tempVec.scaleTo(playerRadius - l);
+                if(lx > tempVec.x){
+                    lx = tempVec.x;
+                }
+                hy = tempVec.y;
             }
         }
+
         // checks the wall to the left top of the User
         if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
-            l = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y).getLength();
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
+            l = tempVec.getLength();
             if (l < playerRadius) {
-                s += Math.abs(playerRadius - l);
+                tempVec.scaleTo(playerRadius - l);
+                hx = tempVec.x;
+                if(hy < tempVec.y){
+                    hy = tempVec.y;
+                }
             }
         }
+
         // checks the wall to the left bottom of the User
         if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
-            l = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y).getLength();
+            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+            l =  tempVec.getLength();
             if (l < playerRadius) {
-                s += Math.abs(playerRadius - l);
+                tempVec.scaleTo(playerRadius - l);
+                if(hx > tempVec.x){
+                    hx = tempVec.x;
+                }
+                if(ly > tempVec.y){
+                    ly = tempVec.y;
+                }
             }
         }
-        if(s > 0.2f){
+        s += -lx - ly + hx + hy;
+        if(s > 0.05f){
             exploding();
         }
     }
@@ -516,7 +546,8 @@ public class User extends Player {
     }
 
     // upon death the User has to reset his radius and inform the other devices
-    protected void death() {
+    protected void death(String deathReason) {
+        DeathScreen.setDeathReason(deathReason);
         reviveTick = GameThread.getSynchronizedTick() + DEATH_TIME;
         new DeathEvent(true).send();
         new DeathEvent(true).apply();
@@ -527,7 +558,7 @@ public class User extends Player {
     }
 
     public void exploding(){
-        death();
+        death("ATE TOO MUCH");
         shootRandom();
     }
 

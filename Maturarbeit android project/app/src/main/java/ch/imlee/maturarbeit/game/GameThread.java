@@ -89,6 +89,7 @@ public class GameThread extends Thread implements Tick{
             }
         }catch (Exception e){
             e.printStackTrace();
+            Log.e("GameThread run", e.toString());
         }
         Log.e("GameThread run", "exiting run");
     }
@@ -174,9 +175,6 @@ public class GameThread extends Thread implements Tick{
                     if (user.getDead()) {
                         DeathScreen.render(c);
                     }
-                }else{
-                    new ErrorEvent("GameThread render()", "canvas is null").send();
-                    new ErrorEvent("GameThread render()", "canvas is null").apply();
                 }
                 LogView.render(c);
             }

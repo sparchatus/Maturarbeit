@@ -111,6 +111,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         }
         else{
             selectedPlayerType = (byte)v.getId();
+            // display an image and a description for the selected PlayerType
             playerTypeInfos[v.getId()].setActive();
         }
     }

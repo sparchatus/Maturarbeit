@@ -37,17 +37,21 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
                     id, Host.sockets.get(id-1).getRemoteDevice().getName());
             ++ChooseActivity.playersReady;
             // if every client has selected their stats, the game can be started
-            if (ChooseActivity.playersReady == Host.sockets.size()) {
-                ChooseActivity.startGameButton.setClickable(true);
-                // because we can only change the button's text in the UI thread, we have to do it with a Handler
-                Handler setText = new Handler(Looper.getMainLooper());
-                setText.post(new Runnable() {
-                    public void run() {
+
+            // because we can only change the button's text in the UI thread, we have to do it with a Handler
+            Handler setText = new Handler(Looper.getMainLooper());
+            setText.post(new Runnable() {
+                public void run() {
+                    if (ChooseActivity.playersReady == Host.sockets.size()) {
+                        ChooseActivity.startGameButton.setClickable(true);
                         ChooseActivity.startGameButton.setText("Start Game");
+                    } else {
+                        ChooseActivity.startGameButton.setText("Clients Ready: " + ChooseActivity.playersReady + '/' + Host.sockets.size());
                     }
-                });
-            }
+                }
+            });
         }
+
         return true;
     }
 

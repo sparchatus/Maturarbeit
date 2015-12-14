@@ -11,6 +11,11 @@ public class Vector2D {
         this.y = y;
     }
 
+    public Vector2D(Vector2D v, double x, double y){
+        this.x = x - v.x;
+        this.y = y - v.y;
+    }
+
     public Vector2D(double xPoint1, double yPoint1, double xPoint2, double yPoint2){
         x = xPoint2 - xPoint1;
         y = yPoint2 - yPoint1;

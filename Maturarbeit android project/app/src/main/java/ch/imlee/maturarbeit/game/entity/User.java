@@ -31,6 +31,7 @@ public class User extends Player {
     private boolean bulbRequestSent;
     // is true after the LightBulbStandServerEvent was sent until the player can try again
     private boolean standRequestSent = false;
+    private boolean checkForces = false;
 
     // used to test if the put on stand was successful
     private byte requestedStandID;
@@ -111,22 +112,26 @@ public class User extends Player {
         super.update();
         // also a falling Player isn't able to do anything
         if (!falling) {
+            // if the User is on a sweet he eats it
+            for (Sweet sweet : GameThread.sweets) {
+                if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
+                    checkForces = true;
+                    eatSweet(sweet);
+                    lastWeightLoss = GameThread.getSynchronizedTick();
+                }
+            }
             // this includes: moving and resolving collisions with walls
             move();
+            if(checkForces = true){
+                forceDetection();
+                checkForces = false;
+            }
             // checks if all the floor Tiles below the User are FALL_TROUGH
             checkFloor();
             // every now an then the Player looses weight/gets smaller
             if (GameThread.getSynchronizedTick() - weightLossCoolDown > lastWeightLoss) {
                 loseWeight();
                 lastWeightLoss = GameThread.getSynchronizedTick();
-            }
-            // if the User is on a sweet he eats it
-            for (Sweet sweet : GameThread.sweets) {
-                if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
-                    eatSweet(sweet);
-                    forceDetection();
-                    lastWeightLoss = GameThread.getSynchronizedTick();
-                }
             }
             if (shooting && !stunned && particleCoolDownTick <= GameThread.getSynchronizedTick()) {
                 shoot(angle);
@@ -239,21 +244,22 @@ public class User extends Player {
         hx=hy=lx=ly=0;
 
         // checks the wall to the right bottom of the User
-        if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+        if (!right && !bottom && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
+                tempVec = new Vector2D(tempVec, -playerRadius, -playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 lx = tempVec.x;
                 ly = tempVec.y;
             }
         }
-
         // checks the wall to the right top of the User
         if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
+                tempVec = new Vector2D(tempVec, -playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(lx > tempVec.x){
                     lx = tempVec.x;
@@ -261,12 +267,12 @@ public class User extends Player {
                 hy = tempVec.y;
             }
         }
-
         // checks the wall to the left top of the User
         if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
+                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 hx = tempVec.x;
                 if(hy < tempVec.y){
@@ -274,12 +280,12 @@ public class User extends Player {
                 }
             }
         }
-
         // checks the wall to the left bottom of the User
         if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
+                tempVec = new Vector2D(tempVec, playerRadius, -playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(hx > tempVec.x){
                     hx = tempVec.x;
@@ -289,6 +295,7 @@ public class User extends Player {
                 }
             }
         }
+
         repelVec.add(hx,hy);
         repelVec.add(lx,ly);
         // resolving the repel
@@ -298,93 +305,65 @@ public class User extends Player {
     private void forceDetection(){
         // variable to determine the amount by which the User is inside a block and the complete amount of forces
         double l, s;
-        //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
-        boolean right, left, bottom, top;
-        right = left = bottom = top = false;
-
-        Vector2D tempVec;
-        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         s = 0;
+        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
+        Vector2D tempVec;
+
         // checks the wall to the right of the User
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
             l = 1 - newPosition.xMod1() - playerRadius;
             s += Math.abs(l);
-            right = true;
         }
         // checks the wall to the left of the User
         if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
             l = -newPosition.xMod1() + playerRadius;
             s += Math.abs(l);
-            left = true;
         }
         // checks the wall at the bottom of the User
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
             l = 1 - newPosition.yMod1() - playerRadius;
             s += Math.abs(l);
-            bottom = true;
         }
         // checks the wall at the top of the User
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
             l = -newPosition.yMod1() + playerRadius;
             s += Math.abs(l);
-            top = true;
         }
-        double hx, hy, lx, ly;
-        hx=hy=lx=ly=0;
 
         // checks the wall to the right bottom of the User
-        if (!right && !bottom &&Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                lx = tempVec.x;
-                ly = tempVec.y;
+                s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
-
         // checks the wall to the right top of the User
-        if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                if(lx > tempVec.x){
-                    lx = tempVec.x;
-                }
-                hy = tempVec.y;
+                s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
-
         // checks the wall to the left top of the User
-        if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                hx = tempVec.x;
-                if(hy < tempVec.y){
-                    hy = tempVec.y;
-                }
+                s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
-
         // checks the wall to the left bottom of the User
-        if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
+        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
-                tempVec.scaleTo(playerRadius - l);
-                if(hx > tempVec.x){
-                    hx = tempVec.x;
-                }
-                if(ly > tempVec.y){
-                    ly = tempVec.y;
-                }
+                s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
-        s += -lx - ly + hx + hy;
-        if(s > 0.05f){
+
+        if(s > 0.1f){
             exploding();
         }
     }

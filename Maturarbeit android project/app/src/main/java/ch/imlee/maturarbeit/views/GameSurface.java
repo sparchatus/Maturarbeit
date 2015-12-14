@@ -49,6 +49,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         setupThread();
+        gameThread.start();
         rec = getResources();
         // needs to be called to get the real width and height
         invalidate();
@@ -109,6 +110,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         LoadingScreen.setRestart();
         setupThread();
         GameThread.reset();
+        gameThread.start();
         if(StartActivity.deviceType == DeviceType.HOST) {
             new WaitUntilLoadedThread().start();
         }
@@ -140,7 +142,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             gameThread = new GameThread(holder);
         }
         gameThread.setRunning(true);
-        gameThread.start();
     }
 
     public static void nullFocusedPlayer(){

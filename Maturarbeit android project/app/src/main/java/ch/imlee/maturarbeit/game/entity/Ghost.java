@@ -79,8 +79,8 @@ public class Ghost extends User {
     }
 
     @Override
-    protected void death() {
-        super.death();
+    protected void death(String deathReason) {
+        super.death(deathReason);
         if (invisible){
             skillActivation();
         }

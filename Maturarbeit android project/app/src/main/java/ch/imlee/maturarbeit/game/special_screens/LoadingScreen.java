@@ -52,12 +52,12 @@ public class LoadingScreen implements Tick{
         slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
         ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
         // end of content setup
-        lastTime = System.currentTimeMillis();
+
         while (GameThread.getLoading()) {
             //todo:remove in end product
             LogView.update();
             render();
-            i--;
+            --i;
             if (i < 0) i = 3;
 
             if ((timeLeft = TIME_PER_LOADING_TICK - (System.currentTimeMillis() - lastTime)) > 0) {

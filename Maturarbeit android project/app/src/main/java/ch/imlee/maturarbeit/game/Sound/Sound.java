@@ -91,24 +91,4 @@ public class Sound {
         if(loopedIDs.contains(id)) return -1;
         return 0;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -52,6 +52,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_choose);
 
         playerTypeImage = (ImageView) findViewById(R.id.playerTypeImage);
+        playerTypeImage.setAdjustViewBounds(true);
         startGameButton = (Button) findViewById(R.id.startGameButton);
         playerTypeDescription = (TextView) findViewById(R.id.playerTypeDescription);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
@@ -69,10 +70,11 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         super.onStart();
 
         int screenWidth = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
+
         PlayerTypeInfo[] temp = {
                 new PlayerTypeInfo("Ghost", "The Ghost can become invisible for a while", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ghost), screenWidth/4, screenWidth/4, false)),
-                new PlayerTypeInfo("Slime", "The Slime can leave a slimetrail behind which makes himself faster, but the others slower", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime), screenWidth/4, screenWidth/4, false)),
-                new PlayerTypeInfo("Fluffy", "The Fluffy charges itself electorstatically by rolling around, allowing it to stun its opponents", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fluffy), screenWidth/4, screenWidth/4, false))
+                new PlayerTypeInfo("Slime", "The Slime can leave a slime trail behind which makes himself faster, but the others slower", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime), screenWidth/4, screenWidth/4, false)),
+                new PlayerTypeInfo("Fluffy", "The Fluffy charges itself electrostatically by rolling around, allowing it to stun its opponents", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fluffy), screenWidth/4, screenWidth/4, false))
         };
         playerTypeInfos = temp.clone();
         createPlayerTypeRadioButtons();
@@ -103,7 +105,6 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
 
     public void onClick(View v){
         v.setSelected(true);
-
         // check whether clicked button is in the teamGroup or playerTypeGroup
         if(((RadioButton)v).getText().toString().startsWith("Team ")){
             // to get 0 for 'A' and 1 for 'B', we have to take their ASCII values by casting them to byte and subtract 65
@@ -112,7 +113,22 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         else{
             selectedPlayerType = (byte)v.getId();
             // display an image and a description for the selected PlayerType
+            // display the image only if there is enough space on the screen
+            // the space for the image is calculated by subtracting the bottom of the lowest playerTypeRadioButton by the top of the startButton
+
+            playerTypeImage.setVisibility(View.VISIBLE);
             playerTypeInfos[v.getId()].setActive();
+
+            int bitmapSize = playerTypeDescription.getTop() - findViewById(playerTypeInfos.length-1).getBottom();
+
+            if(bitmapSize > 0) {
+                playerTypeImage.setMaxWidth(bitmapSize);
+                playerTypeInfos[v.getId()].setActive();
+            } else{
+                playerTypeImage.setVisibility(View.GONE);
+            }
+
+
         }
     }
 

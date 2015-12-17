@@ -79,12 +79,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/playerTypeDescription"
-        android:layout_below="@id/playerTypeImage"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/startGameButton" />
 
     <Button
         android:layout_width="wrap_content"

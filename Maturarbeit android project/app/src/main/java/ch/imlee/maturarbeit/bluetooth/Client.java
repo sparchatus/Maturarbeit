@@ -38,7 +38,7 @@ public class Client extends StartActivity {
 
     private IntentFilter filter = new IntentFilter(); // this filters what the BroadcastReceiver should listen to
 
-    private Thread connectThread = new Thread(new Runnable() {
+    private Runnable connectRunnable = new Runnable() {
         @Override
         public void run() {
             // we need a BroadcastReceiver to catch the Intents sent when the Bluetooth discovery starts and finishes, when a device is discovered and when the connection is successful
@@ -91,7 +91,7 @@ public class Client extends StartActivity {
 
             c.sendBroadcast(new Intent("connectionFinished"));
         }
-    });
+    };
 
     // used to check whether device discovery finished automatically or was canceled
     private static boolean discoveryCanceled = false;
@@ -146,7 +146,7 @@ public class Client extends StartActivity {
         socket = null;
         //we want the UI to update while the blocking call "socket.connect();" is made, so it's it in a thread
         if(!connecting) {
-            connectThread.start();
+            new Thread(connectRunnable).start();
         } else{
             Toast.makeText(this, "device is aready connecting", Toast.LENGTH_SHORT).show();
         }

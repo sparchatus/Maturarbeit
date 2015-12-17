@@ -51,6 +51,7 @@ public class StartActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initialize();
     }
+
     private void initialize(){
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
         startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

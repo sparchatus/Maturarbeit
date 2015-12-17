@@ -175,14 +175,16 @@ public class User extends Player {
             }
             return;
         }
-        // the desired position of the User
-        newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
-        // detecting and resolving collisions with walls
-        collisionResolution();
-        // calculating the distance the User travelled
-        speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
         // if the User has moved the coordinates get updated and the other devices get informed
         if (xCoordinate != newPosition.x || yCoordinate != newPosition.y) {
+
+            // the desired position of the User
+            newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
+            // detecting and resolving collisions with walls
+            collisionResolution();
+            // calculating the distance the User travelled
+            speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
+
             xCoordinate = (float)newPosition.x;
             yCoordinate = (float)newPosition.y;
             new PlayerMotionEvent(this).send();

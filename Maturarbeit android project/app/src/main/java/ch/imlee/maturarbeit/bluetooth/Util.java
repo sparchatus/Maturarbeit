@@ -1,6 +1,7 @@
 package ch.imlee.maturarbeit.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.util.Log;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
@@ -60,6 +62,22 @@ public class Util{
                 }catch (Exception e){}
             }
             ba.enable();
+            while(ba.getState() != BluetoothAdapter.STATE_ON){
+                try {
+                    Thread.sleep(20);
+                } catch (Exception e){
+
+                }
+            }
+            //TODO: this is a temporary fix, find a better one // FIXME: 14.12.2015
+            Log.i("unbound", "unbonding " + ba.getBondedDevices().size() + " devices...");
+            for(BluetoothDevice device : ba.getBondedDevices()){
+                try {
+                    device.getClass().getMethod("removeBond", (Class[]) null).invoke(device, (Object[]) null);
+                    Log.i("unbound", "unbound device: " + device.getName());
+                } catch (Exception e) {}
+            }
+
         }
     }
 
@@ -109,7 +127,7 @@ public class Util{
                 c = (char) inputStream.read();
                 if(c == '|'){
                     // '|' is the terminating char of every Event
-                    Log.v("events", "Event received: " + string);
+                    Log.d("events", "Event received: " + string);
                     Event event = Event.fromString(string);
                     if(StartActivity.deviceType == DeviceType.HOST){
                         event.send();

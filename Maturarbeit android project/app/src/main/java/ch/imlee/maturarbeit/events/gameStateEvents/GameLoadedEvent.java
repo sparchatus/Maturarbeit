@@ -1,5 +1,7 @@
 package ch.imlee.maturarbeit.events.gameStateEvents;
 
+import android.util.Log;
+
 import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;

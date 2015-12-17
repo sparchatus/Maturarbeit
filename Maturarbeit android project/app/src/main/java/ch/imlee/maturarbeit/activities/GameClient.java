@@ -52,6 +52,8 @@ public class GameClient extends Activity {
             GameSurface.destroy();
         }
         gameSurface = null;
+        //todo maybe remove
+        finish();
     }
 
     // this method is for the restart

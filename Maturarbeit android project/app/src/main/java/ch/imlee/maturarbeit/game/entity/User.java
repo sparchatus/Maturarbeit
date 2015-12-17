@@ -308,55 +308,55 @@ public class User extends Player {
         s = 0;
         // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         Vector2D tempVec;
-
+        Vector2D position = new Vector2D(xCoordinate, yCoordinate);
         // checks the wall to the right of the User
-        if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            l = 1 - newPosition.xMod1() - playerRadius;
+        if (Map.getSolid((int) (position.x + playerRadius), position.yIntPos())) {
+            l = 1 - position.xMod1() - playerRadius;
             s += Math.abs(l);
         }
         // checks the wall to the left of the User
-        if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            l = -newPosition.xMod1() + playerRadius;
+        if (Map.getSolid((int) (position.x - playerRadius), position.yIntPos())) {
+            l = -position.xMod1() + playerRadius;
             s += Math.abs(l);
         }
         // checks the wall at the bottom of the User
-        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            l = 1 - newPosition.yMod1() - playerRadius;
+        if (Map.getSolid(position.xIntPos(), (int) (position.y + playerRadius))) {
+            l = 1 - position.yMod1() - playerRadius;
             s += Math.abs(l);
         }
         // checks the wall at the top of the User
-        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            l = -newPosition.yMod1() + playerRadius;
+        if (Map.getSolid(position.xIntPos(), (int) (position.y - playerRadius))) {
+            l = -position.yMod1() + playerRadius;
             s += Math.abs(l);
         }
 
         // checks the wall to the right bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() + 1)) {
+            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos() + 1, position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the right top of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() - 1)) {
+            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos(), position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the left top of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() - 1)) {
+            tempVec = new Vector2D(position.xIntPos(), position.yIntPos(), position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the left bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() + 1)) {
+            tempVec = new Vector2D(position.xIntPos(), position.yIntPos() + 1, position.x, position.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());

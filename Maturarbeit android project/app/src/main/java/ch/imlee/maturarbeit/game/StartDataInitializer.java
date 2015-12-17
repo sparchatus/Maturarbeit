@@ -15,6 +15,7 @@ import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
 import ch.imlee.maturarbeit.views.MiniMap;
@@ -22,6 +23,7 @@ import ch.imlee.maturarbeit.views.MiniMap;
 public class StartDataInitializer {
 
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
+        LogView.addLog("starting initialization");
         Sound.initialize();
         Sound.play(Sound.BACKGROUND);
         gameThread.map = new Map(startData.getMapID());
@@ -59,5 +61,6 @@ public class StartDataInitializer {
         } else {
             WaitUntilLoadedThread.incrementReady();
         }
+        LogView.addLog("finished with initialization");
     }
 }

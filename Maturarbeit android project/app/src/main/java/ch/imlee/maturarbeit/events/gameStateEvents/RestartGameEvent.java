@@ -2,7 +2,7 @@ package ch.imlee.maturarbeit.events.gameStateEvents;
 
 import ch.imlee.maturarbeit.views.GameSurface;
 
-// this Event gets sent by the host when the game is finished and should be restarted. It is not implemented yet
+// this Event gets sent by the host when the game is finished and should be restarted
 public class RestartGameEvent extends GameStateEvent {
 
     @Override

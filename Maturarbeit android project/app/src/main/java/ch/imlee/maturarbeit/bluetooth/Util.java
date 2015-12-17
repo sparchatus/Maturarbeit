@@ -23,8 +23,11 @@ public class Util{
     public static Context c;
     private static int version;
     private static UUID[] uuids = new UUID[7];
+    private static boolean initialized = false;
 
     public static void initBluetooth(Context context) {
+        // to prevent another initialisation when StartActivity is recreated
+        if (initialized) return;
         c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
         try {
@@ -52,7 +55,6 @@ public class Util{
                     .show();
 
         } else {
-            StartActivity.usernameEditText.setText(Util.ba.getName());
             // to close all current connections, restart the adapter
             // there is probably a better way to do this, but we've found it's the most consistent like this and it works on most devices this way
             ba.disable();
@@ -69,6 +71,7 @@ public class Util{
 
                 }
             }
+            /*
             //TODO: this is a temporary fix, find a better one // FIXME: 14.12.2015
             Log.i("unbound", "unbonding " + ba.getBondedDevices().size() + " devices...");
             for(BluetoothDevice device : ba.getBondedDevices()){
@@ -77,7 +80,8 @@ public class Util{
                     Log.i("unbound", "unbound device: " + device.getName());
                 } catch (Exception e) {}
             }
-
+            */
+            initialized = true;
         }
     }
 

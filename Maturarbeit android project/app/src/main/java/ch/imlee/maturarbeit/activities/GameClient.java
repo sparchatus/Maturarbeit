@@ -14,10 +14,10 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class GameClient extends Activity {
 
-    private static boolean activityLoaded = false;
-    private static boolean gameSurfaceLoaded = false;
-    private static boolean joystickSurfaceLoaded = false;
-    private static boolean miniMapSurfaceLoaded = false;
+    private static boolean activityLoaded;
+    private static boolean gameSurfaceLoaded;
+    private static boolean joystickSurfaceLoaded;
+    private static boolean miniMapSurfaceLoaded ;
     private static GameStartEvent gameStartEventSave;
     private static GameSurface gameSurface;
     private static GameThread gameThread;
@@ -28,24 +28,26 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        activityLoaded = false;
+        gameSurfaceLoaded = false;
+        joystickSurfaceLoaded = false;
+        miniMapSurfaceLoaded = false;
         context = getApplicationContext();
         gameSurface = (GameSurface) (findViewById(R.id.game_surface));
         activityLoaded = true;
     }
 
-    // This method destroys the gameSurface when for example the screen is locked to avoid glitches
     @Override
     protected void onPause(){
         super.onPause();
-        ChooseActivity.eventReceiver.setRunning(false);
-        if(gameSurfaceLoaded){
-            GameSurface.destroy();
-        }
-        gameSurface = null;
-        NavUtils.navigateUpFromSameTask(this);
+        onStop();
     }
 
-    // This function properly stops the eventReceiver Thread when the Activity ends.
     @Override
     protected void onStop(){
         super.onStop();
@@ -56,11 +58,21 @@ public class GameClient extends Activity {
         gameSurface = null;
         NavUtils.navigateUpFromSameTask(this);
         //todo maybe remove
-        finish();
+        //finish();
+    }
+
+    @Override
+    public void onBackPressed(){
+        onStop();
     }
 
     // this method is for the restart
     public static void initializeStartData(){
+        while(!gameSurfaceLoaded){
+            try {
+                Thread.sleep(10);
+            } catch (Exception e){}
+        }
         initializeStartData(gameStartEventSave);
     }
 

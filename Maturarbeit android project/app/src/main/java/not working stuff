@@ -1,3 +1,2 @@
 - when game is finished, you should be able to restart or end
-- parent of gameClient activity should be StartActivity (maybe fixed)
-- bitmap of SlimeTrail should be scaled to radius (should be fixed)
+- parent of gameClient activity should be StartActivity

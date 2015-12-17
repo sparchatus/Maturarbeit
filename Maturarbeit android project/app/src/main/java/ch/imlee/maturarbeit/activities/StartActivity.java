@@ -52,6 +52,12 @@ public class StartActivity extends Activity {
         initialize();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        onBackPressed();
+    }
+
     private void initialize(){
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
         startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -70,6 +76,7 @@ public class StartActivity extends Activity {
         usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
 
         Util.initBluetooth(this);
+        usernameEditText.setText(Util.ba.getName());
     }
 
     // this method is called when a button is clicked

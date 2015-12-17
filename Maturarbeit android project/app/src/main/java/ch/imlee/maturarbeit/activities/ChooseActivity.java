@@ -150,7 +150,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onBackPressed(){
-        startActivity(new Intent(getBaseContext(), StartActivity.class));
+        finish();
     }
 
     public boolean checkInputs(){

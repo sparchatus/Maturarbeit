@@ -40,7 +40,7 @@ public class User extends Player {
     protected final int MAX_MANA = 1000;
     protected final int PARTICLE_COOL_DOWN = 400 / TIME_PER_TICK;
     // the range in which the LightBulb can be picked up
-    protected final int PICK_UP_RANGE = 1;
+    protected final float PICK_UP_RANGE = 1.5f;
     // the time it takes to pick up the LightBulb
     protected final int PICK_UP_TICKS = 2 * Tick.TICK;
     private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
@@ -123,7 +123,7 @@ public class User extends Player {
             // this includes: moving and resolving collisions with walls
             move();
             if(checkForces = true){
-                forceDetection();
+                //forceDetection();
                 checkForces = false;
             }
             // checks if all the floor Tiles below the User are FALL_TROUGH
@@ -144,7 +144,7 @@ public class User extends Player {
             new RadiusChangedEvent(playerRadius).send();
             // after some time falling the Player dies
             if (playerRadius <= 0.05) {
-                death("FELL");
+                death(" FELL");
                 falling = false;
             }
         }
@@ -250,7 +250,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -playerRadius, -playerRadius);
+                tempVec = new Vector2D(tempVec, 1 - newPosition.xMod1() - playerRadius, 1 - newPosition.yMod1() - playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 lx = tempVec.x;
                 ly = tempVec.y;
@@ -261,7 +261,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -playerRadius, playerRadius);
+                tempVec = new Vector2D(tempVec, 1 - newPosition.xMod1() - playerRadius, -newPosition.yMod1() + playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(lx > tempVec.x){
                     lx = tempVec.x;
@@ -274,7 +274,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
+                tempVec = new Vector2D(tempVec, -newPosition.xMod1() + playerRadius, -newPosition.yMod1() + playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 hx = tempVec.x;
                 if(hy < tempVec.y){
@@ -287,7 +287,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, -playerRadius);
+                tempVec = new Vector2D(tempVec, -newPosition.xMod1() + playerRadius, 1 - newPosition.yMod1() - playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(hx > tempVec.x){
                     hx = tempVec.x;
@@ -310,62 +310,62 @@ public class User extends Player {
         s = 0;
         // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
         Vector2D tempVec;
-
+        Vector2D position = new Vector2D(xCoordinate, yCoordinate);
         // checks the wall to the right of the User
-        if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            l = 1 - newPosition.xMod1() - playerRadius;
+        if (Map.getSolid((int) (position.x + playerRadius), position.yIntPos())) {
+            l = 1 - position.xMod1() - playerRadius;
             s += Math.abs(l);
         }
         // checks the wall to the left of the User
-        if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            l = -newPosition.xMod1() + playerRadius;
+        if (Map.getSolid((int) (position.x - playerRadius), position.yIntPos())) {
+            l = -position.xMod1() + playerRadius;
             s += Math.abs(l);
         }
         // checks the wall at the bottom of the User
-        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            l = 1 - newPosition.yMod1() - playerRadius;
+        if (Map.getSolid(position.xIntPos(), (int) (position.y + playerRadius))) {
+            l = 1 - position.yMod1() - playerRadius;
             s += Math.abs(l);
         }
         // checks the wall at the top of the User
-        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            l = -newPosition.yMod1() + playerRadius;
+        if (Map.getSolid(position.xIntPos(), (int) (position.y - playerRadius))) {
+            l = -position.yMod1() + playerRadius;
             s += Math.abs(l);
         }
 
         // checks the wall to the right bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() + 1)) {
+            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos() + 1, position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the right top of the User
-        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() - 1)) {
+            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos(), position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the left top of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() - 1)) {
+            tempVec = new Vector2D(position.xIntPos(), position.yIntPos(), position.x, position.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
         // checks the wall to the left bottom of the User
-        if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
-            tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
+        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() + 1)) {
+            tempVec = new Vector2D(position.xIntPos(), position.yIntPos() + 1, position.x, position.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
                 s += Math.abs(playerRadius - tempVec.getLength());
             }
         }
 
-        if(s > 0.1f){
+        if(s > 0.2f){
             exploding();
         }
     }
@@ -539,7 +539,7 @@ public class User extends Player {
     }
 
     public void exploding(){
-        death("ATE TOO MUCH");
+        death(" ATE TOO MUCH");
         shootRandom();
     }
 

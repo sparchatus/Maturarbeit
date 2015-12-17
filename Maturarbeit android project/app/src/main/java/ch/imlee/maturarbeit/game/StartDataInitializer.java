@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
@@ -15,6 +16,7 @@ import ch.imlee.maturarbeit.game.entity.LightBulb;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.Slime;
 import ch.imlee.maturarbeit.game.map.Map;
+import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
 import ch.imlee.maturarbeit.views.MiniMap;
@@ -22,6 +24,7 @@ import ch.imlee.maturarbeit.views.MiniMap;
 public class StartDataInitializer {
 
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
+        LogView.addLog("starting initialization");
         Sound.initialize();
         Sound.play(Sound.BACKGROUND);
         gameThread.map = new Map(startData.getMapID());
@@ -54,10 +57,14 @@ public class StartDataInitializer {
         gameThread.lightBulbArray = new LightBulb[2];
         gameThread.lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
         gameThread.lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
+        gameThread.slimeTrailList = new ArrayList<>();
+        gameThread.sweets = new ArrayList<>();
+        gameThread.sweetsToRemove = new HashSet<>();
         if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
         } else {
             WaitUntilLoadedThread.incrementReady();
         }
+        LogView.addLog("finished with initialization");
     }
 }

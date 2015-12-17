@@ -50,7 +50,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder holder) {
         setupThread();
         gameThread.start();
-        rec = getResources();
         // needs to be called to get the real width and height
         invalidate();
         width = getWidth();
@@ -69,6 +68,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceDestroyed(SurfaceHolder holder) {
         // ends the main game thread
         destroy();
+    }
+
+    private static void setupThread(){
+        GameThread.setRunning(true);
+        if (StartActivity.deviceType == DeviceType.HOST){
+            gameThread = new GameServerThread(holder);
+        }else{
+            gameThread = new GameThread(holder);
+        }
     }
 
     @Override
@@ -101,23 +109,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     public static void restart(){
         Log.e("GameSurface", "restart soon");
-        try{
-            Thread.sleep(1000);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
         gameThread.stopEndGame();
         LoadingScreen.setRestart();
         setupThread();
         GameThread.reset();
         gameThread.start();
         if(StartActivity.deviceType == DeviceType.HOST) {
+            WaitUntilLoadedThread.reset();
             new WaitUntilLoadedThread().start();
-        }
-        GameClient.initializeStartData();
-        if(StartActivity.deviceType == DeviceType.HOST){
             new RestartGameEvent().send();
         }
+        GameClient.initializeStartData();
     }
 
     public static void destroy(){
@@ -125,6 +127,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             return;
         }
         GameThread.setRunning(false);
+        GameThread.stopEndGame();
         while(true){
             try {
                 gameThread.join();
@@ -133,15 +136,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void setupThread(){
-        if(StartActivity.deviceType == DeviceType.HOST){
-            gameThread = new GameServerThread(holder);
-        }else {
-            gameThread = new GameThread(holder);
-        }
-        gameThread.setRunning(true);
     }
 
     public static void nullFocusedPlayer(){

@@ -52,10 +52,10 @@ public class GameThread extends Thread implements Tick{
     protected static Map map;
     protected static User user;
     protected static Player[] playerArray;
-    protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
+    protected static ArrayList<SlimeTrail> slimeTrailList;
     protected static ArrayList<Particle>[] particleListArray;
-    public static ArrayList<Sweet> sweets = new ArrayList<>();
-    public static Set<Integer> sweetsToRemove = new HashSet<>();
+    public static ArrayList<Sweet> sweets;
+    public static Set<Integer> sweetsToRemove;
 
 
     public GameThread(SurfaceHolder holder){
@@ -67,29 +67,25 @@ public class GameThread extends Thread implements Tick{
     public void run() {
         loading = true;
         LoadingScreen.loadingLoop(holder);
-        try {
-            while (running) {
-                update();
-                render();
-                if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
-                    try {
-                        sleep(timeLeft);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        LogView.addLog("main loop starting");
+        while (running) {
+            update();
+            render();
+            if ((timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)) > 0) {
+                try {
+                    sleep(timeLeft);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                lastTime = System.currentTimeMillis();
-                ++synchronizedTick;
             }
-            Log.e("GameThread run", "main loop quit");
-            if (StartActivity.deviceType == DeviceType.HOST) {
-                new ServerEndGameScreen().endGameLoop(holder);
-            } else {
-                new EndGameScreen().endGameLoop(holder);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.e("GameThread run", e.toString());
+            lastTime = System.currentTimeMillis();
+            ++synchronizedTick;
+        }
+        LogView.addLog("main loop quit");
+        if (StartActivity.deviceType == DeviceType.HOST) {
+            new ServerEndGameScreen().endGameLoop(holder);
+        } else {
+            new EndGameScreen().endGameLoop(holder);
         }
         Log.e("GameThread run", "exiting run");
     }

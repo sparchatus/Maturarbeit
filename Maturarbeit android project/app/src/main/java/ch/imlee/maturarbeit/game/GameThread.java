@@ -52,10 +52,10 @@ public class GameThread extends Thread implements Tick{
     protected static Map map;
     protected static User user;
     protected static Player[] playerArray;
-    protected static ArrayList<SlimeTrail> slimeTrailList = new ArrayList<>();
+    protected static ArrayList<SlimeTrail> slimeTrailList;
     protected static ArrayList<Particle>[] particleListArray;
-    public static ArrayList<Sweet> sweets = new ArrayList<>();
-    public static Set<Integer> sweetsToRemove = new HashSet<>();
+    public static ArrayList<Sweet> sweets;
+    public static Set<Integer> sweetsToRemove;
 
 
     public GameThread(SurfaceHolder holder){

@@ -109,11 +109,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     public static void restart(){
         Log.e("GameSurface", "restart soon");
-        try{
-            Thread.sleep(1000);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
         gameThread.stopEndGame();
         LoadingScreen.setRestart();
         setupThread();

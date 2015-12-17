@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import ch.imlee.maturarbeit.activities.DeviceType;
 import ch.imlee.maturarbeit.activities.StartActivity;
@@ -56,6 +57,9 @@ public class StartDataInitializer {
         gameThread.lightBulbArray = new LightBulb[2];
         gameThread.lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
         gameThread.lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
+        gameThread.slimeTrailList = new ArrayList<>();
+        gameThread.sweets = new ArrayList<>();
+        gameThread.sweetsToRemove = new HashSet<>();
         if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
         } else {

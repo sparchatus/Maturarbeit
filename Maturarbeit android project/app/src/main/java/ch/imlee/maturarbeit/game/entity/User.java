@@ -123,7 +123,7 @@ public class User extends Player {
             // this includes: moving and resolving collisions with walls
             move();
             if(checkForces = true){
-                //forceDetection();
+                forceDetection();
                 checkForces = false;
             }
             // checks if all the floor Tiles below the User are FALL_TROUGH
@@ -251,7 +251,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, 1 - newPosition.xMod1() - playerRadius, 1 - newPosition.yMod1() - playerRadius);
+                tempVec = new Vector2D(tempVec, -playerRadius, -playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 lx = tempVec.x;
                 ly = tempVec.y;
@@ -262,7 +262,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, 1 - newPosition.xMod1() - playerRadius, -newPosition.yMod1() + playerRadius);
+                tempVec = new Vector2D(tempVec, -playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(lx > tempVec.x){
                     lx = tempVec.x;
@@ -275,7 +275,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -newPosition.xMod1() + playerRadius, -newPosition.yMod1() + playerRadius);
+                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 hx = tempVec.x;
                 if(hy < tempVec.y){
@@ -288,7 +288,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -newPosition.xMod1() + playerRadius, 1 - newPosition.yMod1() - playerRadius);
+                tempVec = new Vector2D(tempVec, playerRadius, -playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(hx > tempVec.x){
                     hx = tempVec.x;

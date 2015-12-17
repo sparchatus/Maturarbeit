@@ -60,7 +60,7 @@ public class User extends Player {
     private final float RADIUS_CHANGE = 0.2f;
     protected float mana;
     // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
-    protected final float MAX_SPEED = 7f / Tick.TICK;
+    protected final float MAX_SPEED = 5f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 

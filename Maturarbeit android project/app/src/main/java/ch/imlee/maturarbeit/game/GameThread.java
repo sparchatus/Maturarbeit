@@ -95,7 +95,12 @@ public class GameThread extends Thread implements Tick{
     protected void update(){
         for(Queue<Event> eventQueue:EventReceiver.events){
             while(!eventQueue.isEmpty()){
-                eventQueue.remove().apply();
+                try {
+                    eventQueue.remove().apply();
+                } catch (Exception e){
+                    // an Exception can be thrown when the game is restarting but the device tries to apply events
+                    e.printStackTrace();
+                }
             }
         }
 

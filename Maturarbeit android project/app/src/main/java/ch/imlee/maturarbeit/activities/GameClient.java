@@ -58,7 +58,7 @@ public class GameClient extends Activity {
         gameSurface = null;
         NavUtils.navigateUpFromSameTask(this);
         //todo maybe remove
-        //finish();
+        finish();
     }
 
     @Override

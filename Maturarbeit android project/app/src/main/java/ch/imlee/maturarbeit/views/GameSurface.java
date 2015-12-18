@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
@@ -67,6 +68,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceDestroyed(SurfaceHolder holder) {
         // ends the main game thread
         destroy();
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if(visibility==View.VISIBLE&&changedView == this&&gameThread==null){
+            setupThread();
+            gameThread.start();
+        }
     }
 
     private static void setupThread(){

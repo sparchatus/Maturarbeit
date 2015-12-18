@@ -48,19 +48,20 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        setupThread();
-        gameThread.start();
         // needs to be called to get the real width and height
         invalidate();
         width = getWidth();
         height = getHeight();
         rec = getResources();
-        GameClient.gameSurfaceLoaded();
     }
 
     // the surface does not change in size during the game
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        setupThread();
+        gameThread.start();
+        GameClient.gameSurfaceLoaded();
+    }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {

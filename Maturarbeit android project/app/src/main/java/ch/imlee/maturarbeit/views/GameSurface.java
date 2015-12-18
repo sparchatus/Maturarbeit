@@ -60,9 +60,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     // the surface does not change in size during the game
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -70,7 +68,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         destroy();
     }
 
-    private static void setupThread(){
+    public static void setupThread(){
         GameThread.setRunning(true);
         if (StartActivity.deviceType == DeviceType.HOST){
             gameThread = new GameServerThread(holder);

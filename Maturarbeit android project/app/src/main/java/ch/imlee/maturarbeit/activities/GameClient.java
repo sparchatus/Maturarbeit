@@ -51,6 +51,10 @@ public class GameClient extends Activity {
     @Override
     protected void onStop(){
         super.onStop();
+        activityLoaded = false;
+        gameSurfaceLoaded = false;
+        joystickSurfaceLoaded = false;
+        miniMapSurfaceLoaded = false;
         ChooseActivity.eventReceiver.setRunning(false);
         if(gameSurfaceLoaded){
             GameSurface.destroy();

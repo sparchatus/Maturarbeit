@@ -29,13 +29,14 @@ public class Host extends StartActivity {
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
     // the acceptThread accepts incoming connections as long as it's active
-    private Thread acceptThread = new Thread(new Runnable() {
+    private Runnable acceptRunnable = new Runnable() {
         @Override
         public void run() {
             int i = 0;
-            while(i < 7) {
+            while (i < 7) {
                 // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
-                while(serverSocket == null) {
+                serverSocket = null;
+                while (serverSocket == null) {
                     try {
                         // the serverSocket is used to listen for incoming connections
                         serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
@@ -47,19 +48,20 @@ public class Host extends StartActivity {
                 try {
                     // this method blocks until the Thread gets interrupted or a client connects
                     sockets.add(serverSocket.accept());
-                    manageConnection(sockets.get(sockets.size()-1));
+                    manageConnection(sockets.get(sockets.size() - 1));
                     ++i;
                 } catch (Exception e) {
                     e.printStackTrace();
                     // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button and the acceptThread gets interrupted
-                    if(e.getMessage().equals("Operation Canceled")) {
+                    if (e.getMessage().equals("Operation Canceled")) {
                         Log.i("acceptThread", "acceptThread canceled");
                         break;
                     }
                 }
             }
         }
-    });
+    };
+    Thread acceptThread;
 
     public Host(Context context) {
         c = context;
@@ -76,6 +78,7 @@ public class Host extends StartActivity {
         adapter.notifyDataSetChanged();
 
         Toast.makeText(c, "waiting for connections", Toast.LENGTH_SHORT).show();
+        acceptThread = new Thread(acceptRunnable);
         acceptThread.start();
     }
 

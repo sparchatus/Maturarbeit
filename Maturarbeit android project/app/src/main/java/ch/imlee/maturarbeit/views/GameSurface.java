@@ -156,6 +156,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     public GameThread getGameThread(){
+        if(gameThread ==  null) setupThread();
         return gameThread;
     }
 

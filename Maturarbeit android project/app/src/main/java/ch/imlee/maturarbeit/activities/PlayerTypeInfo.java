@@ -6,11 +6,13 @@ import android.util.Log;
 import android.view.View;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.bluetooth.Util;
 
-public class PlayerTypeInfo {
+public class PlayerTypeInfo extends ChooseActivity{
     private final String NAME;
     private final String DESCRIPTION;
     private final Bitmap BITMAP;
+    int bitmapSize;
 
     public PlayerTypeInfo(String name, String description, Bitmap bitmap){
         NAME = name;
@@ -19,18 +21,34 @@ public class PlayerTypeInfo {
     }
 
     public void setActive(){
-        ChooseActivity.playerTypeDescription.setText(DESCRIPTION);
-        ChooseActivity.relativeLayout.refreshDrawableState();
+        playerTypeDescription.setText(DESCRIPTION);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setBitmapSize(playerTypeDescription.getTop() - playerTypeGroup.getBottom());
+                Log.d("bitmapSize", "bitmapSize is " + bitmapSize);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(bitmapSize <= 0){
+                            playerTypeImage.setVisibility(View.GONE);
+                        } else {
+                            playerTypeImage.setVisibility(View.VISIBLE);
+                            playerTypeImage.setImageBitmap(Bitmap.createScaledBitmap(BITMAP, bitmapSize, bitmapSize, false));
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
 
-        int bitmapSize = ChooseActivity.playerTypeDescription.getTop() - ChooseActivity.playerTypeGroup.getBottom();
-        Log.d("bitmapSize", "bitmapSize is " + bitmapSize);
-        if(bitmapSize <= 0){
-            ChooseActivity.playerTypeImage.setVisibility(View.GONE);
-        } else {
-            ChooseActivity.playerTypeImage.setVisibility(View.VISIBLE);
-            ChooseActivity.playerTypeImage.setImageBitmap(Bitmap.createScaledBitmap(BITMAP, bitmapSize, bitmapSize, false));
-        }
-
+    private void setBitmapSize(int size){
+        bitmapSize = size;
     }
 
     public String getName(){

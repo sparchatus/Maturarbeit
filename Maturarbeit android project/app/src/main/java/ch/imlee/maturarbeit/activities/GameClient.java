@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
+import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.views.GameSurface;
 

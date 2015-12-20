@@ -24,6 +24,7 @@ public class EndGameScreen {
     public void endGameLoop(SurfaceHolder surfaceHolder){
         holder = surfaceHolder;
         isHost = StartActivity.deviceType == DeviceType.HOST;
+        isRestart = isExit = false;
         while(GameThread.getEndGameActive()){
             update();
             render();

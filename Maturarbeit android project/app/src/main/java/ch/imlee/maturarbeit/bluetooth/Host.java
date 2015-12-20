@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -36,14 +37,15 @@ public class Host extends StartActivity {
             while (i < 7) {
                 // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
                 serverSocket = null;
-                while (serverSocket == null) {
+                do {
                     try {
                         // the serverSocket is used to listen for incoming connections
                         serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
+                        Log.i("acceptThread", "ServerSocket created: " + serverSocket.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+                } while (serverSocket == null);
 
                 try {
                     // this method blocks until the Thread gets interrupted or a client connects
@@ -61,6 +63,7 @@ public class Host extends StartActivity {
             }
         }
     };
+
     Thread acceptThread;
 
     public Host(Context context) {
@@ -146,6 +149,12 @@ public class Host extends StartActivity {
 
     private static void removeDevice(int i){
         // this method removes a specific client
+        try {
+            sockets.get(i).close();
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         sockets.remove(i);
         outputStreams.remove(i);
         inputStreams.remove(i);

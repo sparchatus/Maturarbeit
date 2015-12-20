@@ -132,8 +132,12 @@ public class Player extends Entity implements Tick {
                 }
                 namePaint.setTextSize(this.getPlayerRadius() * Map.TILE_SIDE);
                 // don't draw the name for your own Player
-                if (this.getID() != user.getID())
+                if (this.getID() != user.getID()) {
+                    Paint blackPaint = new Paint(namePaint);
+                    blackPaint.setColor(Color.BLACK);
+                    canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - 1, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2 - 1, blackPaint);
                     canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2, namePaint);
+                }
                 // if the Player is in possession of a LightBulb, he renders his strength bar below himself
                 if (lightBulb != null) {
                     rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;

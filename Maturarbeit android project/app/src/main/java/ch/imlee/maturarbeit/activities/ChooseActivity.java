@@ -69,12 +69,10 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
     public void onStart(){
         super.onStart();
 
-        int screenWidth = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
-
         PlayerTypeInfo[] temp = {
-                new PlayerTypeInfo("Ghost", "The Ghost can become invisible for a while", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ghost), screenWidth/4, screenWidth/4, false)),
-                new PlayerTypeInfo("Slime", "The Slime can leave a slime trail behind which makes himself faster, but the others slower", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime), screenWidth/4, screenWidth/4, false)),
-                new PlayerTypeInfo("Fluffy", "The Fluffy charges itself electrostatically by rolling around, allowing it to stun its opponents", Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fluffy), screenWidth/4, screenWidth/4, false))
+                new PlayerTypeInfo("Ghost", "The Ghost can become invisible for a while", Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ghost))),
+                new PlayerTypeInfo("Slime", "The Slime can leave a slime trail behind which makes himself faster, but the others slower", Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime))),
+                new PlayerTypeInfo("Fluffy", "The Fluffy charges itself electrostatically by rolling around, allowing it to stun its opponents", Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fluffy)))
         };
         playerTypeInfos = temp.clone();
         createPlayerTypeRadioButtons();
@@ -116,17 +114,8 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
             // display the image only if there is enough space on the screen
             // the space for the image is calculated by subtracting the bottom of the lowest playerTypeRadioButton by the top of the startButton
 
-            playerTypeImage.setVisibility(View.VISIBLE);
             playerTypeInfos[v.getId()].setActive();
 
-            int bitmapSize = playerTypeDescription.getTop() - findViewById(playerTypeInfos.length-1).getBottom();
-
-            if(bitmapSize > 0) {
-                playerTypeImage.setMaxWidth(bitmapSize);
-                playerTypeInfos[v.getId()].setActive();
-            } else{
-                playerTypeImage.setVisibility(View.GONE);
-            }
 
 
         }
@@ -143,7 +132,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
                 new WaitUntilLoadedThread().start();
             } else{
                 new PlayerStatsSelectedEvent(PlayerType.values()[selectedPlayerType], selectedTeam).send();
-                startGameButton.setVisibility(View.GONE);
+                startGameButton.setVisibility(View.INVISIBLE);
             }
         }
     }

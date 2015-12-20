@@ -64,7 +64,7 @@ public class Event {
         } else{
             this.sendAsClient();
         }
-        String logText = "Event sent: " + this.toString();
+        String logText = "Event sent: " + this;
         LogView.addLog(logText);
         Log.v("event", logText);
     }

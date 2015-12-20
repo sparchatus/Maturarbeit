@@ -4,9 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.views.GameSurface;
 
 public class ServerEndGameScreen extends EndGameScreen {
 
@@ -38,7 +38,7 @@ public class ServerEndGameScreen extends EndGameScreen {
             new Thread(){
                 @Override
                 public void run() {
-                    GameSurface.restart();
+                    GameClient.restart();
                 }
             }.start();
         }

@@ -6,29 +6,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
-import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.ControllerState;
 import ch.imlee.maturarbeit.activities.GameClient;
-import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.activities.DeviceType;
-import ch.imlee.maturarbeit.activities.StartActivity;
-import ch.imlee.maturarbeit.game.StartDataInitializer;
-import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
-import ch.imlee.maturarbeit.game.special_screens.LoadingScreen;
-import ch.imlee.maturarbeit.utils.LogView;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
@@ -36,7 +25,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     private static SurfaceHolder holder;
     // the surface controls the lifecycle of the main thread
-    private static GameThread gameThread;
     private static GameSurfaceController gameSurfaceController;
     private static Resources rec;
 
@@ -54,38 +42,18 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         width = getWidth();
         height = getHeight();
         rec = getResources();
+        GameClient.gameSurfaceLoaded();
     }
 
     // the surface does not change in size during the game
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        setupThread();
-        gameThread.start();
-        GameClient.gameSurfaceLoaded();
+
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // ends the main game thread
-        destroy();
-    }
 
-    @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if(visibility==View.VISIBLE&&changedView == this&&gameThread==null){
-            setupThread();
-            gameThread.start();
-        }
-    }
-
-    private static void setupThread(){
-        GameThread.setRunning(true);
-        if (StartActivity.deviceType == DeviceType.HOST){
-            gameThread = new GameServerThread(holder);
-        }else{
-            gameThread = new GameThread(holder);
-        }
     }
 
     @Override
@@ -116,48 +84,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
-    public static void restart(){
-        Log.e("GameSurface", "restart soon");
-        gameThread.stopEndGame();
-        LoadingScreen.setRestart();
-        setupThread();
-        GameThread.reset();
-        gameThread.start();
-        if(StartActivity.deviceType == DeviceType.HOST) {
-            WaitUntilLoadedThread.reset();
-            new WaitUntilLoadedThread().start();
-            new RestartGameEvent().send();
-        }
-        GameClient.initializeStartData();
-    }
-
-    public static void destroy(){
-        if(gameThread == null){
-            return;
-        }
-        GameThread.setRunning(false);
-        GameThread.stopEndGame();
-        while(true){
-            try {
-                gameThread.join();
-                break;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static void nullFocusedPlayer(){
         gameSurfaceController.nullFocusedPlayer();
     }
 
     public static Player getFocusedPlayer(){
         return gameSurfaceController.getFocusedPlayer();
-    }
-
-    public GameThread getGameThread(){
-        if(gameThread ==  null) setupThread();
-        return gameThread;
     }
 
     public static Resources getRec(){

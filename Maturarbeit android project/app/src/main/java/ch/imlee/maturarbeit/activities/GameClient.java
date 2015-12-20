@@ -5,11 +5,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
+import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.game.StartDataInitializer;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
+import ch.imlee.maturarbeit.game.special_screens.LoadingScreen;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 public class GameClient extends Activity {
@@ -28,6 +33,14 @@ public class GameClient extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        while(!gameSurfaceLoaded){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
@@ -43,12 +56,6 @@ public class GameClient extends Activity {
     }
 
     @Override
-    protected void onPause(){
-        super.onPause();
-        onStop();
-    }
-
-    @Override
     protected void onStop(){
         super.onStop();
         activityLoaded = false;
@@ -56,10 +63,18 @@ public class GameClient extends Activity {
         joystickSurfaceLoaded = false;
         miniMapSurfaceLoaded = false;
         ChooseActivity.eventReceiver.setRunning(false);
-        if(gameSurfaceLoaded){
-            GameSurface.destroy();
+        if(gameThread != null){
+            gameThread.setRunning(false);
+            gameThread.stopEndGame();
+            while(true) {
+                try {
+                    gameThread.join();
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        gameSurface = null;
         NavUtils.navigateUpFromSameTask(this);
         //todo maybe remove
         finish();
@@ -70,20 +85,38 @@ public class GameClient extends Activity {
         onStop();
     }
 
+    private static void setupThread(){
+        GameThread.setRunning(true);
+        if (StartActivity.deviceType == DeviceType.HOST){
+            gameThread = new GameServerThread(gameSurface.getHolder());
+        }else{
+            gameThread = new GameThread(gameSurface.getHolder());
+        }
+    }
+
+    public static void restart(){
+        Log.e("GameSurface", "restart soon");
+        gameThread.stopEndGame();
+        LoadingScreen.setRestart();
+        setupThread();
+        GameThread.reset();
+        gameThread.start();
+        if(StartActivity.deviceType == DeviceType.HOST) {
+            WaitUntilLoadedThread.reset();
+            new WaitUntilLoadedThread().start();
+            new RestartGameEvent().send();
+        }
+        GameClient.initializeStartData();
+    }
+
     // this method is for the restart
     public static void initializeStartData(){
-        while(!gameSurfaceLoaded){
-            try {
-                Thread.sleep(10);
-            } catch (Exception e){}
-        }
         initializeStartData(gameStartEventSave);
     }
 
     // The gameThread object gets initialized and the start data is set.
     public static void initializeStartData(GameStartEvent gameStartEvent) {
         gameStartEventSave = gameStartEvent;
-        gameThread = gameSurface.getGameThread();
         StartDataInitializer.setStartData(gameStartEvent, gameThread);
     }
 

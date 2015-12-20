@@ -51,6 +51,7 @@ public class GameThread extends Thread implements Tick{
     private static SurfaceHolder holder;
     protected static Map map;
     protected static User user;
+    private static GameThread gameThread;
     protected static Player[] playerArray;
     protected static ArrayList<SlimeTrail> slimeTrailList;
     protected static ArrayList<Particle>[] particleListArray;

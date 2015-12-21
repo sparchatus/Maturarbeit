@@ -6,18 +6,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.StartActivity;
+import ch.imlee.maturarbeit.events.gameStateEvents.RestartGameEvent;
 import ch.imlee.maturarbeit.game.ControllerState;
 import ch.imlee.maturarbeit.activities.GameClient;
+import ch.imlee.maturarbeit.game.GameServerThread;
 import ch.imlee.maturarbeit.game.GameThread;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
 import ch.imlee.maturarbeit.game.entity.Player;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
+import ch.imlee.maturarbeit.game.special_screens.LoadingScreen;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
@@ -25,6 +32,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     private static SurfaceHolder holder;
     // the surface controls the lifecycle of the main thread
+    private static GameThread gameThread;
     private static GameSurfaceController gameSurfaceController;
     private static Resources rec;
 
@@ -42,6 +50,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         width = getWidth();
         height = getHeight();
         rec = getResources();
+        setupThread();
+        gameThread.start();
         GameClient.gameSurfaceLoaded();
     }
 
@@ -66,6 +76,30 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             return false;
         }
         return gameSurfaceController.onTouch(event);
+    }
+
+    private static void setupThread(){
+        GameThread.setRunning(true);
+        if (StartActivity.deviceType == DeviceType.HOST){
+            gameThread = new GameServerThread(holder);
+        }else{
+            gameThread = new GameThread(holder);
+        }
+    }
+
+    public static void restart(){
+        Log.e("GameSurface", "restart soon");
+        gameThread.stopEndGame();
+        LoadingScreen.setRestart();
+        setupThread();
+        GameThread.reset();
+        gameThread.start();
+        if(StartActivity.deviceType == DeviceType.HOST) {
+            WaitUntilLoadedThread.reset();
+            new WaitUntilLoadedThread().start();
+            new RestartGameEvent().send();
+        }
+        GameClient.initializeStartData();
     }
 
     public static void update(){
@@ -101,6 +135,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
     public static int getSurfaceHeight(){
         return height;
+    }
+    public static GameThread getGameThread(){
+        return gameThread;
     }
 
     private static class GameSurfaceController {

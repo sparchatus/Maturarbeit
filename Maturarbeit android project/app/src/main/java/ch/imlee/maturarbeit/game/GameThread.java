@@ -67,6 +67,7 @@ public class GameThread extends Thread implements Tick{
     @Override
     public void run() {
         loading = true;
+        running = true;
         LoadingScreen.loadingLoop(holder);
         LogView.addLog("main loop starting");
         while (running) {

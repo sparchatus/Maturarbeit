@@ -13,7 +13,7 @@ public class RestartGameEvent extends GameStateEvent {
 
     @Override
     public boolean handle(byte i){
-        GameClient.restart();
+        GameSurface.restart();
         return true;
     }
 }

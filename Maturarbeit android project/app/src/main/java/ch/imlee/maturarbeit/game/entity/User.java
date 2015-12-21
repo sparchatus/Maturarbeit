@@ -242,20 +242,13 @@ public class User extends Player {
             repelVec.addY(l);
             top = true;
         }
-
-        double hx, hy, lx, ly;
-        hx=hy=lx=ly=0;
-        newPosition.add(repelVec);
-
         // checks the wall to the right bottom of the User
         if (!right && !bottom && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
-                lx = tempVec.x;
-                ly = tempVec.y;
+                repelVec.add(tempVec);
             }
         }
         // checks the wall to the right top of the User
@@ -263,12 +256,8 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
-                if(lx > tempVec.x){
-                    lx = tempVec.x;
-                }
-                hy = tempVec.y;
+                repelVec.add(tempVec);
             }
         }
         // checks the wall to the left top of the User
@@ -276,12 +265,8 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
-                hx = tempVec.x;
-                if(hy < tempVec.y){
-                    hy = tempVec.y;
-                }
+                repelVec.add(tempVec);
             }
         }
         // checks the wall to the left bottom of the User
@@ -289,19 +274,12 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
-                if(hx > tempVec.x){
-                    hx = tempVec.x;
-                }
-                if(ly > tempVec.y){
-                    ly = tempVec.y;
-                }
+                repelVec.add(tempVec);
             }
         }
         // resolving the repel
-        newPosition.add(hx, hy);
-        newPosition.add(lx, ly);
+        newPosition.add(repelVec);
     }
 
     private void forceDetection(){
@@ -331,7 +309,6 @@ public class User extends Player {
             l = -position.yMod1() + playerRadius;
             s += Math.abs(l);
         }
-
         // checks the wall to the right bottom of the User
         if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() + 1)) {
             tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos() + 1, position.x, position.y);

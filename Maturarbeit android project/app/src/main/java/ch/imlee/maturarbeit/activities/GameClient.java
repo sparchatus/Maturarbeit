@@ -51,13 +51,18 @@ public class GameClient extends Activity {
         miniMapSurfaceLoaded = false;
         GameSurface.destroy();
         ChooseActivity.eventReceiver.setRunning(false);
-        NavUtils.navigateUpFromSameTask(this);
     }
 
     @Override
     public void onBackPressed(){
         new GameCancelledEvent().send();
-        finish();
+        activityLoaded = false;
+        gameSurfaceLoaded = false;
+        joystickSurfaceLoaded = false;
+        miniMapSurfaceLoaded = false;
+        GameSurface.destroy();
+        ChooseActivity.eventReceiver.setRunning(false);
+        NavUtils.navigateUpFromSameTask(this);
     }
 
     // this method is for the restart

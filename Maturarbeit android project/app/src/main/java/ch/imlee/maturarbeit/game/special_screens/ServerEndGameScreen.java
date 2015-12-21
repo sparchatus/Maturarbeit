@@ -33,8 +33,9 @@ public class ServerEndGameScreen extends EndGameScreen {
     protected void update() {
         super.update();
         if(isExit){
-            new GameCancelledEvent().send();
-            System.exit(0);
+            GameCancelledEvent gameCancelledEvent = new GameCancelledEvent();
+            gameCancelledEvent.send();
+            gameCancelledEvent.handle((byte)0);
         }else if(isRestart){
             GameThread.stopEndGame();
             new Thread(){

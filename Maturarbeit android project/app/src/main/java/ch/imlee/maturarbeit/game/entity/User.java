@@ -115,14 +115,13 @@ public class User extends Player {
             // if the User is on a sweet he eats it
             for (Sweet sweet : GameThread.sweets) {
                 if (Math.sqrt(Math.pow((double) (sweet.getXCoordinate() - this.getXCoordinate()), 2) + Math.pow((double) (sweet.getYCoordinate() - this.getYCoordinate()), 2)) < getPlayerRadius()) {
-                    checkForces = true;
                     eatSweet(sweet);
                     lastWeightLoss = GameThread.getSynchronizedTick();
                 }
             }
             // this includes: moving and resolving collisions with walls
             move();
-            if(checkForces = true){
+            if(checkForces == true){
                 forceDetection();
                 checkForces = false;
             }
@@ -195,7 +194,7 @@ public class User extends Player {
     // if the User is standing on a SlimeTrail, he gets slowed
     protected float processedVelocity(){
         for (SlimeTrail slimeTrail:GameThread.getSlimeTrailList()){
-            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius + slimeTrail.TRAIL_RADIUS, 2)){
+            if (Math.pow(xCoordinate - slimeTrail.getXCoordinate(), 2) + Math.pow(yCoordinate - slimeTrail.getYCoordinate(), 2) <= Math.pow(playerRadius - slimeTrail.TRAIL_RADIUS / Map.TILE_SIDE, 2)){
                 if (TYPE==PlayerType.SLIME) {
                     return velocity / SLOW_AMOUNT;
                 }else{
@@ -245,13 +244,14 @@ public class User extends Player {
         }
         double hx, hy, lx, ly;
         hx=hy=lx=ly=0;
+        newPosition.add(repelVec);
 
         // checks the wall to the right bottom of the User
         if (!right && !bottom && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -playerRadius, -playerRadius);
+                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 lx = tempVec.x;
                 ly = tempVec.y;
@@ -262,7 +262,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, -playerRadius, playerRadius);
+                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(lx > tempVec.x){
                     lx = tempVec.x;
@@ -288,7 +288,7 @@ public class User extends Player {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
-                tempVec = new Vector2D(tempVec, playerRadius, -playerRadius);
+                tempVec = new Vector2D(tempVec, playerRadius, playerRadius);
                 tempVec.scaleTo(playerRadius - l);
                 if(hx > tempVec.x){
                     hx = tempVec.x;
@@ -298,11 +298,9 @@ public class User extends Player {
                 }
             }
         }
-
-        repelVec.add(hx,hy);
-        repelVec.add(lx,ly);
         // resolving the repel
-        newPosition.add(repelVec);
+        newPosition.add(hx, hy);
+        newPosition.add(-lx, -ly);
     }
 
     private void forceDetection(){
@@ -515,9 +513,11 @@ public class User extends Player {
 
     // the User's radius increases after eating a sweet
     public void eatSweet(Sweet sweet){
+        checkForces = true;
         setPlayerRadius(getPlayerRadius() + RADIUS_CHANGE);
         if(getPlayerRadius() > MAX_RADIUS){
             setPlayerRadius(MAX_RADIUS);
+            exploding();
         }
         // handle collisions
         RadiusChangedEvent radiusChangedEvent = new RadiusChangedEvent(getPlayerRadius());

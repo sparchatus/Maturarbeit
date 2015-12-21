@@ -3,6 +3,7 @@ package ch.imlee.maturarbeit.game.special_screens;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -19,12 +20,14 @@ public class EndGameScreen {
     protected static final int restartButtonCoords[] = {GameSurface.getSurfaceWidth() / 2, 0, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight()};
 
     private static SurfaceHolder holder;
-    protected static boolean isHost, isExit, isRestart;
+    protected static boolean isExit, isRestart;
+    private static long startTime;
+    private static int waitTime = 2000;
 
     public void endGameLoop(SurfaceHolder surfaceHolder){
         holder = surfaceHolder;
-        isHost = StartActivity.deviceType == DeviceType.HOST;
         isRestart = isExit = false;
+        startTime = System.currentTimeMillis();
         while(GameThread.getEndGameActive()){
             update();
             render();
@@ -47,7 +50,6 @@ public class EndGameScreen {
                     LogView.render(c);
                 }
             }
-            // todo:remove in end product
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);
@@ -77,14 +79,14 @@ public class EndGameScreen {
     }
 
     public static boolean onTouch(MotionEvent event){
-        if(!isHost || isExit || isRestart){
+        if(isExit || isRestart || startTime - System.currentTimeMillis() >= waitTime){
             return false;
-        }else{
-            if(event.getX() < exitButtonCoords[3]){
-                isExit = true;
-            }else {
-                isRestart = true;
-            }
+        }else if(event.getX() < exitButtonCoords[3]){
+            isExit = true;
+            Log.e("Endgame", "exit");
+        }else {
+            isRestart = true;
+            Log.e("Endgame", "restart");
         }
         return false;
     }

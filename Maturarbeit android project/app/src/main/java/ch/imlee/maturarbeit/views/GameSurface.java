@@ -63,7 +63,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        destroy();
     }
 
     @Override
@@ -115,6 +115,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             gameSurfaceController = new FluffyGameSurfaceController();
         }else{
             gameSurfaceController = new GameSurfaceController();
+        }
+    }
+
+    public static void destroy(){
+        gameThread.setRunning(false);
+        gameThread.stopEndGame();
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

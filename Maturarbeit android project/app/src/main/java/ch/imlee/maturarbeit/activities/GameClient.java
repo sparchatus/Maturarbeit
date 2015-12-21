@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 
 import ch.imlee.maturarbeit.R;
+import ch.imlee.maturarbeit.events.gameStateEvents.GameCancelledEvent;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
-import ch.imlee.maturarbeit.game.Sound.Sound;
 import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.views.GameSurface;
 
@@ -38,6 +38,7 @@ public class GameClient extends Activity {
         joystickSurfaceLoaded = false;
         miniMapSurfaceLoaded = false;
         context = getApplicationContext();
+        GameCancelledEvent.giveActivity(this);
         activityLoaded = true;
     }
 
@@ -48,13 +49,15 @@ public class GameClient extends Activity {
         gameSurfaceLoaded = false;
         joystickSurfaceLoaded = false;
         miniMapSurfaceLoaded = false;
+        GameSurface.destroy();
         ChooseActivity.eventReceiver.setRunning(false);
         NavUtils.navigateUpFromSameTask(this);
     }
 
     @Override
     public void onBackPressed(){
-        onStop();
+        new GameCancelledEvent().send();
+        finish();
     }
 
     // this method is for the restart

@@ -113,6 +113,11 @@ public class Host extends StartActivity {
         while(!sockets.isEmpty()){
             removeDevice(0);
         }
+        try {
+            serverSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void refreshConnectedDevices(){
@@ -129,7 +134,7 @@ public class Host extends StartActivity {
             // check if the same mac address is there multiple times, if so, remove the duplicates
             String address = sockets.get(i).getRemoteDevice().getAddress();
             for(int j = i+1; j < sockets.size(); ++j){
-                if(sockets.get(j).getRemoteDevice().getAddress().equals(address)){
+                if(sockets.get(j).getRemoteDevice().getAddress().equals(address)) {
                     removeDevice(j);
                     --j;
                 }
@@ -151,7 +156,6 @@ public class Host extends StartActivity {
         // this method removes a specific client
         try {
             sockets.get(i).close();
-            serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

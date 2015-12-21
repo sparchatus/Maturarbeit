@@ -247,6 +247,8 @@ public class Client extends StartActivity {
 
             socket.close();
             socket = null;
+
+            device = null;
         } catch(Exception e){
             e.printStackTrace();
             //probably not yet connected

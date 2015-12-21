@@ -1,2 +1,1 @@
-- when game is finished, you should be able to restart or end
 - parent of gameClient activity should be StartActivity

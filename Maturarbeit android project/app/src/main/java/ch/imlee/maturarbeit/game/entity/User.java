@@ -42,7 +42,7 @@ public class User extends Player {
     // the range in which the LightBulb can be picked up
     protected final float PICK_UP_RANGE = 1.5f;
     // the time it takes to pick up the LightBulb
-    protected final int PICK_UP_TICKS = 2 * Tick.TICK;
+    protected final int PICK_UP_TICKS = 3 * Tick.TICK;
     private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
     // the time already passed since starting to pick up the LightBulb
     private final int weightLossCoolDown = Tick.TICK * 3;
@@ -57,10 +57,10 @@ public class User extends Player {
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
     private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
-    private final float RADIUS_CHANGE = 0.2f;
+    private final float RADIUS_CHANGE = 0.1f;
     protected float mana;
     // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
-    protected final float MAX_SPEED = 5f / Tick.TICK;
+    protected final float MAX_SPEED = 4.5f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
 
@@ -225,7 +225,7 @@ public class User extends Player {
             right = true;
         }
         // checks the wall to the left of the User
-        if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
+        else if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
             l = -newPosition.xMod1() + playerRadius;
             repelVec.addX(l);
             left = true;
@@ -237,11 +237,12 @@ public class User extends Player {
             bottom = true;
         }
         // checks the wall at the top of the User
-        if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
+        else if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
             l = -newPosition.yMod1() + playerRadius;
             repelVec.addY(l);
             top = true;
         }
+
         double hx, hy, lx, ly;
         hx=hy=lx=ly=0;
         newPosition.add(repelVec);
@@ -300,7 +301,7 @@ public class User extends Player {
         }
         // resolving the repel
         newPosition.add(hx, hy);
-        newPosition.add(-lx, -ly);
+        newPosition.add(lx, ly);
     }
 
     private void forceDetection(){

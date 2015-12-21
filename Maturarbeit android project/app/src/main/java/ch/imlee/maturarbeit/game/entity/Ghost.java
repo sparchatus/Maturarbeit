@@ -12,7 +12,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class Ghost extends User {
 
-    private final int MANA_CONSUMPTION = MAX_MANA / 100;
+    private final int MANA_CONSUMPTION = MAX_MANA / 70;
 
     private final Bitmap INVISIBLE_GHOST;
     private Bitmap scaledInvisibleGhostBmp;

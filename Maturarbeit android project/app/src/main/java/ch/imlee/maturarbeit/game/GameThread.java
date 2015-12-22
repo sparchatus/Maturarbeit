@@ -209,6 +209,8 @@ public class GameThread extends Thread implements Tick{
     }
 
     public static void removeParticle(ParticleHitEvent pHE){
+        // this can throw an IndexOutOfBoundException if the Events get applied in the wrong order
+        if(pHE.PARTICLE_ID < particleListArray[pHE.PLAYER_SOURCE_ID].size())
         particleListArray[pHE.PLAYER_SOURCE_ID].set(pHE.PARTICLE_ID, null);
     }
 

@@ -71,6 +71,7 @@ public class User extends Player {
     protected final Paint SKILL_BAR_COLOR;
     protected final Paint PICK_UP_BAR_COLOR;
     protected LightBulb pickUpBulb = null;
+    protected double minLightBulbPickupTick = 0;
     // for the resolution of the Hit box when moving
     protected Vector2D newPosition;
 
@@ -427,7 +428,7 @@ public class User extends Player {
                 if (StartActivity.deviceType == DeviceType.CLIENT) {
                     new LightBulbServerEvent(pickUpBulb.ID).send();
                 }
-                // if the User is the Server himself he does not have to ask for perission to take the LightBulb
+                // if the User is the Server himself he does not have to ask for permission to take the LightBulb
                 else {
                     new LightBulbEvent(pickUpBulb.ID).send();
                     bulbReceived(pickUpBulb.ID);
@@ -439,7 +440,7 @@ public class User extends Player {
         // then he is allowed to start picking up one in range as long as it isn't possessed by an enemy or an allied LightBulbStand
         else if (lightBulb == null) {
             for (LightBulb lightBulb : GameThread.getLightBulbArray()) {
-                if (lightBulb.getLightBulbStandTeam() == TEAM || !lightBulb.isPickable()) {
+                if (lightBulb.getLightBulbStandTeam() == TEAM || !lightBulb.isPickable() || GameThread.getSynchronizedTick() < minLightBulbPickupTick) {
                     continue;
                 }
                 if (Math.pow(xCoordinate - lightBulb.getXCoordinate(), 2) + Math.pow(yCoordinate - lightBulb.getYCoordinate(), 2) <= PICK_UP_RANGE * PICK_UP_RANGE) {
@@ -531,6 +532,7 @@ public class User extends Player {
     public void bulbLost() {
         if (lightBulb != null) {
             new LightBulbEvent(lightBulb.ID, ID).send();
+            minLightBulbPickupTick = GameThread.getSynchronizedTick() + Tick.TICK * 3;
             super.bulbLost();
         }
     }

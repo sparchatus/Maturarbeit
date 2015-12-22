@@ -35,3 +35,7 @@
         android:layout_gravity="right|top"
         android:id="@+id/mini_map_surface"/>
 </FrameLayout>
+
+
+
+

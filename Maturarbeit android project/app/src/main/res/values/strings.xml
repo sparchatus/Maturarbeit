@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">Maturarbeit</string>
 
-    <string name="title_activity_test">TestActivity</string>
-
     <string name="title_activity_game">GameClient</string>
     <string name="button_particle">Particle</string>
     <string name="button_skill">Skill</string>
 
-    <string name="title_activity_choose">chooseActivity</string>
+    <string name="title_activity_choose">ChooseActivity</string>
 </resources>

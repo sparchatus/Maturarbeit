@@ -35,12 +35,14 @@ public class Host extends StartActivity {
         public void run() {
             int i = 0;
             while (i < 7) {
-                // workaround for random Exceptions: repeat until tempServerSocket is not null anymore, normally this should only do one loop
+                // workaround for random Exceptions: repeat until tempServerSocket is not null anymore,
+                // normally this should only do one loop
                 serverSocket = null;
                 do {
                     try {
                         // the serverSocket is used to listen for incoming connections
-                        serverSocket = Util.ba.listenUsingRfcommWithServiceRecord(StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
+                        serverSocket = Util.ba.listenUsingRfcommWithServiceRecord
+                                (StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
                         Log.i("acceptThread", "ServerSocket created: " + serverSocket.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -54,7 +56,8 @@ public class Host extends StartActivity {
                     ++i;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button and the acceptThread gets interrupted
+                    // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button
+                    // and the acceptThread gets interrupted
                     if (e.getMessage().equals("Operation Canceled")) {
                         Log.i("acceptThread", "acceptThread canceled");
                         break;
@@ -70,7 +73,7 @@ public class Host extends StartActivity {
         c = context;
         Util.ba.setName(StartActivity.usernameEditText.getText().toString());
 
-        // this is the Intent used to start the ChooseActivity once the startButton is pressed
+        // this is the Intent used to make the device discoverable for the Clients
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);

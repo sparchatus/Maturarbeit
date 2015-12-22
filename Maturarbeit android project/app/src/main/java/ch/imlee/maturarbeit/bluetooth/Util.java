@@ -86,18 +86,19 @@ public class Util{
     }
 
     public static UUID[] generateUUIDs(){
-        // these UUIDs are generated in a way which makes them unique to their version code, which only allows players with the same app version to play together
+        // these UUIDs are generated in a way which makes them unique to their version code,
+        // which only allows players with the same app version to play together
         UUID[] temp = new UUID[7];
         String standardUUID = "2053c9be-5702-11e5-885d-feff819cdc9f";
         for(int i = 0; i < 7; ++i){
-            // the UUID formed contains the version number at the beginning, then a number from 0-6 for all the possible connections because bluetooth
+            // the UUID formed contains the version number at the beginning,
+            // then a number from 0-6 for all the possible connections because bluetooth
             // supports a maximum of 7 connections and then it fills the String up with the standard UUID
             // the log10 casted to int stands for the number of characters taken up by the version code -1
             temp[i] = UUID.fromString(version + (i + standardUUID.substring((int)Math.log10(version)+2)));
             Log.i("UUID", "UUID created: " + temp[i]);
         }
         return temp;
-        //return UUID.fromString("2053c9be-5702-11e5-885d-feff819cdc9a");
     }
 
     public static synchronized void sendString(OutputStream outputStream, String text){

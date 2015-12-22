@@ -81,13 +81,6 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         eventReceiver.start();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_choose, menu);
-        return true;
-    }
-
     private void createPlayerTypeRadioButtons(){
         playerTypeGroup = (RadioGroup) findViewById(R.id.playerTypeGroup);
         RadioButton playerTypeRadioButton;

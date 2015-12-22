@@ -69,10 +69,7 @@ public class GameStartEvent extends GameStateEvent {
     public boolean handle(byte i){
         // start the game (finally)
         LogView.addLog("handling start");
-        Log.e("GameStartEvent", "handling ");
-        Log.e("GameStartEvent", "handling ");
-        Log.e("GameStartEvent", "handling ");
-        Log.e("GameStartEvent", "handling ");
+        Log.i("GameStartEvent", "handling ");
         Util.c.startActivity(new Intent(Util.c, GameClient.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
         //GameClient.initializeStartData(this);

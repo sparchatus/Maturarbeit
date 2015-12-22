@@ -8,8 +8,8 @@ android {
         applicationId "ch.imlee.maturarbeit"
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 2
-        versionName "a2"
+        versionCode 3
+        versionName "a3"
     }
     buildTypes {
         release {

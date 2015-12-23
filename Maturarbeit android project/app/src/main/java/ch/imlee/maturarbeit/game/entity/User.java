@@ -57,6 +57,7 @@ public class User extends Player {
     private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
     private final float RADIUS_CHANGE = 0.1f;
+    private final float FALL_DETECTION_TOLERANCE = 0.99f;
     protected float mana;
     // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
     protected final float MAX_SPEED = 4.5f / Tick.TICK;
@@ -286,35 +287,35 @@ public class User extends Player {
             return;
         }
         // checks the floor to the right of the User
-        if (!Map.getFallThrough((int) (xCoordinate + playerRadius), (int) yCoordinate)) {
+        if (!Map.getFallThrough((int) (xCoordinate + playerRadius*FALL_DETECTION_TOLERANCE), (int) yCoordinate)) {
             return;
         }
         // checks the floor to the left of the User
-        if (!Map.getFallThrough((int) (xCoordinate - playerRadius), (int) yCoordinate)) {
+        if (!Map.getFallThrough((int) (xCoordinate - playerRadius*FALL_DETECTION_TOLERANCE), (int) yCoordinate)) {
             return;
         }
         // checks the floor at the bottom of the User
-        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate + playerRadius))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate + playerRadius*FALL_DETECTION_TOLERANCE))) {
             return;
         }
         // checks the floor at the top of the User
-        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate - playerRadius))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate - playerRadius*FALL_DETECTION_TOLERANCE))) {
             return;
         }
         // checks the wall to the right bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*playerRadius) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
             return;
         }
         // checks the wall to the right top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*playerRadius) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
             return;
         }
         // checks the wall to the left top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*playerRadius) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
             return;
         }
         // checks the wall to the left bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*playerRadius) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
             return;
         }
         falling = true;
@@ -329,7 +330,7 @@ public class User extends Player {
     }
 
     private void shootRandom(){
-        int y = (int)(10 * playerRadius);
+        int y = 10;
         for(int i = 0; i < y; ++i) {
             shoot(- Math.PI + 2 * Math.PI * i / y);
         }

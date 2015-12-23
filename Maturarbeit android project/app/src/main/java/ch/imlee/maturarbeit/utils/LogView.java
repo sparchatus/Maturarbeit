@@ -29,17 +29,19 @@ public class LogView {
     }
 
     public static void update(){
-        while (logs.size() > MAX_LOGS){
-            logs.remove(MAX_LOGS);
-            logTimes.remove(MAX_LOGS);
-        }
-        int tick = GameThread.getSynchronizedTick();
-        for(int i = logTimes.size()-1; i >= 0; --i){
-            if(tick - LOG_TIME > logTimes.get(i)){
-                logTimes.remove(i);
-                logs.remove(i);
-            } else break;
-        }
+        try {
+            while (logs.size() > MAX_LOGS) {
+                logs.remove(MAX_LOGS);
+                logTimes.remove(MAX_LOGS);
+            }
+            int tick = GameThread.getSynchronizedTick();
+            for (int i = logTimes.size() - 1; i >= 0; --i) {
+                if (tick - LOG_TIME > logTimes.get(i)) {
+                    logTimes.remove(i);
+                    logs.remove(i);
+                } else break;
+            }
+        } catch (Exception e){}
     }
 
     public static void render(Canvas c){

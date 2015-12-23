@@ -79,7 +79,7 @@ public class EndGameScreen {
     }
 
     public static boolean onTouch(MotionEvent event){
-        if(isExit || isRestart || startTime - System.currentTimeMillis() >= waitTime){
+        if(isExit || isRestart || System.currentTimeMillis() - startTime < waitTime){
             return false;
         }else if(event.getX() < exitButtonCoords[3]){
             isExit = true;

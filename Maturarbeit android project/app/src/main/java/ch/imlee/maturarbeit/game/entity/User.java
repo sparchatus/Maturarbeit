@@ -44,7 +44,7 @@ public class User extends Player {
     protected final int PICK_UP_TICKS = 3 * Tick.TICK;
     private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
     // the time already passed since starting to pick up the LightBulb
-    private final int weightLossCoolDown = Tick.TICK * 3;
+    private final int weightLossCoolDown = Tick.TICK * 5;
     private int reviveTick;
     protected int pickUpTickCount;
 
@@ -54,10 +54,9 @@ public class User extends Player {
     // the amount of slow SlimeTrails apply
     protected final float SLOW_AMOUNT = 2 / 3f;
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
-    private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
-    private final float RADIUS_CHANGE = 0.1f;
-    private final float FALL_DETECTION_TOLERANCE = 0.99f;
+    private final float RADIUS_CHANGE = 0.05f;
+    private final float FALL_DETECTION_TOLERANCE = 0.8f;
     protected float mana;
     // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
     protected final float MAX_SPEED = 4.5f / Tick.TICK;
@@ -442,8 +441,8 @@ public class User extends Player {
         reviveTick = GameThread.getSynchronizedTick() + DEATH_TIME;
         new DeathEvent(true).send();
         new DeathEvent(true).apply();
-        setPlayerRadius(START_RADIUS);
-        new RadiusChangedEvent(START_RADIUS).send();
+        setPlayerRadius(MIN_RADIUS);
+        new RadiusChangedEvent(MIN_RADIUS).send();
         bulbLost();
         mana = 0;
     }

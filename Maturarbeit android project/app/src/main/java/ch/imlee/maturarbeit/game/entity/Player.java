@@ -32,8 +32,8 @@ public class Player extends Entity implements Tick {
     protected static float halfGameSurfaceWidth, halfGameSurfaceHeight;
     protected int strength;
 
-    public static final float START_RADIUS = 0.4f;
-    protected float playerRadius = START_RADIUS;
+    protected final float MIN_RADIUS = 0.5f;
+    protected float playerRadius = MIN_RADIUS;
 
     protected double lastSlimeEjection = 0;
     protected double stunTick;

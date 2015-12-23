@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Maturarbeit</string>
+    <string name="app_name">Guardians of the Light</string>
 
     <string name="title_activity_game">GameClient</string>
     <string name="button_particle">Particle</string>

@@ -27,11 +27,10 @@ public class User extends Player {
     //is true when the particleButton is pressed
     protected boolean shooting;
     protected boolean angleChanged;
-    // is true after the LightBulbServerEvent is sent until anything changes the state/allows the player to pickup again
+    // is true after the LightBulbServerEvent is sent until he or someone else receives the requested LightBulb
     private boolean bulbRequestSent;
     // is true after the LightBulbStandServerEvent was sent until the player can try again
     private boolean standRequestSent = false;
-    private boolean checkForces = false;
 
     // used to test if the put on stand was successful
     private byte requestedStandID;
@@ -122,10 +121,6 @@ public class User extends Player {
             }
             // this includes: moving and resolving collisions with walls
             move();
-            if(checkForces == true){
-                forceDetection();
-                checkForces = false;
-            }
             // checks if all the floor Tiles below the User are FALL_TROUGH
             checkFloor();
             // every now an then the Player looses weight/gets smaller
@@ -283,71 +278,6 @@ public class User extends Player {
         newPosition.add(repelVec);
     }
 
-    private void forceDetection(){
-        // variable to determine the amount by which the User is inside a block and the complete amount of forces
-        double l, s;
-        s = 0;
-        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
-        Vector2D tempVec;
-        Vector2D position = new Vector2D(xCoordinate, yCoordinate);
-        // checks the wall to the right of the User
-        if (Map.getSolid((int) (position.x + playerRadius), position.yIntPos())) {
-            l = 1 - position.xMod1() - playerRadius;
-            s += Math.abs(l);
-        }
-        // checks the wall to the left of the User
-        if (Map.getSolid((int) (position.x - playerRadius), position.yIntPos())) {
-            l = -position.xMod1() + playerRadius;
-            s += Math.abs(l);
-        }
-        // checks the wall at the bottom of the User
-        if (Map.getSolid(position.xIntPos(), (int) (position.y + playerRadius))) {
-            l = 1 - position.yMod1() - playerRadius;
-            s += Math.abs(l);
-        }
-        // checks the wall at the top of the User
-        if (Map.getSolid(position.xIntPos(), (int) (position.y - playerRadius))) {
-            l = -position.yMod1() + playerRadius;
-            s += Math.abs(l);
-        }
-        // checks the wall to the right bottom of the User
-        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() + 1)) {
-            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos() + 1, position.x, position.y);
-            l = tempVec.getLength();
-            if (l < playerRadius) {
-                s += Math.abs(playerRadius - tempVec.getLength());
-            }
-        }
-        // checks the wall to the right top of the User
-        if (Map.getSolid(position.xIntPos() + 1, position.yIntPos() - 1)) {
-            tempVec = new Vector2D(position.xIntPos() + 1, position.yIntPos(), position.x, position.y);
-            l = tempVec.getLength();
-            if (l < playerRadius) {
-                s += Math.abs(playerRadius - tempVec.getLength());
-            }
-        }
-        // checks the wall to the left top of the User
-        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() - 1)) {
-            tempVec = new Vector2D(position.xIntPos(), position.yIntPos(), position.x, position.y);
-            l = tempVec.getLength();
-            if (l < playerRadius) {
-                s += Math.abs(playerRadius - tempVec.getLength());
-            }
-        }
-        // checks the wall to the left bottom of the User
-        if (Map.getSolid(position.xIntPos() - 1, position.yIntPos() + 1)) {
-            tempVec = new Vector2D(position.xIntPos(), position.yIntPos() + 1, position.x, position.y);
-            l =  tempVec.getLength();
-            if (l < playerRadius) {
-                s += Math.abs(playerRadius - tempVec.getLength());
-            }
-        }
-
-        if(s > 0.2f){
-            exploding();
-        }
-    }
-
     // if the User is on no more stable ground he starts to fall
     // the principle algorithm is quite the same as in the physics engine
     private void checkFloor(){
@@ -492,7 +422,6 @@ public class User extends Player {
 
     // the User's radius increases after eating a sweet
     public void eatSweet(Sweet sweet){
-        checkForces = true;
         setPlayerRadius(getPlayerRadius() + RADIUS_CHANGE);
         if(getPlayerRadius() > MAX_RADIUS){
             setPlayerRadius(MAX_RADIUS);

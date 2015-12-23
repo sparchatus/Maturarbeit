@@ -174,14 +174,12 @@ public class GameThread extends Thread implements Tick{
                     JoystickSurface.render(c);
                     GameSurface.render(c);
                     MiniMap.render(c);
-                    //todo:display pause button
                     if (user.getDead()) {
                         DeathScreen.render(c);
                     }
                 }
                 LogView.render(c);
             }
-            // todo: remove in end product
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);

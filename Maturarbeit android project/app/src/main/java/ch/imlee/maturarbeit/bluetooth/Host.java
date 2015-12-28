@@ -29,7 +29,7 @@ public class Host extends StartActivity {
     public static ArrayList<InputStream> inputStreams = new ArrayList<>();
     public static ArrayList<OutputStream> outputStreams = new ArrayList<>();
 
-    // the acceptThread accepts incoming connections as long as it's active
+    // the acceptRunnable accepts incoming connections as long as it's active
     private Runnable acceptRunnable = new Runnable() {
         @Override
         public void run() {

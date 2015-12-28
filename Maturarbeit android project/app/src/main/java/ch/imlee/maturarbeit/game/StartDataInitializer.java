@@ -5,7 +5,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.activities.DeviceType;
+import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
@@ -21,7 +23,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
 import ch.imlee.maturarbeit.views.JoystickSurface;
 import ch.imlee.maturarbeit.views.MiniMap;
 
-public class StartDataInitializer {
+public class StartDataInitializer{
 
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
         LogView.addLog("starting initialization");

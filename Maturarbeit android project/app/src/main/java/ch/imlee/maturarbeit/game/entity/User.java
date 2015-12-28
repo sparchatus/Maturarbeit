@@ -44,7 +44,7 @@ public class User extends Player {
     protected final int PICK_UP_TICKS = 3 * Tick.TICK;
     private final int DEATH_TIME = 5000 / Tick.TIME_PER_TICK;
     // the time already passed since starting to pick up the LightBulb
-    private final int weightLossCoolDown = Tick.TICK * 3;
+    private final int weightLossCoolDown = Tick.TICK * 5;
     private int reviveTick;
     protected int pickUpTickCount;
 
@@ -54,12 +54,11 @@ public class User extends Player {
     // the amount of slow SlimeTrails apply
     protected final float SLOW_AMOUNT = 2 / 3f;
     private final float FALLING_RADIUS_DECREASE = 0.5f / Tick.TICK;
-    private final float MIN_RADIUS = 0.4f;
     private final float MAX_RADIUS = 1;
-    private final float RADIUS_CHANGE = 0.1f;
-    private final float FALL_DETECTION_TOLERANCE = 0.99f;
+    private final float RADIUS_CHANGE = 0.05f;
+    private final float FALL_DETECTION_TOLERANCE = 0.7f;
     protected float mana;
-    // MAX_SPEED / SLOW_AMOUNT < 0.5f has to be fulfilled!
+    // MAX_SPEED / SLOW_AMOUNT < MIN_RADIUS has to be true!
     protected final float MAX_SPEED = 4.5f / Tick.TICK;
     //velocity determines how the far the player wants to travel in the next update and speed (only used by Fluffy) is the distance it travelled in the last update
     protected float velocity, speed;
@@ -175,7 +174,7 @@ public class User extends Player {
         // the desired position of the User
         newPosition = new Vector2D((float) (xCoordinate + Math.cos(angle) * tempVelocity * MAX_SPEED), (float) (yCoordinate + Math.sin(angle) * tempVelocity * MAX_SPEED));
         // detecting and resolving collisions with walls
-        collisionResolution();
+        hitboxResolution();
         // calculating the distance the User travelled
         speed = (float) Math.sqrt(Math.pow(xCoordinate - newPosition.x,2)+Math.pow(yCoordinate - newPosition.y,2));
 
@@ -204,79 +203,73 @@ public class User extends Player {
 
     // detecting and resolving collisions with walls
     // the different checks aren't in a for loop to make it more readable
-    private void collisionResolution(){
-        // variable to determine the amount by which the User is inside a block
-        double l;
-        //these variables tell if the first checks already had a hit in one of those directions. if so, some of the below calculations may be ignored
-        boolean right, left, bottom, top;
-        right = left = bottom = top = false;
-        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
-        // repelVec is the total amount by which the User is repelled by the walls
-        Vector2D tempVec, repelVec;
-        repelVec = new Vector2D(0,0);
+    private void hitboxResolution(){
+        //these variable tels if any of the sides was hit which would lead to the diagonal tiles to be unable to be hit
+        boolean sideHit = false;
 
         // checks the wall to the right of the User
         if (Map.getSolid((int) (newPosition.x + playerRadius), newPosition.yIntPos())) {
-            l = 1 - newPosition.xMod1() - playerRadius;
-            repelVec.addX(l);
-            right = true;
+            newPosition.addX(1 - newPosition.xMod1() - playerRadius);
+            sideHit = true;
         }
         // checks the wall to the left of the User
         else if (Map.getSolid((int) (newPosition.x - playerRadius), newPosition.yIntPos())) {
-            l = -newPosition.xMod1() + playerRadius;
-            repelVec.addX(l);
-            left = true;
+            newPosition.addX(-newPosition.xMod1() + playerRadius);
+            sideHit = true;
         }
         // checks the wall at the bottom of the User
         if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y + playerRadius))) {
-            l = 1 - newPosition.yMod1() - playerRadius;
-            repelVec.addY(l);
-            bottom = true;
+            newPosition.addY(1 - newPosition.yMod1() - playerRadius);
+            sideHit = true;
         }
         // checks the wall at the top of the User
         else if (Map.getSolid(newPosition.xIntPos(), (int) (newPosition.y - playerRadius))) {
-            l = -newPosition.yMod1() + playerRadius;
-            repelVec.addY(l);
-            top = true;
+            newPosition.addY(-newPosition.yMod1() + playerRadius);
+            sideHit = true;
         }
+        if (sideHit){
+            return;
+        }
+        // variable to determine the amount by which the User is inside a block
+        double l;
+        // temp Vec is the connection of a wall edge to the User center it gets scaled to length l
+        Vector2D tempVec;
         // checks the wall to the right bottom of the User
-        if (!right && !bottom && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
+        if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.add(tempVec);
+                newPosition.add(tempVec);
             }
         }
         // checks the wall to the right top of the User
-        if (!right && !top && Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
+        else if (Map.getSolid(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos() + 1, newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.add(tempVec);
+                newPosition.add(tempVec);
             }
         }
         // checks the wall to the left top of the User
-        if (!left && !top && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
+        else if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos(), newPosition.x, newPosition.y);
             l = tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.add(tempVec);
+                newPosition.add(tempVec);
             }
         }
         // checks the wall to the left bottom of the User
-        if (!left & !bottom && Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
+        else if (Map.getSolid(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1)) {
             tempVec = new Vector2D(newPosition.xIntPos(), newPosition.yIntPos() + 1, newPosition.x, newPosition.y);
             l =  tempVec.getLength();
             if (l < playerRadius) {
                 tempVec.scaleTo(playerRadius - l);
-                repelVec.add(tempVec);
+                newPosition.add(tempVec);
             }
         }
-        // resolving the repel
-        newPosition.add(repelVec);
     }
 
     // if the User is on no more stable ground he starts to fall
@@ -442,8 +435,8 @@ public class User extends Player {
         reviveTick = GameThread.getSynchronizedTick() + DEATH_TIME;
         new DeathEvent(true).send();
         new DeathEvent(true).apply();
-        setPlayerRadius(START_RADIUS);
-        new RadiusChangedEvent(START_RADIUS).send();
+        setPlayerRadius(MIN_RADIUS);
+        new RadiusChangedEvent(MIN_RADIUS).send();
         bulbLost();
         mana = 0;
     }

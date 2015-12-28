@@ -5,7 +5,6 @@ import ch.imlee.maturarbeit.activities.StartActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;

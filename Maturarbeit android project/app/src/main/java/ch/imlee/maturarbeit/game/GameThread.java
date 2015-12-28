@@ -177,8 +177,8 @@ public class GameThread extends Thread implements Tick{
                     if (user.getDead()) {
                         DeathScreen.render(c);
                     }
+                    LogView.render(c);
                 }
-                LogView.render(c);
             }
         } finally {
             if (c != null) {

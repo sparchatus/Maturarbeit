@@ -3,16 +3,11 @@ package ch.imlee.maturarbeit.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 
-/**
- * Created by Sandro on 08.06.2015.
- */
 public class SkillButton extends Button{
 
     public SkillButton(Context context, AttributeSet attrs) {

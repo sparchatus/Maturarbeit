@@ -14,7 +14,6 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.Player;
-import ch.imlee.maturarbeit.game.entity.User;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.special_screens.EndGameScreen;
 

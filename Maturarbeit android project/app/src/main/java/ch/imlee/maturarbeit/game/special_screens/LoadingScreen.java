@@ -92,7 +92,6 @@ public class LoadingScreen implements Tick{
                     LogView.render(c);
                 }
             }
-            // todo:remove in end product
         } finally {
             if (c != null) {
                 holder.unlockCanvasAndPost(c);

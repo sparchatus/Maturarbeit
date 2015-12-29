@@ -1,15 +1,11 @@
 package ch.imlee.maturarbeit.activities;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -17,16 +13,15 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
-import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
-import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.events.EventReceiver;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.PlayerStatsSelectedEvent;
+import ch.imlee.maturarbeit.game.WaitUntilLoadedThread;
+import ch.imlee.maturarbeit.game.entity.PlayerType;
 
 public class ChooseActivity extends Activity implements View.OnClickListener{
     public static ImageView playerTypeImage;

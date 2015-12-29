@@ -11,9 +11,6 @@ import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
 
-/**
- * Created by Lukas on 21.10.2015.
- */
 public class LogView {
     private static ArrayList<String> logs = new ArrayList<>();
     private static ArrayList<Integer> logTimes = new ArrayList<>();

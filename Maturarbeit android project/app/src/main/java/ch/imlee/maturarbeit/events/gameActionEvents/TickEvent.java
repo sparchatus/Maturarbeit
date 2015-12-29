@@ -9,7 +9,7 @@ public class TickEvent extends GameActionEvent{
 
     public TickEvent(){
         super((byte)0);
-        SYNCHRONIZED_TICK = (int) GameThread.getSynchronizedTick();
+        SYNCHRONIZED_TICK = GameThread.getSynchronizedTick();
     }
 
     public TickEvent(String eventString){

@@ -6,7 +6,6 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;

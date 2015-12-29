@@ -1,12 +1,9 @@
 package ch.imlee.maturarbeit.activities;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 
-import ch.imlee.maturarbeit.R;
-import ch.imlee.maturarbeit.bluetooth.Util;
 
 public class PlayerTypeInfo extends ChooseActivity{
     private final String NAME;

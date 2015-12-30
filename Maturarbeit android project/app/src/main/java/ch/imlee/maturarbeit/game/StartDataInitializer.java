@@ -5,9 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.activities.DeviceType;
-import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameStartEvent;
@@ -35,20 +33,22 @@ public class StartDataInitializer{
         for(int i = 0; i < gameThread.particleListArray.length; ++i){
             gameThread.particleListArray[i] = new ArrayList<>();
         }
+
+        // the User has to be the first one to be initialized
+        byte userID = startData.getUserID();
+        switch (startData.getPlayerTypes().get(userID)){
+            case FLUFFY:gameThread.user = new Fluffy(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
+                break;
+            case GHOST:gameThread.user = new Ghost(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
+                break;
+            case SLIME:gameThread.user = new Slime(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
+                break;
+            case NULL: Log.e("GameThread", "User PlayerType is NULL");
+        }
+        gameThread.playerArray[userID] = gameThread.user;
+
         for (byte i = 0; i < startData.getPlayerCount(); i++){
-            if (i == startData.getUserID()){
-                switch (startData.getPlayerTypes().get(i)){
-                    case FLUFFY:gameThread.user = new Fluffy(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case GHOST:gameThread.user = new Ghost(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case SLIME:gameThread.user = new Slime(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
-                        break;
-                    case NULL: Log.e("GameThread", "User PlayerType is NULL");
-                }
-                gameThread.playerArray[i] = gameThread.user;
-                Player.setUser(gameThread.user);
-            }else {
+            if (i != startData.getUserID()){
                 gameThread.playerArray[i] = new Player(startData.getPlayerTypes().get(i), gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
             }
         }

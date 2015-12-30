@@ -53,6 +53,7 @@ public class Player extends Entity implements Tick {
     protected final Bitmap STUN_BMP;
     protected final PlayerType TYPE;
     protected LightBulb lightBulb;
+    // the User Object is set in the constructor of the User. He is the first Player to be initialized
     protected static User user;
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
@@ -115,17 +116,21 @@ public class Player extends Entity implements Tick {
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / 2 / Math.PI * 360) - 90);
             Bitmap rotated = Bitmap.createBitmap(scaledPlayerBmp, 0, 0, scaledPlayerBmp.getWidth(), scaledPlayerBmp.getHeight(), matrix, false);
+
             // for better overview the coordinates are first calculated and then used in a later step
             rx = (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + halfGameSurfaceWidth - rotated.getWidth() / 2f;
             ry = (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + halfGameSurfaceHeight - rotated.getHeight() / 2f;
+
             //this is the actual rendering
             canvas.drawBitmap(rotated, rx, ry, null);
+
             // if the Player is stunned he gets an overlay
             if (stunned) {
                 rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
                 ry = (yCoordinate - GameThread.getUser().getYCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
                 canvas.drawBitmap(scaledStunBmp, rx, ry, null);
             }
+
             // render the name
             // team members should have a green nametag, enemies a red one
             if (this.getTeam() == user.getTeam()) {
@@ -134,6 +139,7 @@ public class Player extends Entity implements Tick {
                 namePaint.setColor(Color.RED);
             }
             namePaint.setTextSize(this.getPlayerRadius() * Map.TILE_SIDE);
+
             // don't draw the name for your own Player
             if (this.getID() != user.getID()) {
                 Paint blackPaint = new Paint(namePaint);
@@ -141,11 +147,14 @@ public class Player extends Entity implements Tick {
                 canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - 1, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2 - 1, blackPaint);
                 canvas.drawText(NAME, (xCoordinate - GameThread.getUser().getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2, (yCoordinate - GameThread.getUser().getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 + namePaint.getTextSize() / 2, namePaint);
             }
+
             // if the Player is in possession of a LightBulb, he renders his strength bar below himself
             if (lightBulb != null) {
                 rx = (xCoordinate - GameThread.getUser().getXCoordinate() - playerRadius) * Map.TILE_SIDE + halfGameSurfaceWidth;
                 ry = (yCoordinate - GameThread.getUser().getYCoordinate() + playerRadius) * Map.TILE_SIDE + halfGameSurfaceHeight;
+                // the whole bar is drawn in a transparent grey (BAR_BACKGROUND_COLOR) so one can estimate what percentage of the whole the colored bar is filling
                 canvas.drawRect(rx, ry, rx + 2 * playerRadius * Map.TILE_SIDE, ry + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
+                // the colored bar's length is depending on what fraction of the MAX_STRENGTH the strength is
                 canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
             }
         }
@@ -156,10 +165,6 @@ public class Player extends Entity implements Tick {
         Sound.play(Sound.STUN, TIME_PER_TICK * STUN_TIME);
         stunned = true;
         this.stunTick = stunTick;
-    }
-
-    public static void setUser(User user1){
-        user = user1;
     }
 
     public void particleHit(){
@@ -202,16 +207,21 @@ public class Player extends Entity implements Tick {
     }
 
     public void bulbReceived(int bulbID){
+        // the Player gains MAX_STRENGTH upon getting a LightBulb
         strength = MAX_STRENGTH;
+        // save a reference to the LightBulb the Player is possessing
         lightBulb = GameThread.getLightBulbArray()[bulbID];
+        // telling the LightBulb that it got pickedUp
         lightBulb.pickUp(this);
     }
 
+    // called when the Player lost all his strength or died
     public void bulbLost(){
         lightBulb.fallOnFloor();
         lightBulb = null;
     }
 
+    // called by the LightBulbStandServerEvent allowing the Player to put his LightBulb on the desired LightBulbStand
     public void putBulbOnStand(byte lightBulbStandID){
         lightBulb.putOnLightBulbStand(Map.getFriendlyLightBulbStands(TEAM)[lightBulbStandID]);
         lightBulb = null;
@@ -222,9 +232,11 @@ public class Player extends Entity implements Tick {
     }
 
     public void setPlayerRadius(float radius){
+        // if the radius would be ZERO we would get an error because of dividing by ZERO
         if(radius < 0.01f) radius = 0.01f;
         playerRadius = radius;
         int side = (int) (playerRadius * 2 * Map.TILE_SIDE);
+        // the Bitmaps are rescaled to match the new radius
         scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, side, side, false);
         scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, side, side, false);
     }

@@ -93,6 +93,7 @@ public class User extends Player {
         }
         // some kind transparent grey
         PICK_UP_BAR_COLOR.setColor(0xa0ffff00);
+        user = this;
     }
 
     @Override

@@ -20,11 +20,10 @@ public class Slime extends User {
         super.update();
         // Slime degenerates mana when his skill is active
         if (slimy){
+            mana -= MANA_CONSUMPTION;
             // when out of mana, the skill is deactivated
-            if (mana <= 0){
+            if (mana < 0){
                 skillActivation();
-            }else {
-                mana -= MANA_CONSUMPTION;
             }
         }
         // mana generation happenes automatically

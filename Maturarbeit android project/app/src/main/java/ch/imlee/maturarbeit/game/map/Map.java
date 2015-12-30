@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
@@ -101,43 +100,52 @@ public class Map implements MapDimensions {
         // take a look at the map_color_codes for information about the meaning of a certain color
         for(int y = 0; y < pixelMap.getHeight(); y++){
             for (int x = 0; x < pixelMap.getWidth(); x++){
-                if(pixelMap.getPixel(x, y) == 0xffffffff) {
+                if(pixelMap.getPixel(x, y) == 0xffffffff)
+                {
                     TILE_MAP[x][y] = groundTile;
-                }else if(pixelMap.getPixel(x, y) == 0xffff0000) {
+                }else if(pixelMap.getPixel(x, y) == 0xffff0000)
+                {
                     TILE_MAP[x][y] = wallTile;
-                }else if (pixelMap.getPixel(x, y) == 0xff00ff00){
+                }else if (pixelMap.getPixel(x, y) == 0xff00ff00)
+                {
                     TILE_MAP[x][y] = greenBaseTile;
-                }else if (pixelMap.getPixel(x, y) == 0xff0000ff){
+                }else if (pixelMap.getPixel(x, y) == 0xff0000ff)
+                {
                     TILE_MAP[x][y] = blueBaseTile;
                 }
                 // not just the Tile has to be set but it's coordinates also have to be registered
-                else if (pixelMap.getPixel(x, y) == 0xff00ffff){
+                else if (pixelMap.getPixel(x, y) == 0xff00ffff)
+                {
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[blueCoordinateDistributionIndex][0] = x + 0.5f;
                     playerStartCoordinates[blueCoordinateDistributionIndex][1] = y + 0.5f;
                     ++blueCoordinateDistributionIndex;
                 }
                 // not just the Tile has to be set but it's coordinates also have to be registered
-                else if (pixelMap.getPixel(x, y) == 0xff01ffff){
+                else if (pixelMap.getPixel(x, y) == 0xff01ffff)
+                {
                     TILE_MAP[x][y] = spawnTile;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][0] = x + 0.5f;
                     playerStartCoordinates[greenCoordinateDistributionIndex + 4][1] = y + 0.5f;
                     ++greenCoordinateDistributionIndex;
                 }
                 // not just the Tile has to be set but a reference to it has to be saved
-                else if (pixelMap.getPixel(x, y) == 0xffffff00){
+                else if (pixelMap.getPixel(x, y) == 0xffffff00)
+                {
                     TILE_MAP[x][y] = new LightBulbStand(x, y, blueLightBulbTileBmp, (byte) 0, (byte)blueLightBulbStandDistributionIndex);
                     blueLightBulbStandArray[blueLightBulbStandDistributionIndex] = (LightBulbStand)TILE_MAP[x][y];
                     ++blueLightBulbStandDistributionIndex;
                 }
                 // not just the Tile has to be set but a reference to it has to be saved
-                else if (pixelMap.getPixel(x, y) == 0xffffff01){
+                else if (pixelMap.getPixel(x, y) == 0xffffff01)
+                {
                     TILE_MAP[x][y] = new LightBulbStand(x, y, greenLightBulbTileBmp, (byte) 1, (byte) greenLightBulbStandDistributionIndex);
                     greenLightBulbStandArray[greenLightBulbStandDistributionIndex] = (LightBulbStand) TILE_MAP[x][y];
                     ++greenLightBulbStandDistributionIndex;
                 }
                 // the default Tile
-                else{
+                else
+                {
                     TILE_MAP[x][y] = voidTile;
                 }
             }

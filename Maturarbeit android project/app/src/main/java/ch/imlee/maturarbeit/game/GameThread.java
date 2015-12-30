@@ -6,11 +6,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import ch.imlee.maturarbeit.events.gameActionEvents.ErrorEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleHitEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.ParticleShotEvent;
 import ch.imlee.maturarbeit.events.gameActionEvents.PlayerMotionEvent;
@@ -51,7 +49,6 @@ public class GameThread extends Thread implements Tick{
     private static SurfaceHolder holder;
     protected static Map map;
     protected static User user;
-    private static GameThread gameThread;
     protected static Player[] playerArray;
     protected static ArrayList<SlimeTrail> slimeTrailList;
     protected static ArrayList<Particle>[] particleListArray;
@@ -61,6 +58,17 @@ public class GameThread extends Thread implements Tick{
 
     public GameThread(SurfaceHolder holder){
         this.holder = holder;
+        loading = true;
+        endGameActive = false;
+        winningTeam = -1;
+        lightBulbArray = null;
+        map = null;
+        user = null;
+        playerArray = null;
+        slimeTrailList = null;
+        particleListArray = null;
+        sweets = null;
+        sweetsToRemove = null;
     }
 
     // the method is called when the gameThread is started. It contains the main game loop.
@@ -219,20 +227,6 @@ public class GameThread extends Thread implements Tick{
             }
         }
         return particleListArray[user.getID()].size();
-    }
-
-    public static void reset() {
-        loading = true;
-        endGameActive = false;
-        winningTeam = -1;
-        lightBulbArray = null;
-        map = null;
-        user = null;
-        playerArray = null;
-        slimeTrailList = null;
-        particleListArray = null;
-        sweets = null;
-        sweetsToRemove = null;
     }
 
     public static void activateEndGame(){

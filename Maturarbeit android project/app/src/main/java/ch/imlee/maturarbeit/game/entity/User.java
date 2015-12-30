@@ -275,40 +275,44 @@ public class User extends Player {
     // if the User is on no more stable ground he starts to fall
     // the principle algorithm is quite the same as in the physics engine
     private void checkFloor(){
+        // the radius is multiplied by a factor < 0.
+        // This makes it harder for a player to move around holes
+        // because he does not have to be inside completely in order to fall.
+        float tempRadius = playerRadius * FALL_DETECTION_TOLERANCE;
         // checks the floor below the user
         if (!Map.getFallThrough((int) (xCoordinate), (int) yCoordinate)) {
             return;
         }
         // checks the floor to the right of the User
-        if (!Map.getFallThrough((int) (xCoordinate + playerRadius*FALL_DETECTION_TOLERANCE), (int) yCoordinate)) {
+        if (!Map.getFallThrough((int) (xCoordinate + tempRadius), (int) yCoordinate)) {
             return;
         }
         // checks the floor to the left of the User
-        if (!Map.getFallThrough((int) (xCoordinate - playerRadius*FALL_DETECTION_TOLERANCE), (int) yCoordinate)) {
+        if (!Map.getFallThrough((int) (xCoordinate - tempRadius), (int) yCoordinate)) {
             return;
         }
         // checks the floor at the bottom of the User
-        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate + playerRadius*FALL_DETECTION_TOLERANCE))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate + tempRadius))) {
             return;
         }
         // checks the floor at the top of the User
-        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate - playerRadius*FALL_DETECTION_TOLERANCE))) {
+        if (!Map.getFallThrough((int) xCoordinate, (int) (yCoordinate - tempRadius))) {
             return;
         }
         // checks the wall to the right bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < tempRadius * tempRadius) {
             return;
         }
         // checks the wall to the right top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
+        if (!Map.getFallThrough(newPosition.xIntPos() + 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate + 1, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) <  tempRadius * tempRadius) {
             return;
         }
         // checks the wall to the left top of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() - 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate, 2) < tempRadius * tempRadius) {
             return;
         }
         // checks the wall to the left bottom of the User
-        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < playerRadius*FALL_DETECTION_TOLERANCE*playerRadius*FALL_DETECTION_TOLERANCE) {
+        if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < tempRadius * tempRadius) {
             return;
         }
         falling = true;

@@ -92,7 +92,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         gameThread.stopEndGame();
         LoadingScreen.setRestart();
         setupThread();
-        GameThread.reset();
+        gameThread.reset();
         gameThread.start();
         if(StartActivity.deviceType == DeviceType.HOST) {
             WaitUntilLoadedThread.reset();

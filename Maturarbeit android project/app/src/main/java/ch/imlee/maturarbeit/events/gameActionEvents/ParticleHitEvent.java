@@ -24,7 +24,7 @@ public class ParticleHitEvent extends GameActionEvent{
 
     @Override
     public String toString() {
-        return super.toString() + 'H' + 'p' + PARTICLE_ID + 'h' + PLAYER_HIT_ID + 's' + PLAYER_SOURCE_ID + 'i' + senderID;
+        return super.toString() + 'H' + 'p' + PARTICLE_ID + 'h' + PLAYER_HIT_ID + 's' + PLAYER_SOURCE_ID;
     }
     @Override
     public void apply() {

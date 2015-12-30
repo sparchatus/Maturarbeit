@@ -12,15 +12,18 @@ import ch.imlee.maturarbeit.game.map.Map;
 public class GameServerThread extends GameThread {
 
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;
-    private static int currentSweetId = 0;
+    private static int currentSweetId;
 
-    private static double lastSweetSpawn = 0;
+    private static double lastSweetSpawn;
 
-    private static int nextTimeTickSend = 0;
     private final int TICK_SEND_PERIOD = 3000 / TIME_PER_TICK;
+    private static int nextTimeTickSend;
 
     public GameServerThread(SurfaceHolder holder) {
         super(holder);
+        currentSweetId = 0;
+        lastSweetSpawn = 0;
+        nextTimeTickSend = 0;
     }
 
     @Override

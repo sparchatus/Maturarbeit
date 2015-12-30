@@ -27,7 +27,7 @@ public class PlayerStatsSelectedEvent extends GameStateEvent {
 
     @Override
     public String toString(){
-        return super.toString() + 's' + TYPE.ordinal() + ',' + TEAM + 'i' + senderID;
+        return super.toString() + 'T' + TYPE.ordinal() + ',' + TEAM + 'i' + senderID;
     }
     @Override
     public boolean handle(byte id) {

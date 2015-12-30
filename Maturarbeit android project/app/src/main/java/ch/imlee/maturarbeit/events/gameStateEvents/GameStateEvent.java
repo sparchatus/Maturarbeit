@@ -15,10 +15,10 @@ public class GameStateEvent extends Event {
         switch(eventString.charAt(1)){
             case 'C': return new GameCancelledEvent();
             case 'L': return new GameLeftEvent(eventString);
-            case 'l': return new GameLoadedEvent(eventString);
+            case 'M': return new GameLoadedEvent(eventString);
             case 'P': return new GamePausedEvent();
             case 'S': return new GameStartEvent(eventString);
-            case 's': return new PlayerStatsSelectedEvent(eventString);
+            case 'T': return new PlayerStatsSelectedEvent(eventString);
             case 'R': return new RestartGameEvent();
             default: return null;
         }

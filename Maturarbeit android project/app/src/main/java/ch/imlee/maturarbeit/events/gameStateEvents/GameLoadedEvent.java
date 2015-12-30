@@ -18,7 +18,7 @@ public class GameLoadedEvent extends GameStateEvent{
 
     @Override
     public String toString(){
-        return super.toString() + 'l' + 'i' + senderID;
+        return super.toString() + 'L' + 'i' + senderID;
     }
     @Override
     public boolean handle(byte i){

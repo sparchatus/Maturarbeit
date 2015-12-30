@@ -21,8 +21,8 @@ Starting characters:
     G - Game state changed
         C - Game cancelled
         L - Game Left
-        l - Game Loaded
+        M - Game Loaded
         S - Game Started
-        s - Stats Selected
+        T - Stats Selected
         P - Game Paused
         R - Game Restart

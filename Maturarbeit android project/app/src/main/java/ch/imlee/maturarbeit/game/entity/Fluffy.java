@@ -7,6 +7,7 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class Fluffy extends User {
 
+    // the unit is mana per activation
     private int MANA_CONSUMPTION = MAX_MANA;
 
     public Fluffy(Map map, byte team, byte playerId, String name) {
@@ -17,7 +18,7 @@ public class Fluffy extends User {
     public void update() {
         super.update();
         // this player type generates mana by moving around. the faster he moves the more mana he gets
-        mana += 5 * speed / MAX_SPEED;
+        mana += 8 * speed / MAX_SPEED;
         // the mana is capped at MAX_MANA
         if (mana >= MAX_MANA){
             mana = MAX_MANA;
@@ -25,7 +26,7 @@ public class Fluffy extends User {
     }
 
     public void skillActivation() {
-        // getting the focused player from the corresponding controller
+        // getting the focused player from the controller of the GameSurface
         Player focusedPlayer = GameSurface.getFocusedPlayer();
         //only with sufficient mana and a player as focus this player type is able to activate his skill
         if (mana == MAX_MANA && focusedPlayer != null) {

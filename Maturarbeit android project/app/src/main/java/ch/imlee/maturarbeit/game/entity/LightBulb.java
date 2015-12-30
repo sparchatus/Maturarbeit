@@ -12,15 +12,18 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class LightBulb extends Entity{
 
+    // a unique
     public final byte ID;
 
     private final int SIDE;
 
+    // Bitmaps used when the LightBulb is on the floor or on a LightBulbStand
     private final Bitmap LIGHT_BULB_OFF, LIGHT_BULB_ON;
+    // Bitmaps used when a Player is in possession of the LightBulb.
     private final Bitmap LIGHT_BULB_OFF_SMALL, LIGHT_BULB_ON_SMALL;
 
     // the Player holding the LightBulb. this is null if the LightBulb isn't possessed by a Player
-    private Player possessor=null;
+    private Player possessor = null;
 
     // the LightBulbStand that the LightBulb is on. this is null if the LightBulb isn't on a LightBulbStand
     private LightBulbStand lightBulbStand;
@@ -37,7 +40,7 @@ public class LightBulb extends Entity{
         lightBulbStand = Map.getFriendlyLightBulbStands(team)[0].putLightBulbOn();
     }
 
-    // the LightBulb only moves when it is possessed by a Player.
+    // the LightBulb only moves when it is possessed by a Player. In case it is possessed, it has the same position as the Player
     public void update(){
         if (possessor != null){
             setCoordinates(possessor.getXCoordinate(), possessor.getYCoordinate());
@@ -71,15 +74,16 @@ public class LightBulb extends Entity{
         return canvas;
     }
 
-    // when the LigtBulb is picked up by a Player
+    // when the LightBulb is picked up by a Player
     public void pickUp(Player possessor){
         this.possessor = possessor;
-        // the lightBulbStand has to be informed that he is free
+        // if the LightBulb was on a LightBulbStand before he has to be informed that he is free now
         if (lightBulbStand != null){
             lightBulbStand = lightBulbStand.removeLightbulb();
         }
     }
 
+    // called when a player lost this LightBulb
     public void fallOnFloor(){
         possessor = null;
     }
@@ -92,10 +96,6 @@ public class LightBulb extends Entity{
 
         xCoordinate = lightBulbStand.CENTER_X;
         yCoordinate = lightBulbStand.CENTER_Y;
-    }
-
-    public LightBulbStand getLightBulbStand(){
-        return lightBulbStand;
     }
 
     // returns if the LightBulb is possessed by a player or not

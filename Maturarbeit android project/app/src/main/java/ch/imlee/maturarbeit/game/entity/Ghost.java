@@ -12,8 +12,10 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class Ghost extends User {
 
+    // this consumption is measured in mana per TICK
     private final int MANA_CONSUMPTION = MAX_MANA / 70;
 
+    // the visuals of the invisible Ghost on device on which he is the User
     private final Bitmap INVISIBLE_GHOST;
     private Bitmap scaledInvisibleGhostBmp;
 
@@ -45,12 +47,12 @@ public class Ghost extends User {
     @Override
     public void render(Canvas canvas) {
         super.render(canvas);
-        // the Ghost gets rendered differently (with another Bitmap)  when his skill is active
+        // the Ghost gets rendered differently (with another Bitmap) when his skill is active
         if (invisible){
             Matrix matrix = new Matrix();
             matrix.postRotate((float) (angle / Math.PI * 180) - 90);
             Bitmap rotated = Bitmap.createBitmap(scaledInvisibleGhostBmp, 0, 0, scaledInvisibleGhostBmp.getWidth(), scaledInvisibleGhostBmp.getHeight(), matrix, true);
-            canvas.drawBitmap(rotated, (xCoordinate - user.getXCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceWidth() / 2 - rotated.getWidth() / 2, (yCoordinate - user.getYCoordinate()) * Map.TILE_SIDE + GameSurface.getSurfaceHeight() / 2 - rotated.getHeight() / 2, null);
+            canvas.drawBitmap(rotated, GameSurface.getSurfaceWidth() / 2 - rotated.getWidth() / 2, GameSurface.getSurfaceHeight() / 2 - rotated.getHeight() / 2, null);
         }
     }
 
@@ -81,6 +83,7 @@ public class Ghost extends User {
     @Override
     protected void death(String deathReason) {
         super.death(deathReason);
+        // upon dying the Ghost goes visible
         if (invisible){
             skillActivation();
         }

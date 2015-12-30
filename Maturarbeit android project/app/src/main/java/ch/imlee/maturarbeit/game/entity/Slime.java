@@ -6,6 +6,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.SlimeEvent;
 
 public class Slime extends User {
 
+    // this consumption is measured in mana per TICK
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
 
     public Slime(Map map, byte team, byte playerId, String name) {

@@ -21,14 +21,18 @@ public class Player extends Entity implements Tick {
     protected boolean slimy;
     protected boolean dead;
 
+    // unique identifier for the Player
     protected final byte ID;
     public final byte TEAM;
 
+    // unit is the number of Updates it takes until the stun ends
     protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
+    // used for the mana(in the User) and the strength bar height
     protected final int BAR_HEIGHT;
     protected final int MAX_STRENGTH = 100;
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     protected final int STRENGTH_LOSS_ON_HIT = 10;
+    // variable used to render
     protected static float halfGameSurfaceWidth, halfGameSurfaceHeight;
     protected int strength;
 
@@ -36,9 +40,11 @@ public class Player extends Entity implements Tick {
     protected float playerRadius = MIN_RADIUS;
 
     protected double lastSlimeEjection = 0;
+    // the Time in Ticks (from synchronizedTicks) when the most recent stun on this Player ends/ended.
     protected double stunTick;
     protected double angle;
 
+    // the name the User of this Player chose in the StartActivity
     public final String NAME;
     private static Paint namePaint = new Paint();
 
@@ -50,7 +56,7 @@ public class Player extends Entity implements Tick {
     protected static User user;
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
-    protected  Bitmap scaledStunBmp;
+    protected Bitmap scaledStunBmp;
 
     public Player(PlayerType type, Map map, byte team, byte playerId, String name) {
         super(map.getStartX(team), map.getStartY(team));

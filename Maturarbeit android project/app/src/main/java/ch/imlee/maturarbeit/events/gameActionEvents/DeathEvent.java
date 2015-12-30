@@ -1,10 +1,11 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.entity.Player;
 
-// this Event gets created and sent when the user dies by falling into a void tile
+// this Event gets created and sent when the user dies by falling into a void tile or by exploding after eating too many Sweets.
+// it is also used when the player revives again.
 public class DeathEvent extends GameActionEvent {
+
     private final boolean DEAD;
 
     public DeathEvent(boolean dead){
@@ -23,7 +24,6 @@ public class DeathEvent extends GameActionEvent {
 
     @Override
     public void apply(){
-        Player player = GameThread.getPlayerArray()[senderID];
-        player.setDead(DEAD);
+        GameThread.getPlayerArray()[senderID].setDead(DEAD);
     }
 }

@@ -9,7 +9,6 @@ import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.bluetooth.Util;
 import ch.imlee.maturarbeit.activities.GameClient;
-import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.entity.PlayerType;
 import ch.imlee.maturarbeit.utils.LogView;
 

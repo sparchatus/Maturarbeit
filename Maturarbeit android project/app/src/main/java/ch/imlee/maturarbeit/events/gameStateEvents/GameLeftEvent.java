@@ -8,6 +8,7 @@ public class GameLeftEvent extends GameStateEvent {
     public GameLeftEvent() {
         super(GameThread.getUser().getID());
     }
+
     public GameLeftEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
     }

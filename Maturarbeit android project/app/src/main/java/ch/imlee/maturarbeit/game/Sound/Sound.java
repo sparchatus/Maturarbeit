@@ -62,6 +62,7 @@ public class Sound {
         ++completeSounds;
     }
 
+    //TODO: fix the bug with the non ending slime sound
     public static void play(int id){
         soundPool.play(id, 1, 1, 0, getLoop(id), 1);
     }

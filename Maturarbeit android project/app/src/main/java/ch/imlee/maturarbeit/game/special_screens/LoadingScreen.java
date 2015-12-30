@@ -54,8 +54,7 @@ public class LoadingScreen implements Tick{
         // end of content setup
 
         while (GameThread.getLoading()) {
-            //todo:remove in end product
-            LogView.update();
+            update();
             render();
             --i;
             if (i < 0) i = 3;
@@ -69,6 +68,10 @@ public class LoadingScreen implements Tick{
             }
             lastTime = System.currentTimeMillis();
         }
+    }
+
+    private static void update(){
+        LogView.update();
     }
 
     private static void render(){

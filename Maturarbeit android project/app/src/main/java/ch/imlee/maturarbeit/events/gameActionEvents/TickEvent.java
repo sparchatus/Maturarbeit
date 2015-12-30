@@ -5,6 +5,7 @@ import ch.imlee.maturarbeit.game.GameThread;
 
 public class TickEvent extends GameActionEvent{
 
+    // the value of the host's synchronizedTick.
     private final int SYNCHRONIZED_TICK;
 
     public TickEvent(){

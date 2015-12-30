@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.game.GameThread;
-import ch.imlee.maturarbeit.game.map.Map;
 
 /*
 this event gets sent only by the host

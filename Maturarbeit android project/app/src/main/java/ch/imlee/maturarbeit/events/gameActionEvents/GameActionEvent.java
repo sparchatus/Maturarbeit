@@ -1,7 +1,6 @@
 package ch.imlee.maturarbeit.events.gameActionEvents;
 
 import ch.imlee.maturarbeit.events.Event;
-import ch.imlee.maturarbeit.game.Tick;
 
 public class GameActionEvent extends Event {
 
@@ -9,6 +8,7 @@ public class GameActionEvent extends Event {
         super(senderID);
     }
 
+    // this is called in Events only issued by the Server
     public GameActionEvent(){super();}
 
     public static GameActionEvent fromString(String eventString){

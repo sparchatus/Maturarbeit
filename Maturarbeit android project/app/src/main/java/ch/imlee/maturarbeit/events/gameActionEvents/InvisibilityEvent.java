@@ -6,14 +6,14 @@ import ch.imlee.maturarbeit.game.GameThread;
 public class InvisibilityEvent extends GameActionEvent{
     public final boolean INVISIBLE;
 
+    public InvisibilityEvent(boolean invisible){
+        super(GameThread.getUser().getID());
+        INVISIBLE = invisible;
+    }
+
     public InvisibilityEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         INVISIBLE = (eventString.charAt(2) == '1');
-    }
-
-    public InvisibilityEvent(byte playerId, boolean invisible){
-        super(playerId);
-        INVISIBLE = invisible;
     }
 
     @Override

@@ -75,7 +75,7 @@ public class Ghost extends User {
     @Override
     public void setInvisible(boolean invisible){
         this.invisible = invisible;
-        new InvisibilityEvent(ID, invisible).send();
+        new InvisibilityEvent(invisible).send();
     }
 
     @Override

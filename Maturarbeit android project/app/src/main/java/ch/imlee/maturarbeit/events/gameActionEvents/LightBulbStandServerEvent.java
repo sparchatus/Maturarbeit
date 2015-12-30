@@ -24,6 +24,7 @@ public class LightBulbStandServerEvent extends GameActionEvent {
     public String toString() {
         return super.toString() + 'F' + 's' + STAND_ID + 'i' + senderID;
     }
+
     @Override
     public void apply() {
         /*
@@ -40,8 +41,9 @@ public class LightBulbStandServerEvent extends GameActionEvent {
                     return;
                 }
             }
-            new GameWinEvent(GameThread.getPlayerArray()[senderID].TEAM).send();
-            new GameWinEvent(GameThread.getPlayerArray()[senderID].TEAM).apply();
+            GameWinEvent gameWinEvent = new GameWinEvent(GameThread.getPlayerArray()[senderID].TEAM);
+            gameWinEvent.send();
+            gameWinEvent.apply();
         }
 
     }

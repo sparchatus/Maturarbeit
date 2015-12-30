@@ -15,21 +15,26 @@ import ch.imlee.maturarbeit.views.GameSurface;
 
 public class GameClient extends Activity {
 
+
     private static boolean activityLoaded;
+    // variables which indicate if the onCreate() of the respective SurfaceView has been called
     private static boolean gameSurfaceLoaded;
     private static boolean joystickSurfaceLoaded;
     private static boolean miniMapSurfaceLoaded ;
+
+    // the event is required to restart the game
     private static GameStartEvent gameStartEventSave;
     private static GameThread gameThread;
     private static Context context;
 
-    // system called method. The layout and thus the views are initialized and a reference is saved for later use in the GameThread.
+    // system called method. the content of the Activity is set.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
     }
 
+    // whenever the GameClient Activity is reentered, it has to be reset to allow a new game to be loaded
     @Override
     protected void onResume(){
         super.onResume();
@@ -42,6 +47,7 @@ public class GameClient extends Activity {
         activityLoaded = true;
     }
 
+    // because the variables are static and leaving the Activity does not necessarily destroy them, we have to reset them to their initial state
     @Override
     protected void onStop(){
         super.onStop();

@@ -10,6 +10,7 @@ if the anybody loses his LightBulb this event is sent directly
 public class LightBulbEvent extends GameActionEvent{
 
     private final byte LIGHT_BULB_ID;
+    // tells if the LightBulb is picked up (true) or lost (false)
     private final boolean PICKED_UP;
     private final byte PLAYER_ID;
 
@@ -28,13 +29,14 @@ public class LightBulbEvent extends GameActionEvent{
         PLAYER_ID = playerID;
     }
     // this constructor is called in the apply method of the LightBulbServerEvent
-    // the last argument is to assure that the method is called by the server
+    // the last argument is to assure that the method is called by the server and to allow a second constructor with two bytes as parameters
     public LightBulbEvent(byte playerID, byte lightBulbID, LightBulbServerEvent lightBulbServerEvent){
         super((byte)0);
         LIGHT_BULB_ID = lightBulbID;
         PICKED_UP = true;
         PLAYER_ID = playerID;
     }
+
     public LightBulbEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
         LIGHT_BULB_ID = Byte.valueOf(eventString.substring(eventString.indexOf('l') + 1, eventString.indexOf('b')));

@@ -3,8 +3,10 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 import android.util.Log;
 import ch.imlee.maturarbeit.game.GameThread;
 
-// this Event gets created and sent by the host in the LightBulbStandServerEvent's apply method when a team wins by having two LightBulbs in their house
+// this Event gets created and sent by the host in the LightBulbStandServerEvent's apply method when a team wins by having two LightBulbs in their base
 public class GameWinEvent extends GameActionEvent {
+
+    // the winning team
     private final byte TEAM;
 
     public GameWinEvent(byte team){

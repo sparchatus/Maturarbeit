@@ -146,7 +146,6 @@ public class GameThread extends Thread implements Tick{
         for (LightBulb lightBulb:lightBulbArray){
             lightBulb.update();
         }
-        //TODO: remove logging stuff when not needed anymore
         LogView.update();
     }
 

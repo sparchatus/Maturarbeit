@@ -3,9 +3,10 @@ package ch.imlee.maturarbeit.events.gameActionEvents;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.Sound;
 
-// this Event gets sent by a Fluffy that activates his special skill an thus stuns another player for a certain amount of time
+// this Event gets sent by a Fluffy activating his special skill stunning another player for a certain amount of time
 public class StunEvent extends GameActionEvent {
 
+    // when the player got stunned
     public final double STUN_TICK;
     public final byte STUNNED_PLAYER_ID;
 

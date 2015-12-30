@@ -7,6 +7,7 @@ import ch.imlee.maturarbeit.game.entity.User;
 public class PlayerMotionEvent extends GameActionEvent {
 
     private final float X_COORDINATE, Y_COORDINATE;
+    // direction the player is facing
     private final double ANGLE;
 
     public PlayerMotionEvent(User user){

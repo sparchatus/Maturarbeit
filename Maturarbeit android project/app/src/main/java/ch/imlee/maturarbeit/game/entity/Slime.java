@@ -8,6 +8,7 @@ public class Slime extends User {
 
     // this consumption is measured in mana per TICK
     private final int MANA_CONSUMPTION = MAX_MANA / 100;
+    private final int MANA_REGENERATION = MANA_CONSUMPTION / 5;
 
     public Slime(Map map, byte team, byte playerId, String name) {
         super(PlayerType.SLIME, map, team, playerId, name);
@@ -19,13 +20,15 @@ public class Slime extends User {
         super.update();
         // Slime degenerates mana when his skill is active
         if (slimy){
+            // when out of mana, the skill is deactivated
             if (mana <= 0){
                 skillActivation();
             }else {
                 mana -= MANA_CONSUMPTION;
             }
         }
-        mana += MANA_CONSUMPTION / 5;
+        // mana generation happenes automatically
+        mana += MANA_REGENERATION;
         // the mana is capped at MAX_MANA
         if (mana >= MAX_MANA){
             mana = MAX_MANA;

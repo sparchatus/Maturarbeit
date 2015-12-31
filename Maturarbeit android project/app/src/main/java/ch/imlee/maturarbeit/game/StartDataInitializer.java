@@ -23,45 +23,65 @@ import ch.imlee.maturarbeit.views.MiniMap;
 
 public class StartDataInitializer{
 
+    public static byte userTeam;
+
+    // setting all the game data in the GameThread to prepare him for the game to start
     public static void setStartData(GameStartEvent startData, GameThread gameThread){
         LogView.addLog("starting initialization");
+
+        // starting the Sound
         Sound.initialize();
         Sound.play(Sound.BACKGROUND);
+
+        // generate the Map
         gameThread.map = new Map(startData.getMapID());
+
+        // initialize the arrays and lists
         gameThread.playerArray = new Player[startData.getPlayerCount()];
         gameThread.particleListArray = new ArrayList[startData.getPlayerCount()];
         for(int i = 0; i < gameThread.particleListArray.length; ++i){
             gameThread.particleListArray[i] = new ArrayList<>();
         }
-
-        // the User has to be the first one to be initialized
-        byte userID = startData.getUserID();
-        switch (startData.getPlayerTypes().get(userID)){
-            case FLUFFY:gameThread.user = new Fluffy(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
-                break;
-            case GHOST:gameThread.user = new Ghost(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
-                break;
-            case SLIME:gameThread.user = new Slime(gameThread.map, startData.getTeams().get(userID), userID, startData.getName(userID));
-                break;
-            case NULL: Log.e("GameThread", "User PlayerType is NULL");
-        }
-        gameThread.playerArray[userID] = gameThread.user;
-
-        for (byte i = 0; i < startData.getPlayerCount(); i++){
-            if (i != startData.getUserID()){
-                gameThread.playerArray[i] = new Player(startData.getPlayerTypes().get(i), gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
-            }
-        }
-        GameSurface.setup();
-        JoystickSurface.setup();
-        MiniMap.setup();
-        // adding the LightBulbs to the game
-        gameThread.lightBulbArray = new LightBulb[2];
-        gameThread.lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
-        gameThread.lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
         gameThread.slimeTrailList = new ArrayList<>();
         gameThread.sweets = new ArrayList<>();
         gameThread.sweetsToRemove = new HashSet<>();
+        gameThread.lightBulbArray = new LightBulb[2];
+
+        // adding the LightBulbs to the game
+        gameThread.lightBulbArray[0] = new LightBulb((byte) 0, (byte) 0);
+        gameThread.lightBulbArray[1] = new LightBulb((byte) 1, (byte) 1);
+
+        // create the Players
+        userTeam = startData.getTeams().get(startData.getUserID());
+        for (byte i = 0; i < startData.getPlayerCount(); i++) {
+            if (i == startData.getUserID()) {
+                switch (startData.getPlayerTypes().get(i)) {
+                    case FLUFFY:
+                        gameThread.user = new Fluffy(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
+                        break;
+                    case GHOST:
+                        gameThread.user = new Ghost(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
+                        break;
+                    case SLIME:
+                        gameThread.user = new Slime(gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
+                        break;
+                    case NULL:
+                        Log.e("GameThread", "User PlayerType is NULL");
+                }
+                gameThread.playerArray[i] = gameThread.user;
+            } else {
+                if (i != startData.getUserID()) {
+                    gameThread.playerArray[i] = new Player(startData.getPlayerTypes().get(i), gameThread.map, startData.getTeams().get(i), i, startData.getName(i));
+                }
+            }
+        }
+
+        // setup the Surfaces
+        GameSurface.setup();
+        JoystickSurface.setup();
+        MiniMap.setup();
+
+        // tell the Server that the game has loaded
         if(StartActivity.deviceType == DeviceType.CLIENT) {
             new GameLoadedEvent().send();
         } else {

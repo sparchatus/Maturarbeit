@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import ch.imlee.maturarbeit.R;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.game.Sound.Sound;
+import ch.imlee.maturarbeit.game.StartDataInitializer;
 import ch.imlee.maturarbeit.game.map.Map;
 import ch.imlee.maturarbeit.game.Tick;
 import ch.imlee.maturarbeit.views.GameSurface;
@@ -53,8 +54,12 @@ public class Player extends Entity implements Tick {
     protected final Bitmap STUN_BMP;
     protected final PlayerType TYPE;
     protected LightBulb lightBulb;
-    // the User Object is set in the constructor of the User. He is the first Player to be initialized
+
+    // the User Object is set after all Players have been created
     protected static User user;
+
+    // there is always an original Bitmap that is used to create the scaled Bitmaps when the playerRadius changes
+    // if it wasn't done like this the pictures would get blurred more and more during the duration of the game because of the rescaling
     protected Bitmap PLAYER_BMP;
     protected Bitmap scaledPlayerBmp;
     protected Bitmap scaledStunBmp;
@@ -62,6 +67,7 @@ public class Player extends Entity implements Tick {
     public Player(PlayerType type, Map map, byte team, byte playerId, String name) {
         super(map.getStartX(team), map.getStartY(team));
         TYPE = type;
+
         //setting the Player Bitmap according to the PlayerType
         if (type == PlayerType.FLUFFY){
             PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy);
@@ -70,23 +76,34 @@ public class Player extends Entity implements Tick {
         }else if (type == PlayerType.GHOST){
             PLAYER_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost);
         }
+
+        // scale all the bitmaps
         scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE), (int) (playerRadius * 2 * Map.TILE_SIDE), false);
         STUN_BMP = BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.stun_overlay);
         scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, (int) (playerRadius * 2 * Map.TILE_SIDE),(int) (playerRadius * 2 * Map.TILE_SIDE), false);
+
         TEAM = team;
+
         BAR_HEIGHT = Map.TILE_SIDE / 4;
         BAR_BACKGROUND_COLOR = new Paint();
         BAR_BACKGROUND_COLOR.setColor(0x50000000);
         STRENGTH_BAR_COLOR = new Paint();
-        if (user == null || TEAM == user.TEAM){
+
+        // the allies have green bar, the enemies a red one
+        if (TEAM == StartDataInitializer.userTeam){
+            //green
             STRENGTH_BAR_COLOR.setColor(0xff00ff00);
         }else {
+            //red
             STRENGTH_BAR_COLOR.setColor(0xffff0000);
         }
+
         this.ID = playerId;
         NAME = name;
+
         halfGameSurfaceWidth = GameSurface.getSurfaceWidth() / 2f;
         halfGameSurfaceHeight = GameSurface.getSurfaceHeight() / 2f;
+
         namePaint.setTextAlign(Paint.Align.CENTER);
     }
 

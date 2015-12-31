@@ -26,7 +26,7 @@ public class StartActivity extends Activity {
 
     public static DeviceType deviceType;
 
-    // those Views should be accessible from outside this class
+    // those Views should be accessible from outside this class -> public
     public static ProgressBar progressBar;
     public static ListView listView;
     public static TextView statusText;

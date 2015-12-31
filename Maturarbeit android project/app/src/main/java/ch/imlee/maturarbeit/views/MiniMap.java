@@ -162,13 +162,16 @@ public class MiniMap extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // if the endGame is active the touchEvent is redirected
         if (GameThread.getEndGameActive()){
             return EndGameScreen.onTouch(event);
         }
-        // before the main loop finished loading there might be some variables missing which can lead to an error
+        // if the GameThread hasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()) {
             return false;
         }
+
+        // swap the behavior
         if (isSmall) {
             makeBig();
         } else {

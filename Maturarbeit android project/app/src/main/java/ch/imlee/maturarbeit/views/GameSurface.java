@@ -68,18 +68,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // if the endGame is active the touchEvent is redirected
         if (GameThread.getEndGameActive()){
             return EndGameScreen.onTouch(event);
         }
-        // if the GameThread wasn't done loading yet it would cause an error because there would be no User
+        // if the GameThread hasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()){
             return false;
         }
+        // call the controller
         return gameSurfaceController.onTouch(event);
     }
 
+    // create the GameThread
     private static void setupThread(){
         GameThread.setRunning(true);
+        // the server has an extended GameThread called GameServerThread
         if (StartActivity.deviceType == DeviceType.HOST){
             gameThread = new GameServerThread(holder);
         }else{
@@ -87,24 +91,30 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+    // reset the data to start the game again
     public static void restart(){
         Log.e("GameSurface", "restart soon");
-        gameThread.stopEndGame();
+
+        // assure that the currently running GameThread is completely stopped
+        destroy();
         LoadingScreen.setRestart();
         setupThread();
         gameThread.start();
         if(StartActivity.deviceType == DeviceType.HOST) {
             WaitUntilLoadedThread.reset();
             new WaitUntilLoadedThread().start();
+            // tell the other devices that a new gameIsAbout to start and that they should also reset
             new RestartGameEvent().send();
         }
         GameClient.initializeStartData();
     }
 
+    // update the Controller
     public static void update(){
         gameSurfaceController.update();
     }
 
+    // render the Controller
     public static void render(Canvas canvas){
         gameSurfaceController.render(canvas);
     }
@@ -117,16 +127,21 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
+    // completely stop the GameThread
     public static void destroy(){
         gameThread.setRunning(false);
         gameThread.stopEndGame();
-        try {
-            gameThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while(true) {
+            try {
+                gameThread.join();
+                break;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // reset the focus of the Controller
     public static void nullFocusedPlayer(){
         gameSurfaceController.nullFocusedPlayer();
     }
@@ -142,17 +157,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     public static int getSurfaceWidth(){
         return width;
     }
+
     public static int getSurfaceHeight(){
         return height;
     }
+
     public static GameThread getGameThread(){
         return gameThread;
     }
 
     private static class GameSurfaceController {
+
+        // if the finger  has moved
         private boolean posChanged;
 
         protected double halfSurfaceWidth, halfSurfaceHeight;
+
         // finger distance relative to the middle of the screen
         private double xFingerDistance, yFingerDistance;
 
@@ -165,25 +185,24 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
         public void update() {
             synchronized (gameSurfaceController) {
-                // synchronized with the main game loop
                 if (controllerState == ControllerState.AIMING && posChanged) {
-                    // some trigonometry to calculate the new user angle
+                    // some trigonometry to calculate the User's new angle
                     double angle = Math.acos(xFingerDistance / Math.sqrt(Math.pow(xFingerDistance, 2) + Math.pow(yFingerDistance, 2)));
                     if (yFingerDistance <= 0) {
                         angle *= -1;
                     }
+                    // change the direction the User is facing
                     GameThread.getUser().setAngle(angle);
                     posChanged = false;
                 }
             }
         }
 
-        // required for the subclass called FluffyGameSurfaceController so we can easily call it's render method in the game thread
+        // required for the subclass called FluffyGameSurfaceController so we can easily call it's render method in the GameThread
         public void render(Canvas canvas){
 
         }
 
-        // this method decides if the event is
         public boolean onTouch(MotionEvent event) {
             synchronized (gameSurfaceController) {
                 // when the player lifts the finger the controllerState resets
@@ -195,9 +214,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     controllerState = ControllerState.AIMING;
                 }
+
                 // the position relative to the middle of the screen
                 xFingerDistance = event.getX() - halfSurfaceWidth;
                 yFingerDistance = event.getY() - halfSurfaceHeight;
+
                 // telling the user that his angle was changed.
                 posChanged = true;
                 return true;
@@ -214,7 +235,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private static class FluffyGameSurfaceController extends GameSurfaceController{
+        // if out of this range Fluffy looses the focus
         private final float MAX_FOCUS_RANGE = 4.0f;
+        // detect changes of the playerRadius of the focused Player
         private float lastPlayerRadius;
 
         private final Bitmap FOCUS_BMP;
@@ -232,9 +255,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
         public void update() {
             super.update();
             if (focusedPlayer!= null){
+                // if out of range the focus is interrupted
                 if(Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE) {
                     focusedPlayer = null;
                 }
+                // if the focusedPlayer's radius changed the overlay has to be updated
                 else if (lastPlayerRadius != focusedPlayer.getPlayerRadius()) {
                     lastPlayerRadius = focusedPlayer.getPlayerRadius();
                     scaledFocusBmp = Bitmap.createScaledBitmap(FOCUS_BMP, (int) (lastPlayerRadius * Map.TILE_SIDE * 2), (int) (lastPlayerRadius * Map.TILE_SIDE * 2), false);
@@ -250,11 +275,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             }
         }
 
-        // in this system called method the it's checked whether the user has clicked an enemy player.
+        // it's checked whether the user has clicked on an enemy player.
         @Override
         public boolean onTouch(MotionEvent event) {
-            // it needs to be synchronized because two different threads are accessing the focusedPlayer variable, the playerArray and the playerCoordinates
-            synchronized (GameThread.getHolder()) {
+            synchronized (gameSurfaceController) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // it checks for every player if he is an enemy and in range.
                     for (Player player : GameThread.getPlayerArray()) {
@@ -267,12 +291,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                     }
                 }
             }
+            // if no Player was clicked or the Controller is in a different state the super method is called
             return super.onTouch(event);
         }
 
         public Player getFocusedPlayer(){
             return focusedPlayer;
         }
+
         // to reset the focus when the skill is activated
         public void nullFocusedPlayer(){
             focusedPlayer = null;

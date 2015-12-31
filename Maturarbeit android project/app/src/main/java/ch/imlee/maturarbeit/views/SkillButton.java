@@ -16,15 +16,18 @@ public class SkillButton extends Button{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // if the endGame is active the touchEvent is redirected
         if (GameThread.getEndGameActive()){
             EndGameScreen.onTouch(event);
             return super.onTouchEvent(event);
         }
-        // if the GameThread wasn't done loading yet it would cause an error because there would be no User
+        // if the GameThread hasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()){
             return false;
         }
+        // only touching down is of interest because the SkillButton does nod have to be held down
         if (event.getAction() == MotionEvent.ACTION_DOWN){
+            // in these cases the User isn't able to act
             if(GameThread.getUser().getDead()||GameThread.getUser().getFalling()){
                 return super.onTouchEvent(event);
             }

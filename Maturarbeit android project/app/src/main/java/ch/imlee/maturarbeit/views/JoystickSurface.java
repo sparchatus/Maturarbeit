@@ -32,6 +32,7 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         // needs to be called to get the real width and height
         invalidate();
         halfJoystickWidth = getWidth()/2;
+        // tell the game that this Surface finished loading
         GameClient.joystickSurfaceLoaded();
     }
 
@@ -41,6 +42,7 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
 
     }
 
+    // the destruction process is done by the GameClient
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
@@ -52,26 +54,33 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // if the endGame is active the touchEvent is redirected
         if (GameThread.getEndGameActive()){
             return EndGameScreen.onTouch(event);
         }
-        // if the GameThread wasn't done loading yet it would cause an error because there would be no User
+        // if the GameThread hasn't done loading yet it would cause an error because there would be no User
         if (GameThread.getLoading()) {
             return false;
         }
+        // call the controller
         return joystickController.onTouch(event);
     }
 
+    // update the controller
     public static void update() {
         joystickController.update();
     }
 
+    // draw the controller
     public static Canvas render(Canvas canvas){
         return joystickController.render(canvas);
     }
 
+    // the Surface's own Controller
     private static class JoystickController {
+        // if the finger is placed on the Surface
         private boolean moving;
+        // if the finger has moved
         private boolean posChanged;
 
         private int joystickRadius;
@@ -86,7 +95,6 @@ public class JoystickSurface extends SurfaceView implements SurfaceHolder.Callba
         // distance of the finger to the joystick coordinate
         private double radiusDistance;
 
-        // the middle variable is also used to synchronize the onTouch call and the updates
         private Bitmap ring, middle;
 
         public JoystickController() {

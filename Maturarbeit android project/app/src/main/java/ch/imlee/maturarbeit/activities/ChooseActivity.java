@@ -46,6 +46,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_choose);
 
+        // save all the Views as Objects to allow modifying them
         playerTypeImage = (ImageView) findViewById(R.id.playerTypeImage);
         playerTypeImage.setAdjustViewBounds(true);
         startGameButton = (Button) findViewById(R.id.startGameButton);
@@ -54,6 +55,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
 
         if(StartActivity.deviceType == DeviceType.HOST){
             startGameButton.setText("Clients Ready: " + playersReady + '/' + Host.sockets.size());
+            // The Host shouldn't be able to click the Button from the beginning on
             startGameButton.setClickable(false);
         } else{
             startGameButton.setText("Ready?");
@@ -64,6 +66,7 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
     public void onStart(){
         super.onStart();
 
+        // this Array contains all the information needed to generate the playerType-RadioButtons and to display an image and a description of the selected PlayerType
         PlayerTypeInfo[] temp = {
                 new PlayerTypeInfo("Ghost", "The Ghost can become invisible for a while", Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ghost))),
                 new PlayerTypeInfo("Slime", "The Slime can leave a slime trail behind which makes himself faster, but the others slower", Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slime))),
@@ -76,20 +79,25 @@ public class ChooseActivity extends Activity implements View.OnClickListener{
         eventReceiver.start();
     }
 
+    // this method creates the RadioButtons from the playerType RadioGroup
     private void createPlayerTypeRadioButtons(){
         playerTypeGroup = (RadioGroup) findViewById(R.id.playerTypeGroup);
         RadioButton playerTypeRadioButton;
         for(int i = 0; i < playerTypeInfos.length; ++i){
             playerTypeRadioButton = new RadioButton(this);
+            // The playerTypeInfos Array contains the name of each PlayerType
             playerTypeRadioButton.setText(playerTypeInfos[i].getName());
-            // to identify the button later
+            // to identify the button later, give it an id
             playerTypeRadioButton.setId(i);
+            // add it to the playerType RadioGroup
             playerTypeGroup.addView(playerTypeRadioButton);
+            // set the OnClickListener to this
             playerTypeRadioButton.setOnClickListener(this);
         }
     }
 
     public void onClick(View v){
+        // set the RadioButton selected, this automatically unselects every other RadioButton from the same RadioGroup
         v.setSelected(true);
         // check whether clicked button is in the teamGroup or playerTypeGroup
         if(((RadioButton)v).getText().toString().startsWith("Team ")){

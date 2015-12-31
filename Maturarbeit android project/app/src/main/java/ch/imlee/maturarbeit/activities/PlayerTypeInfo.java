@@ -9,7 +9,7 @@ public class PlayerTypeInfo extends ChooseActivity{
     private final String NAME;
     private final String DESCRIPTION;
     private final Bitmap BITMAP;
-    int bitmapSize;
+    private int bitmapSize;
 
     public PlayerTypeInfo(String name, String description, Bitmap bitmap){
         NAME = name;
@@ -17,8 +17,11 @@ public class PlayerTypeInfo extends ChooseActivity{
         BITMAP = bitmap;
     }
 
+    // this method adds an image and a description of the selected PlayerType to the screen
     public void setActive(){
         playerTypeDescription.setText(DESCRIPTION);
+        // after we set the description, we need a small delay for the System Thread to update the position of the playerTypeDescription TextView
+        // we add the delay in a separate Thread to not pause the System Thread
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -32,6 +35,7 @@ public class PlayerTypeInfo extends ChooseActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // if the calculated bitmap size would be smaller than 0, it would throw an Exception, so only display it if it's > 0
                         if(bitmapSize <= 0){
                             playerTypeImage.setVisibility(View.GONE);
                         } else {

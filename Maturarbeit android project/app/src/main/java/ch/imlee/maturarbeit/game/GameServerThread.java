@@ -10,7 +10,7 @@ import ch.imlee.maturarbeit.events.gameActionEvents.SweetSpawnEvent;
 import ch.imlee.maturarbeit.game.map.Map;
 
 public class GameServerThread extends GameThread {
-
+    
     private static final int SWEET_SPAWN_RATE = Tick.TICK * 2;
     private static int currentSweetId;
 

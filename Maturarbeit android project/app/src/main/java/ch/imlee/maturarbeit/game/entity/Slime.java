@@ -34,10 +34,11 @@ public class Slime extends User {
         }
     }
 
-    // Ghost has a toggle skill
+    // Slime has a toggle skill
     @Override
     public void skillActivation() {
         SlimeEvent slimeEvent;
+        // the Slime can only toggle his skill to true if he has a certain minimum of mana
         if(!slimy && mana > Tick.TICK * 2 / 5 * MANA_CONSUMPTION) {
             slimeEvent = new SlimeEvent(ID, true);
         } else{
@@ -51,6 +52,7 @@ public class Slime extends User {
     protected void death(String deathReason) {
         super.death(deathReason);
         if (slimy){
+            // upon dying the skill is deactivated if it was activated before
             skillActivation();
         }
     }

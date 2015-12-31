@@ -6,7 +6,7 @@ public class Tile {
 
     // tells if it can be passed through by the Players
     public final boolean SOLID;
-    // tells if the Player falls when standing only on this tile
+    // tells if the Player falls when standing only on Tiles with this parameter being true
     public final boolean FALL_THROUGH;
     public final Bitmap BMP;
 

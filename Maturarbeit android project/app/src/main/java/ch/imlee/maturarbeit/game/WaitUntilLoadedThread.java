@@ -4,6 +4,7 @@ import ch.imlee.maturarbeit.activities.GameClient;
 import ch.imlee.maturarbeit.bluetooth.Host;
 import ch.imlee.maturarbeit.events.gameStateEvents.GameLoadedEvent;
 
+// this thread is used by the Server to wait until all the Clients have loaded their game
 public class WaitUntilLoadedThread extends Thread {
     private static int ready=0;
 

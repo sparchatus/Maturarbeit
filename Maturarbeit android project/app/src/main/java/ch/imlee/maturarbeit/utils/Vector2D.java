@@ -1,8 +1,8 @@
 package ch.imlee.maturarbeit.utils;
 
-// a general vector class usefull for the hit box resolution
-
+// a general vector class useful for the hit box resolution
 public class Vector2D {
+
     // coordinates the vector points to
     public double x, y;
 
@@ -11,34 +11,31 @@ public class Vector2D {
         this.y = y;
     }
 
-    public Vector2D(Vector2D v, double x, double y){
-        this.x = x - v.x;
-        this.y = y - v.y;
-    }
-
     public Vector2D(double xPoint1, double yPoint1, double xPoint2, double yPoint2){
         x = xPoint2 - xPoint1;
         y = yPoint2 - yPoint1;
     }
 
     // make the vector length 1
-
     public void normalize(){
         double abs = Math.sqrt(x * x + y * y);
         x /= abs;
         y /= abs;
     }
 
+    // multiply the vectors length with the scalar
     public void scale(double scalar){
         x *= scalar;
         y *= scalar;
     }
 
+    // set the length to l
     public void scaleTo(double newLength){
         normalize();
         scale(newLength);
     }
 
+    // return the length of the vector
     public double getLength(){
         return Math.sqrt(x * x + y * y);
     }

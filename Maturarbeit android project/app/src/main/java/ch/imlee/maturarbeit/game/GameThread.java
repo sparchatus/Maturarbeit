@@ -95,7 +95,6 @@ public class GameThread extends Thread implements Tick{
         // making sure that those important variables are both true
         loading = true;
         running = true;
-
         // display the LoadingScreen
         LoadingScreen.loadingLoop(holder);
 

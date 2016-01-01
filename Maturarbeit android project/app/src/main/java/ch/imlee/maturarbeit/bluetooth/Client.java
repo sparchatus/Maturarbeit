@@ -81,6 +81,7 @@ public class Client extends StartActivity {
             }
             connecting = false;
             if(!connectionSuccessful){
+                // if the connection was unsuccessful, display an error message via a Toast
                 Client.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -115,6 +116,7 @@ public class Client extends StartActivity {
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // if the user clicked on an entry on the ListView, connect to that device
                 if (Util.ba.isDiscovering()) {
                     discoveryCanceled = true;
                     Util.ba.cancelDiscovery();

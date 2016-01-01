@@ -56,6 +56,7 @@ public class StartActivity extends Activity {
     }
 
     private void initialize(){
+        // this is the Intent used to switch to the ChooseActivity
         startChooseActivity = new Intent(getBaseContext(), ChooseActivity.class);
         startChooseActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

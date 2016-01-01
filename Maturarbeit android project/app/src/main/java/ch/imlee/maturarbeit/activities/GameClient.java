@@ -61,6 +61,7 @@ public class GameClient extends Activity {
 
     @Override
     public void onBackPressed(){
+        // if the back button gets pressed, cancel the game
         new GameCancelledEvent().send();
         activityLoaded = false;
         gameSurfaceLoaded = false;

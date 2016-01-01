@@ -47,7 +47,6 @@ public class Sound {
         loopedIDs.add(SLIME);
 
         // block until all sounds are loaded
-        // the 4 has to be changed when more sounds are added
         // TODO: change 4 to the number of distinct sounds if more are added
         while(completeSounds < 4){
             try {

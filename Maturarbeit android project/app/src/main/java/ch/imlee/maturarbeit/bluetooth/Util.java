@@ -31,6 +31,7 @@ public class Util{
         c = context;
         ba = BluetoothAdapter.getDefaultAdapter();
         try {
+            // this sets the version code
             version = c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionCode;
             Log.i("version", "version number: " + version);
         } catch (PackageManager.NameNotFoundException e){
@@ -56,7 +57,7 @@ public class Util{
 
         } else {
             // to close all current connections, restart the adapter
-            // there is probably a better way to do this, but we've found it's the most consistent like this and it works on most devices this way
+            // there is probably a better way to do this, but we've found it's the most consistent way and it works on most devices
             ba.disable();
             while(ba.getState() != BluetoothAdapter.STATE_OFF){
                 try{
@@ -71,16 +72,6 @@ public class Util{
 
                 }
             }
-            /*
-            //TODO: this is a temporary fix, find a better one // FIXME: 14.12.2015
-            Log.i("unbound", "unbonding " + ba.getBondedDevices().size() + " devices...");
-            for(BluetoothDevice device : ba.getBondedDevices()){
-                try {
-                    device.getClass().getMethod("removeBond", (Class[]) null).invoke(device, (Object[]) null);
-                    Log.i("unbound", "unbound device: " + device.getName());
-                } catch (Exception e) {}
-            }
-            */
             initialized = true;
         }
     }
@@ -101,6 +92,7 @@ public class Util{
         return temp;
     }
 
+    // this method sends a String to a specified OutputStream
     public static synchronized void sendString(OutputStream outputStream, String text){
         try {
             outputStream.write(text.getBytes());
@@ -110,6 +102,7 @@ public class Util{
         }
     }
 
+    // this method receives all incoming Characters and makes a String out of them
     public static String receiveString(InputStream inputStream){
         String text = "";
         try {
@@ -123,6 +116,7 @@ public class Util{
         return text;
     }
 
+    // this method receives all Events that are available at the moment it gets called
     public static void receiveEvents(InputStream inputStream, byte id){
         String string = "";
         char c;

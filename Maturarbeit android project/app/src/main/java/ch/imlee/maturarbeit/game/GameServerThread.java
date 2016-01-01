@@ -82,7 +82,7 @@ public class GameServerThread extends GameThread {
         }
     }
 
-    // generates a Sweet on a Tile that is not SOLID
+    // generates a Sweet on a Tile that is neither SOLID nor FALL_THROUGH
     public static void spawnSweet(){
         int tempX, tempY;
         Sweet tempSweet;
@@ -91,7 +91,7 @@ public class GameServerThread extends GameThread {
         do{
             tempX = (int)(Math.random() * map.TILES_IN_MAP_WIDTH);
             tempY = (int)(Math.random() * map.TILES_IN_MAP_HEIGHT);
-            possible = !map.getSolid(tempX, tempY);
+            possible = !(map.getSolid(tempX, tempY) || map.getFallThrough(tempX, tempY));
         }while(!possible);
 
         tempSweet = new Sweet(tempX, tempY, currentSweetId);

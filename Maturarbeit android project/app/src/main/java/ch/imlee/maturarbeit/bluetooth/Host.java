@@ -79,6 +79,7 @@ public class Host extends StartActivity {
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
         c.startActivity(discoverableIntent);
 
+        // the ArrayAdapter displays the elements of deviceNames as a ListView on the screen
         adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, deviceNames);
         StartActivity.listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -134,7 +135,7 @@ public class Host extends StartActivity {
                 removeDevice(i);
                 --i;
             }
-            // check if the same mac address is there multiple times, if so, remove the duplicates
+            // check if the same device is in the list twice, if so, remove the duplicates
             String address = sockets.get(i).getRemoteDevice().getAddress();
             for(int j = i+1; j < sockets.size(); ++j){
                 if(sockets.get(j).getRemoteDevice().getAddress().equals(address)) {

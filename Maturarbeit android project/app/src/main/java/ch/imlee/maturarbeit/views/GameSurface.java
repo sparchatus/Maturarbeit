@@ -82,7 +82,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     // create the GameThread
     private static void setupThread(){
-        GameThread.setRunning(true);
         // the server has an extended GameThread called GameServerThread
         if (StartActivity.deviceType == DeviceType.HOST){
             gameThread = new GameServerThread(holder);

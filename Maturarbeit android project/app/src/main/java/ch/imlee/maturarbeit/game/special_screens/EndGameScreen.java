@@ -7,31 +7,42 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
-import ch.imlee.maturarbeit.activities.DeviceType;
-import ch.imlee.maturarbeit.activities.StartActivity;
 import ch.imlee.maturarbeit.game.GameThread;
 import ch.imlee.maturarbeit.utils.LogView;
 import ch.imlee.maturarbeit.views.GameSurface;
 
 public class EndGameScreen {
 
-    // the order of the coordinates is left,top,right,bottom, height / 2 (difference between bottom and top divided by 2)
+    // the order of the values is left, top, right, bottom, height / 2 (difference between bottom and top divided by 2)
     protected static final int exitButtonCoords[] = {0, 0, GameSurface.getSurfaceWidth() / 2, GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight()};
     protected static final int restartButtonCoords[] = {GameSurface.getSurfaceWidth() / 2, 0, GameSurface.getSurfaceWidth(), GameSurface.getSurfaceHeight(), GameSurface.getSurfaceHeight()};
 
+    // used for the rendering
     private static SurfaceHolder holder;
+
+    // tells the subclass ServerEndGameScreen what button the User pressed
     protected static boolean isExit, isRestart;
+
+    // the time when the EndGameScreen started
+    // this is used to avoid the Buttons being pressed accidentally by disabling them in the first few seconds
     private static long startTime;
+
+    // the time during which the Buttons are deactivated
     private static int waitTime = 2000;
 
+    //
     public void endGameLoop(SurfaceHolder surfaceHolder){
+        //setup
         holder = surfaceHolder;
         isRestart = isExit = false;
         startTime = System.currentTimeMillis();
+
+        // update and render loop
         while(GameThread.getEndGameActive()){
             update();
             render();
             try {
+                // the precise periodicity of this loop is not of importance thus the sleep time isn't calculated but constant
                 Thread.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -39,6 +50,7 @@ public class EndGameScreen {
         }
     }
 
+    // drawing the text onto the screen and allow the server via the subRender to draw the buttons
     protected void render(){
         Canvas c = null;
         try {
@@ -61,6 +73,7 @@ public class EndGameScreen {
         LogView.update();
     }
 
+    // this render method is overwritten by the ServerEndGameScreen to draw the buttons
     protected void subRender(Canvas canvas){
         // some transparent black ove every thing
         Paint paint = new Paint();
@@ -78,7 +91,10 @@ public class EndGameScreen {
         }
     }
 
+    // the EndGame Screen has to handle the Events because the on Touch method in the SeverEndGameScreen could not be reached as easily
+    // the exit button fills the left, the restart button the right half of the screen
     public static boolean onTouch(MotionEvent event){
+        // if a button was pressed or the buttons are still deactivated then the MOtionEvent is ignored
         if(isExit || isRestart || System.currentTimeMillis() - startTime < waitTime){
             return false;
         }else if(event.getX() < exitButtonCoords[3]){

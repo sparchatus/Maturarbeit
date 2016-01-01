@@ -18,14 +18,22 @@ public class LoadingScreen implements Tick{
     private static int i, halfSurfaceHeight, thirdSurfaceWidth, ninthSurfaceWidth;
     private static final int TEXT_SIZE = 64;
 
-    private static long lastTime, timeLeft;
+    // time when the last Update ended
+    private static long lastTime;
+    // difference between Tick.TIME_PER_TICK and the difference between System.currentTimeMillis() and lastTime
+    // timeLeft = TIME_PER_TICK - (System.currentTimeMillis() - lastTime)
+    private static long timeLeft;
 
+    // defining the look of the LoadingScreen text
     private static float textWidth = 0;
-
     private static String loadingText = "Loading...";
+
     private static Paint textPaint;
 
+    // used for the rendering process
     private static SurfaceHolder holder;
+
+    // these are the indicators that the loading is still going on and the device didn't freeze
     private static Bitmap fluffy, slime, ghost;
 
     public static void loadingLoop(SurfaceHolder surfaceHolder) {
@@ -37,7 +45,7 @@ public class LoadingScreen implements Tick{
         ninthSurfaceWidth = thirdSurfaceWidth / 3;
         holder = surfaceHolder;
 
-        // setting up the tex and pictures that will be drawn
+        // setting up the content
         textPaint = new Paint();
 
         //white
@@ -48,11 +56,13 @@ public class LoadingScreen implements Tick{
         for (int j = 0; j < loadingText.length(); ++j) {
             textWidth += textWidths[i];
         }
+
         fluffy = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.fluffy), ninthSurfaceWidth, ninthSurfaceWidth, false);
         slime = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.slime), ninthSurfaceWidth, ninthSurfaceWidth, false);
         ghost = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(GameSurface.getRec(), R.drawable.ghost), ninthSurfaceWidth, ninthSurfaceWidth, false);
         // end of content setup
 
+        // loading loop
         while (GameThread.getLoading()) {
             update();
             render();
@@ -80,8 +90,12 @@ public class LoadingScreen implements Tick{
             c = holder.lockCanvas(null);
             synchronized (holder) {
                 if (c != null) {
+                    // completely erase the old image
                     c.drawColor(Color.BLACK);
+                    // this gives a slightly darkened red together with the black background
                     c.drawColor(0x99ff0000);
+
+                    // draw the text and 1-3 of the bitmaps depending on i
                     switch (i) {
                         case 0:
                             c.drawBitmap(fluffy, thirdSurfaceWidth + 2 * ninthSurfaceWidth, halfSurfaceHeight, null);
@@ -92,6 +106,7 @@ public class LoadingScreen implements Tick{
                         default:
                             c.drawText(loadingText, GameSurface.getSurfaceWidth() / 2 - textWidth / 2, halfSurfaceHeight - TEXT_SIZE, textPaint);
                     }
+
                     LogView.render(c);
                 }
             }
@@ -102,6 +117,7 @@ public class LoadingScreen implements Tick{
         }
     }
 
+    // this changes the text as soon as the game is restartet for the first time
     public static void setRestart(){
         loadingText = "Restarting...";
     }

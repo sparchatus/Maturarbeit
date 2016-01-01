@@ -30,7 +30,6 @@ public class EndGameScreen {
     // the time during which the Buttons are deactivated
     private static int waitTime = 2000;
 
-    //
     public void endGameLoop(SurfaceHolder surfaceHolder){
         //setup
         holder = surfaceHolder;

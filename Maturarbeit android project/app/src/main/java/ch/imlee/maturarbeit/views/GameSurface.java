@@ -128,6 +128,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     // completely stop the GameThread
     public static void destroy(){
+        if(gameThread == null){
+            return;
+        }
         gameThread.setRunning(false);
         gameThread.stopEndGame();
         while(true) {
@@ -235,7 +238,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
 
     private static class FluffyGameSurfaceController extends GameSurfaceController{
         // if out of this range Fluffy looses the focus
-        private final float MAX_FOCUS_RANGE = 4.0f;
+        private final float MAX_FOCUS_RANGE = 5.0f;
+        // to make it easier to click on the player
+        private final float CLICK_TOLERANCE = 1.2f;
         // detect changes of the playerRadius of the focused Player
         private float lastPlayerRadius;
 
@@ -255,7 +260,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
             super.update();
             if (focusedPlayer!= null){
                 // if out of range the focus is interrupted
-                if(Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE) {
+                if(Math.pow(focusedPlayer.getXCoordinate() - GameThread.getUser().getXCoordinate(), 2) + Math.pow(focusedPlayer.getYCoordinate() - GameThread.getUser().getYCoordinate(), 2) > MAX_FOCUS_RANGE * MAX_FOCUS_RANGE) {
                     focusedPlayer = null;
                 }
                 // if the focusedPlayer's radius changed the overlay has to be updated
@@ -281,7 +286,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback{
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     // it checks for every player if he is an enemy and in range.
                     for (Player player : GameThread.getPlayerArray()) {
-                        if (player.TEAM != GameThread.getUser().TEAM && Math.pow(GameThread.getUser().getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE - player.getXCoordinate(), 2) + Math.pow(GameThread.getUser().getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE - player.getYCoordinate(), 2) <= Math.pow(player.getPlayerRadius(), 2)) {
+                        // the second condition calculates if the touch event did hit a player by converting the coordinates of the touch into the map coordinates
+                        if (player.TEAM != GameThread.getUser().TEAM && Math.pow(GameThread.getUser().getXCoordinate() + (event.getX() - halfSurfaceWidth) / Map.TILE_SIDE - player.getXCoordinate(), 2) + Math.pow(GameThread.getUser().getYCoordinate() + (event.getY() - halfSurfaceHeight) / Map.TILE_SIDE - player.getYCoordinate(), 2) <= player.getPlayerRadius() * player.getPlayerRadius() *  CLICK_TOLERANCE) {
                             controllerState = ControllerState.FOCUS;
                             focusedPlayer = player;
                             // we don't have to follow this event further

@@ -358,6 +358,7 @@ public class User extends Player {
         if (!Map.getFallThrough(newPosition.xIntPos() - 1, newPosition.yIntPos() + 1) && Math.pow((int)xCoordinate - xCoordinate, 2) + Math.pow((int)yCoordinate - yCoordinate + 1, 2) < tempRadius * tempRadius) {
             return;
         }
+        speed = 0;
         falling = true;
     }
 
@@ -504,7 +505,6 @@ public class User extends Player {
 
         // upon dying a User looses his LightBulb
         bulbLost();
-        mana = 0;
     }
 
     // this is called after the User ate too many Sweets

@@ -27,7 +27,7 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
 
     // unit is the number of Updates it takes until the stun ends
-    protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
+    protected final int STUN_TIME = 5000 / Tick.TIME_PER_TICK;
     // used for the mana(in the User) and the strength bar height
     protected final int BAR_HEIGHT;
     protected final int MAX_STRENGTH = 100;

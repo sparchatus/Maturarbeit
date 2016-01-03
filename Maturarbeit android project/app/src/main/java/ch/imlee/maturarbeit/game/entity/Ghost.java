@@ -14,6 +14,7 @@ public class Ghost extends User {
 
     // this consumption is measured in mana per TICK
     private final int MANA_CONSUMPTION = MAX_MANA / 70;
+    private final int MANA_REGENERATION = MANA_CONSUMPTION / 5;
 
     // the visuals of the invisible Ghost on device on which he is the User
     private final Bitmap INVISIBLE_GHOST;
@@ -36,10 +37,13 @@ public class Ghost extends User {
                 mana -= MANA_CONSUMPTION;
             }
         }
-        mana += MANA_CONSUMPTION / 5;
-        // the mana is capped at MAX_MANA
-        if (mana >= MAX_MANA){
-            mana = MAX_MANA;
+        // mana generation happenes automatically
+        if(!falling && ! stunned && !dead){
+            mana += MANA_REGENERATION;
+            if (mana >= MAX_MANA){
+                mana = MAX_MANA;
+                // the mana is capped at MAX_MANA
+            }
         }
     }
 

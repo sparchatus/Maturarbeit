@@ -7,18 +7,18 @@ import ch.imlee.maturarbeit.game.Sound.Sound;
 public class StunEvent extends GameActionEvent {
 
     // when the player got stunned
-    public final double STUN_TICK;
+    public final int STUN_TICK;
     public final byte STUNNED_PLAYER_ID;
 
-    public StunEvent(byte playerID,byte stunnedID, double stunTick){
-        super(playerID);
+    public StunEvent(byte stunnedID, int stunTick){
+        super(GameThread.getUser().getID());
         STUN_TICK = stunTick;
         STUNNED_PLAYER_ID = stunnedID;
     }
     public StunEvent(String eventString){
         super(Byte.valueOf(eventString.substring(eventString.length() - 1)));
-        STUN_TICK = Double.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
         STUNNED_PLAYER_ID = Byte.valueOf(eventString.substring(eventString.indexOf('p') + 1, eventString.indexOf('s')));
+        STUN_TICK = Integer.valueOf(eventString.substring(eventString.indexOf('s') + 1, eventString.indexOf('i')));
     }
 
     @Override
@@ -28,6 +28,5 @@ public class StunEvent extends GameActionEvent {
     @Override
     public void apply() {
         GameThread.getPlayerArray()[STUNNED_PLAYER_ID].stun(STUN_TICK);
-        Sound.play(Sound.STUN);
     }
 }

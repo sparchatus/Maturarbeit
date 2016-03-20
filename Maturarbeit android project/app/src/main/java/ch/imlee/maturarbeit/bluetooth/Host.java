@@ -60,7 +60,7 @@ public class Host extends StartActivity {
                     // and the acceptThread gets interrupted
                     if (e.getMessage().equals("Operation Canceled")) {
                         Log.i("acceptThread", "acceptThread canceled");
-                        break;
+                        return;
                     }
                 }
             }

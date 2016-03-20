@@ -29,6 +29,7 @@ public class ParticleHitEvent extends GameActionEvent{
     @Override
     public void apply() {
         GameThread.removeParticle(this);
+        // PLAYER_HIT_ID is -1 when the Particle hit a wall
         if (PLAYER_HIT_ID !=-1){
             GameThread.getPlayerArray()[PLAYER_HIT_ID].particleHit();
         }

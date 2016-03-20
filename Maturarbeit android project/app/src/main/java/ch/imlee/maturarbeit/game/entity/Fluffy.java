@@ -32,7 +32,7 @@ public class Fluffy extends User {
         if (mana == MAX_MANA && focusedPlayer != null) {
             focusedPlayer.stun(GameThread.getSynchronizedTick() + STUN_TIME);
             // sending the information to the other devices
-            new StunEvent(ID, focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
+            new StunEvent(focusedPlayer.getID(), GameThread.getSynchronizedTick() + STUN_TIME).send();
             // reset the focus
             GameSurface.nullFocusedPlayer();
             // consuming the mana

@@ -25,5 +25,6 @@ public class SweetEatenEvent extends GameActionEvent {
     @Override
     public void apply(){
         GameThread.sweetsToRemove.add(ID);
+        GameThread.getPlayerArray()[senderID].sweetEaten();
     }
 }

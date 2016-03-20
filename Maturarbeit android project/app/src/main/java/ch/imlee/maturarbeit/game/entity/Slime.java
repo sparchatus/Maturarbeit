@@ -27,10 +27,12 @@ public class Slime extends User {
             }
         }
         // mana generation happenes automatically
-        mana += MANA_REGENERATION;
-        // the mana is capped at MAX_MANA
-        if (mana >= MAX_MANA){
-            mana = MAX_MANA;
+        if(!falling && ! stunned && !dead){
+            mana += MANA_REGENERATION;
+            if (mana >= MAX_MANA){
+                mana = MAX_MANA;
+                // the mana is capped at MAX_MANA
+            }
         }
     }
 

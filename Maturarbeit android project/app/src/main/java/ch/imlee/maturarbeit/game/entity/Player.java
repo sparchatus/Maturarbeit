@@ -27,15 +27,15 @@ public class Player extends Entity implements Tick {
     public final byte TEAM;
 
     // unit is the number of Updates it takes until the stun ends
-    protected final int STUN_TIME = 3000 / Tick.TIME_PER_TICK;
+    protected final int STUN_TIME = 5000 / Tick.TIME_PER_TICK;
     // used for the mana(in the User) and the strength bar height
     protected final int BAR_HEIGHT;
-    protected final int MAX_STRENGTH = 100;
     protected final int SLIME_EJECTION_RATE = Tick.TICK / 5;
     protected final int STRENGTH_LOSS_ON_HIT = 10;
     // variable used to render
     protected static float halfGameSurfaceWidth, halfGameSurfaceHeight;
     protected int strength;
+    protected int max_strength = 100;
 
     protected final float MIN_RADIUS = 0.4f;
     protected float playerRadius = MIN_RADIUS;
@@ -172,7 +172,7 @@ public class Player extends Entity implements Tick {
                 // the whole bar is drawn in a transparent grey (BAR_BACKGROUND_COLOR) so one can estimate what percentage of the whole the colored bar is filling
                 canvas.drawRect(rx, ry, rx + 2 * playerRadius * Map.TILE_SIDE, ry + BAR_HEIGHT, BAR_BACKGROUND_COLOR);
                 // the colored bar's length is depending on what fraction of the MAX_STRENGTH the strength is
-                canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / MAX_STRENGTH * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
+                canvas.drawRect(rx, ry, rx + 2 * playerRadius * strength / max_strength * Map.TILE_SIDE, ry + BAR_HEIGHT, STRENGTH_BAR_COLOR);
             }
         }
     }
@@ -188,6 +188,13 @@ public class Player extends Entity implements Tick {
         strength -= STRENGTH_LOSS_ON_HIT;
         if (strength < 0){
             strength = 0;
+        }
+    }
+
+    public void sweetEaten(){
+        strength += 2 * STRENGTH_LOSS_ON_HIT;
+        if (strength > max_strength){
+            strength = max_strength;
         }
     }
 
@@ -224,8 +231,8 @@ public class Player extends Entity implements Tick {
     }
 
     public void bulbReceived(int bulbID){
-        // the Player gains MAX_STRENGTH upon getting a LightBulb
-        strength = MAX_STRENGTH;
+        // the Player gains max_strength upon getting a LightBulb
+        strength = max_strength;
         // save a reference to the LightBulb the Player is possessing
         lightBulb = GameThread.getLightBulbArray()[bulbID];
         // telling the LightBulb that it got pickedUp
@@ -253,6 +260,10 @@ public class Player extends Entity implements Tick {
         if(radius < 0.01f) radius = 0.01f;
         playerRadius = radius;
         int side = (int) (playerRadius * 2 * Map.TILE_SIDE);
+        max_strength = (int) (100 + (playerRadius - MIN_RADIUS) * 100);
+        if(strength > max_strength){
+            strength = max_strength;
+        }
         // the Bitmaps are rescaled to match the new radius
         scaledPlayerBmp = Bitmap.createScaledBitmap(PLAYER_BMP, side, side, false);
         scaledStunBmp = Bitmap.createScaledBitmap(STUN_BMP, side, side, false);

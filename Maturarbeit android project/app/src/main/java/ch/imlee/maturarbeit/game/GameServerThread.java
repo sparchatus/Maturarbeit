@@ -17,7 +17,7 @@ public class GameServerThread extends GameThread {
     private static double lastSweetSpawn;
 
     // determines how often a new TickEvent should be sent
-    private final int TICK_SEND_PERIOD = 3000 / TIME_PER_TICK;
+    private final int TICK_SEND_PERIOD = Tick.TICK;
     // determines when a new TickEvent should be sent
     private static int nextTimeTickSend;
 

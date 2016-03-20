@@ -43,7 +43,7 @@ public class Host extends StartActivity {
                         // the serverSocket is used to listen for incoming connections
                         serverSocket = Util.ba.listenUsingRfcommWithServiceRecord
                                 (StartActivity.usernameEditText.getText().toString(), Util.getUUID(i));
-                        Log.i("acceptThread", "ServerSocket created: " + serverSocket.toString());
+                        Log.e("acceptThread", "ServerSocket created: " + serverSocket.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -53,7 +53,9 @@ public class Host extends StartActivity {
                     // this method blocks until the Thread gets interrupted or a client connects
                     sockets.add(serverSocket.accept());
                     manageConnection(sockets.get(sockets.size() - 1));
+                    Log.e("Host", "connection successful");
                     ++i;
+                    serverSocket.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     // "Operation Canceled" gets thrown when the Host presses the "Start Game" Button
@@ -160,13 +162,13 @@ public class Host extends StartActivity {
         // this method removes a specific client
         try {
             sockets.get(i).close();
+            sockets.remove(i);
+            outputStreams.remove(i);
+            inputStreams.remove(i);
+            deviceNames.remove(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        sockets.remove(i);
-        outputStreams.remove(i);
-        inputStreams.remove(i);
-        deviceNames.remove(i);
     }
 
 }

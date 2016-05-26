@@ -57,6 +57,8 @@ public class GameClient extends Activity {
         miniMapSurfaceLoaded = false;
         GameSurface.destroy();
         ChooseActivity.eventReceiver.setRunning(false);
+        GameThread.setRunning(false);
+        System.exit(1);
     }
 
     @Override
